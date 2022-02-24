@@ -1,11 +1,10 @@
 <template>
   <div class="home">
-    <div id="top">
 
-     <p>{{this.$store.getters.getTeacher.phone}}</p>
-      <router-view></router-view>
 
-    </div>
+    <router-view></router-view>
+
+
   </div>
 </template>
 
@@ -30,7 +29,7 @@ export default {
   border-radius: 70px;
   text-decoration: none;
   text-transform: uppercase;
-  color:#409eff;
+  color: #409eff;
   padding: 6px 12px;
   text-align: center;
   display: inline-block;
