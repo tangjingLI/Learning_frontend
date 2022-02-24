@@ -24,7 +24,7 @@
           <a-form-item class="text">
             <a-input
                 v-decorator="[
-                  'phoneNumber',
+                  'phone',
                   { rules: [
                       { required: true, message: '不能为空' },
                       { pattern: /^[1][3-9][0-9]{9}$/, message: '请输入正确手机号'}
@@ -69,8 +69,7 @@ export default {
   data() {
     let form;
     return {
-      msg: "这是一条提示信息",
-      showFailDialog: false,
+
     }
   },
   beforeCreate() {
@@ -81,7 +80,10 @@ export default {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
+          console.log('state: ', this.$store.state);
+          window.sessionStorage.setItem('isLogin', 'true');
+          this.$store.dispatch('asyncUpdateTeacher', {phone: values.phone});
+          this.$router.push('/teacher');
         }
       });
     }
@@ -189,7 +191,7 @@ export default {
   border: none;
 }
 
-.top h1{
+.top h1 {
   text-align: center;
   margin-top: 30px;
   color: #4A5252;

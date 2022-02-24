@@ -2,9 +2,7 @@
   <div class="home">
     <div id="top">
 
-      <router-link to="/teacher/login">
-        <button class="btn">login</button>
-      </router-link>
+     <p>{{this.$store.getters.getTeacher.phone}}</p>
       <router-view></router-view>
 
     </div>
