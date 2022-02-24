@@ -2,7 +2,11 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import tHome from '../views/Teacher/Home.vue'
 import tLogin from '../views/Teacher/Login.vue'
+import Paper from '../views/Teacher/Paper.vue'
+import Test from '../views/Teacher/Test.vue'
+import TestBank from '../views/Teacher/TestBank.vue'
 import NotFound from '../views/NotFound.vue'
+import Exam from '../views/Teacher/Exam.vue'
 
 Vue.use(VueRouter)
 
@@ -15,8 +19,36 @@ const routes = [
     {
         path: '/teacher',
         name: 'teacher',
+        meta: { title: '首页' },
         component: tHome,
-        children: []
+        children: [
+            {
+                path: 'paper',
+                name: 'Paper',
+                meta: { title: '试卷管理' },
+                component: Paper
+            },
+            {
+                path: 'exam',
+                name: 'Exam',
+                meta: { title: '题库管理' },
+                component: Exam,
+                children:[
+                    {
+                        path: 'test',
+                        name: 'Test',
+                        meta: { title: '题目列表' },
+                        component: Test
+                    },
+                    {
+                        path: 'testBank',
+                        name: 'TestBank',
+                        meta: { title: '题库列表' },
+                        component: TestBank
+                    }
+                ]
+            }
+        ]
     },
     {
         path: '/',
