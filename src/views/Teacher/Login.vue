@@ -1,23 +1,14 @@
 <template>
-  <div class="register">
-    <div v-show="showFailDialog" id="back"></div>
-
-    <div v-show="showFailDialog" class="alt">
-      <div class="warning">
-        <p>{{ msg }}</p>
-      </div>
-      <button @click="close" id="close" class="btn">ok</button>
-    </div>
-
+  <div class="login">
 
     <div class="logo">
-      <img src="../assets/logo.png" id="token">
+      <img src="../../assets/logo.png" id="token">
       <p>个性化学习过程管理与推荐系统</p>
     </div>
 
     <div id="box">
       <div id="b1">
-        <img src="../assets/login.jpg" id="image">
+        <img src="../../assets/login_teacher.jpg" id="image">
       </div>
 
       <div id="b2">
@@ -27,10 +18,13 @@
             class="login-form"
             @submit="handleSubmit"
         >
+          <a-form-item class="top">
+            <h1>教师端登录</h1>
+          </a-form-item>
           <a-form-item class="text">
             <a-input
                 v-decorator="[
-                  'userName',
+                  'phoneNumber',
                   { rules: [
                       { required: true, message: '不能为空' },
                       { pattern: /^[1][3-9][0-9]{9}$/, message: '请输入正确手机号'}
@@ -38,10 +32,10 @@
                 ]"
                 placeholder="手机号"
             >
-              <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
+              <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)"/>
             </a-input>
           </a-form-item>
-          <a-form-item  class="text">
+          <a-form-item class="text">
             <a-input-password
                 v-decorator="[
                   'password',
@@ -53,42 +47,13 @@
                 type="password"
                 placeholder="密码"
             >
-              <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
-            </a-input-password>
-          </a-form-item>
-          <a-form-item class="text"   has-feedback >
-            <a-input-password
-                v-decorator="[
-                  'confirm',
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        message: '不能为空',
-                      },
-                      {
-                        validator: compareToFirstPassword,
-                      },
-                    ],
-                  },
-                ]"
-                type="password"
-                @blur="handleConfirmBlur"
-                placeholder="确认密码"
-            >
-              <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
-
+              <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)"/>
             </a-input-password>
           </a-form-item>
           <a-form-item class="bottom">
-
             <a-button type="primary" html-type="submit" class="login-form-button">
-              注册
+              登录
             </a-button>
-
-            <router-link to="/login" style="float: right; margin-top: 10px;">
-              已有账号？去登录
-            </router-link>
           </a-form-item>
         </a-form>
 
@@ -98,10 +63,9 @@
 
 </template>
 
-
 <script>
 export default {
-  name: "Register",
+  name: "Login",
   data() {
     let form;
     return {
@@ -110,83 +74,23 @@ export default {
     }
   },
   beforeCreate() {
-    this.form = this.$form.createForm(this, { name: 'register' });
+    this.form = this.$form.createForm(this, {name: 'normal_login'});
   },
   methods: {
-    close() {
-      this.showFailDialog = false;
-    },
     handleSubmit(e) {
       e.preventDefault();
-      this.form.validateFieldsAndScroll((err, values) => {
+      this.form.validateFields((err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
         }
       });
-    },
-    handleConfirmBlur(e) {
-      const value = e.target.value;
-      this.confirmDirty = this.confirmDirty || !!value;
-    },
-    compareToFirstPassword(rule, value, callback) {
-      const form = this.form;
-      if (value && value !== form.getFieldValue('password')) {
-        callback('两次密码输入不一致');
-      } else {
-        callback();
-      }
-    },
+    }
   }
 }
 </script>
 
 
 <style scoped>
-
-#back {
-  position: fixed;
-  z-index: 999998;
-  height: 100%;
-  width: 100%;
-  background-color: #939393;
-  filter: blur(10px);
-  opacity: 0.5;
-}
-
-.alt {
-  z-index: 999999;
-  height: 250px;
-  width: 350px;
-  border-radius: 70px;
-  box-shadow: 2px 2px 10px #939393;
-  background-color: white;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.warning {
-  width: 90%;
-  height: 30%;
-  top: 30%;
-  left: 5%;
-  position: relative;
-}
-
-.warning p {
-  text-align: center;
-  top: 40%;
-  font-size: 20px;
-  color: #000000;
-}
-
-.alt button {
-  width: 40%;
-  height: 15%;
-  top: 45%;
-}
-
 .logo {
   width: 500px;
   height: 60px;
@@ -246,11 +150,19 @@ export default {
   width: 90%;
   float: right;
   margin-right: 5%;
-  margin-top: 10%;
+  margin-top: 5%;
 }
 
-#components-form-demo-normal-login .text{
+#components-form-demo-normal-login .text {
   margin-top: 30px;
+}
+
+#components-form-demo-normal-login .login-form-forgot {
+  float: right;
+}
+
+#components-form-demo-normal-login .bottom {
+  margin-top: 10px;
 }
 
 #components-form-demo-normal-login .login-form-button {
@@ -269,12 +181,20 @@ export default {
   font-weight: bolder;
   transition-duration: 0.4s;
   cursor: pointer;
-  margin-top: 30px;
+  margin-top: 40px;
   /*position: relative;*/
   /*left: 50%;*/
   /*top: 40%;*/
   /*transform: translate(-50%, -50%);*/
   border: none;
+}
+
+.top h1{
+  text-align: center;
+  margin-top: 30px;
+  color: #4A5252;
+  font-size: 28px;
+  font-weight: bolder;
 }
 
 </style>

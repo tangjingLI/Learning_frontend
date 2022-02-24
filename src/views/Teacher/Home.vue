@@ -2,13 +2,10 @@
   <div class="home">
     <div id="top">
 
-      <router-link to="/login">
+      <router-link to="/teacher/login">
         <button class="btn">login</button>
       </router-link>
-
-      <router-link to="/login">
-        <button class="btn">register</button>
-      </router-link>
+      <router-view></router-view>
 
     </div>
   </div>
