@@ -6,7 +6,12 @@ import Paper from '../views/Teacher/Paper.vue'
 import Test from '../views/Teacher/Test.vue'
 import TestBank from '../views/Teacher/TestBank.vue'
 import NotFound from '../views/NotFound.vue'
-import Exam from '../views/Teacher/Exam.vue'
+import Course from "../views/Teacher/Course";
+import CourseInfo from "../views/Teacher/CourseInfo";
+import Control from "../views/Teacher/Control";
+import PaperBank from "../views/Teacher/PaperBank";
+import PaperInfo from "../views/Teacher/PaperInfo";
+import Task from "../views/Teacher/Task";
 
 Vue.use(VueRouter)
 
@@ -18,36 +23,58 @@ const routes = [
     },
     {
         path: '/teacher',
-        name: 'teacher',
-        meta: { title: '首页' },
+        name: '首页',
         component: tHome,
         children: [
             {
+                path: '/',
+                name: '控制台',
+                component: Control,
+            },
+            {
+                path: 'course',
+                name: '课程列表',
+                component: Course,
+            },
+            {
+                path: 'course/:courseId',
+                name: '课程列表',
+                component: CourseInfo,
+                mate: {
+                    url: '/teacher/course'
+                },
+
+            },
+            {
                 path: 'paper',
-                name: 'Paper',
-                meta: { title: '试卷管理' },
+                name: '试卷库列表',
+                component: PaperBank
+            },
+            {
+                path: 'paper/:bankId',
+                name: '试卷库列表',
                 component: Paper
             },
             {
-                path: 'exam',
-                name: 'Exam',
-                meta: { title: '题库管理' },
-                component: Exam,
-                children:[
-                    {
-                        path: 'test',
-                        name: 'Test',
-                        meta: { title: '题目列表' },
-                        component: Test
-                    },
-                    {
-                        path: 'testBank',
-                        name: 'TestBank',
-                        meta: { title: '题库列表' },
-                        component: TestBank
-                    }
-                ]
-            }
+                path: 'paper/:bankId/:paperId',
+                name: '试卷列表',
+                component: PaperInfo
+            },
+            {
+                path: 'test',
+                name: '题库列表',
+                component: TestBank
+            },
+            {
+                path: 'test/:bankId',
+                name: '题库列表',
+                component: Test
+            },
+            {
+                path: 'task',
+                name: '目标与任务',
+                component: Task
+            },
         ]
     },
     {

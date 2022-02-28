@@ -7,46 +7,47 @@
         </div>
         <a-menu theme="dark" :default-selected-keys="['1']" mode="inline">
           <a-menu-item key="1">
-            <a-icon type="pie-chart"/>
-            <span>控制台</span>
+            <a-icon type="home"/>
+            <span>
+              <router-link to="">控制台</router-link>
+            </span>
           </a-menu-item>
           <a-menu-item key="2">
-            <a-icon type="desktop"/>
+            <a-icon type="folder-open"/>
             <span>
               <router-link to="/teacher/paper">试卷管理</router-link>
             </span>
           </a-menu-item>
-          <a-sub-menu key="sub1">
-            <span slot="title"><a-icon type="user"/><span>题库管理</span></span>
-            <a-menu-item key="3">
-              <router-link to="/teacher/exam/testBank">题库列表</router-link>
-            </a-menu-item>
-            <a-menu-item key="4">
-              <router-link to="/teacher/exam/test">题目列表</router-link>
-            </a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="sub2">
-            <span slot="title"><a-icon type="team"/><span>学习管理</span></span>
-            <a-menu-item key="5">
-              Team 1
-            </a-menu-item>
-            <a-menu-item key="8">
-              Team 2
-            </a-menu-item>
-          </a-sub-menu>
+          <a-menu-item key="3">
+            <a-icon type="read"/>
+            <span>
+              <router-link to="/teacher/test">题目管理</router-link>
+            </span>
+          </a-menu-item>
+          <a-menu-item key="4">
+            <a-icon type="schedule"/>
+            <span>
+              <router-link to="/teacher/course">课程管理</router-link>
+            </span>
+          </a-menu-item>
+          <a-menu-item key="5">
+            <a-icon type="book"/>
+            <span>
+              <router-link to="/teacher/task">目标与任务</router-link>
+            </span>
+          </a-menu-item>
         </a-menu>
       </a-layout-sider>
       <a-layout>
         <a-layout-header style="background: #ffffff; padding: 0;height: 50px" class="top">
 
           <a-breadcrumb class="breadcrumb" separator=">" id="bread">
-            <a-breadcrumb-item v-for="(item, index) in breadList" :key="item.name">
-              <router-link
-                  v-if="item.name != name && index != 1"
-                  :to="{ path: item.path === '' ? '/' : item.path }"
-              >{{ item.meta.title }}
-              </router-link>
-              <span v-else>{{ item.meta.title }}</span>
+            <a-breadcrumb-item v-for="(item, index) in breadList" :key="index">
+              <span>
+<!--                <router-link v-if="item.url" :to="item.url">{{ item.name }}</router-link>-->
+<!--                <span v-else>{{ item.name }}</span>-->
+                {{ item.name }}
+              </span>
             </a-breadcrumb-item>
           </a-breadcrumb>
 
@@ -80,24 +81,39 @@ export default {
     return {
       collapsed: false,
       name: '',
-      breadList: []
+      // breadList: []
     };
   },
   created() {
     this.getBreadcrumb()
   },
   methods: {
+    // getBreadcrumb() {
+    //   this.breadList = []
+    //   this.name = this.$route.name
+    //   this.$route.matched.forEach(item => {
+    //     this.breadList.push(item)
+    //   })
+    // }
     getBreadcrumb() {
-      this.breadList = []
-      this.name = this.$route.name
-      this.$route.matched.forEach(item => {
-        this.breadList.push(item)
+      let matched = this.$route.matched
+      // matched 里面的很多数据我们并不需要，放进去如果后面增加的数据键值对不一致会导致错误
+      matched = matched.map((item) => {
+        // console.log(item)
+        return {name: item.name}
       })
-    }
+      this.$store.commit("saveBreadList", matched)
+    },
   },
   watch: {
     $route() {
       this.getBreadcrumb()
+    }
+  },
+  computed: {
+    breadList() {
+      window.sessionStorage.setItem('breadList', JSON.stringify(this.$store.getters.getBread));
+      return this.$store.getters.getBread;
     }
   }
 };
@@ -120,6 +136,10 @@ export default {
 
 a {
   color: white;
+}
+
+a #go {
+  color: #939393;
 }
 
 

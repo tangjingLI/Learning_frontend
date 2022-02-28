@@ -1,12 +1,10 @@
 <template>
-  <div class="test">
-    <div>题目列表</div>
-  </div>
+
 </template>
 
 <script>
 export default {
-  name: "TestList"
+  name: "PaperInfo"
 }
 </script>
 

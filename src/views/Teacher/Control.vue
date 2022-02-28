@@ -1,12 +1,12 @@
 <template>
   <div>
-    <router-view></router-view>
+    <div>控制台</div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Exam"
+  name: "Control"
 }
 </script>
 

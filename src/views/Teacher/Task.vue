@@ -1,14 +1,12 @@
 <template>
-  <div class="testbank">
-    <div>
-      题库列表
-    </div>
+  <div>
+    <div>目标与任务</div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "TestBank"
+  name: "Task"
 }
 </script>
 
