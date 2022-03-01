@@ -8,7 +8,7 @@
 export default {
   name: "CourseInfo",
   mounted() {
-    console.log("mounted");
+    // console.log("mounted");
     // 一定要使用 this.$nextTick 否则获取不到userID
     this.$nextTick(() => {
       let courseId = this.$route.params.courseId;

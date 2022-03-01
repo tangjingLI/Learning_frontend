@@ -2,7 +2,8 @@ const teacher = {
     state: {
         user: window.sessionStorage.getItem('user') != null ? JSON.parse(window.sessionStorage.getItem('user')) :
             {
-                phone: ''
+                phone: '',
+                id:''
             }
     },
     getters: {

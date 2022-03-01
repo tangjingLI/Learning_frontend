@@ -9,25 +9,25 @@
           <a-menu-item key="1">
             <a-icon type="home"/>
             <span>
-              <router-link to="">控制台</router-link>
+              <router-link to="/teacher">控制台</router-link>
             </span>
           </a-menu-item>
           <a-menu-item key="2">
             <a-icon type="folder-open"/>
             <span>
-              <router-link to="/teacher/paper">试卷管理</router-link>
+              <router-link to="/teacher/paperBank">试卷管理</router-link>
             </span>
           </a-menu-item>
           <a-menu-item key="3">
             <a-icon type="read"/>
             <span>
-              <router-link to="/teacher/test">题目管理</router-link>
+              <router-link to="/teacher/testBank">题目管理</router-link>
             </span>
           </a-menu-item>
           <a-menu-item key="4">
             <a-icon type="schedule"/>
             <span>
-              <router-link to="/teacher/course">课程管理</router-link>
+              <router-link to="/teacher/courseList">课程管理</router-link>
             </span>
           </a-menu-item>
           <a-menu-item key="5">
@@ -41,15 +41,18 @@
       <a-layout>
         <a-layout-header style="background: #ffffff; padding: 0;height: 50px" class="top">
 
-          <a-breadcrumb class="breadcrumb" separator=">" id="bread">
-            <a-breadcrumb-item v-for="(item, index) in breadList" :key="index">
-              <span>
-<!--                <router-link v-if="item.url" :to="item.url">{{ item.name }}</router-link>-->
-<!--                <span v-else>{{ item.name }}</span>-->
-                {{ item.name }}
-              </span>
-            </a-breadcrumb-item>
-          </a-breadcrumb>
+          <!--          <a-breadcrumb class="breadcrumb" separator=">" id="bread">-->
+          <!--            <a-breadcrumb-item v-for="(item, index) in breadList" :key="index">-->
+          <!--              <span>-->
+          <!--                <router-link v-if="item.url" :to="item.url">{{ item.name }}</router-link>-->
+          <!--                <span v-else>{{ item.name }}</span>-->
+          <!--                {{ item.name }}-->
+          <!--              </span>-->
+          <!--            </a-breadcrumb-item>-->
+          <!--          </a-breadcrumb>-->
+          <h1 id="label">个性化学习过程管理与推荐系统</h1>
+
+          <a-avatar style="backgroundColor:#1C90F5" icon="user" id="icon"/>
 
           <a-dropdown>
             <a class="ant-dropdown-link" @click="e => e.preventDefault()" id="phone" style="color: #000000">
@@ -62,10 +65,9 @@
               </a-menu-item>
             </a-menu>
           </a-dropdown>
-          <a-avatar style="backgroundColor:#4a9de7" icon="user" id="icon"/>
 
         </a-layout-header>
-        <a-layout-content style="margin: 0 16px">
+        <a-layout-content style="margin:0">
           <router-view></router-view>
         </a-layout-content>
       </a-layout>
@@ -85,7 +87,7 @@ export default {
     };
   },
   created() {
-    this.getBreadcrumb()
+    // this.getBreadcrumb()
   },
   methods: {
     // getBreadcrumb() {
@@ -95,26 +97,26 @@ export default {
     //     this.breadList.push(item)
     //   })
     // }
-    getBreadcrumb() {
-      let matched = this.$route.matched
-      // matched 里面的很多数据我们并不需要，放进去如果后面增加的数据键值对不一致会导致错误
-      matched = matched.map((item) => {
-        // console.log(item)
-        return {name: item.name}
-      })
-      this.$store.commit("saveBreadList", matched)
-    },
+    // getBreadcrumb() {
+    //   let matched = this.$route.matched
+    //   // matched 里面的很多数据我们并不需要，放进去如果后面增加的数据键值对不一致会导致错误
+    //   matched = matched.map((item) => {
+    //     // console.log(item)
+    //     return {name: item.name}
+    //   })
+    //   this.$store.commit("saveBreadList", matched)
+    // },
   },
   watch: {
-    $route() {
-      this.getBreadcrumb()
-    }
+    // $route() {
+    //   this.getBreadcrumb()
+    // }
   },
   computed: {
-    breadList() {
-      window.sessionStorage.setItem('breadList', JSON.stringify(this.$store.getters.getBread));
-      return this.$store.getters.getBread;
-    }
+    // breadList() {
+    //   window.sessionStorage.setItem('breadList', JSON.stringify(this.$store.getters.getBread));
+    //   return this.$store.getters.getBread;
+    // }
   }
 };
 </script>
@@ -138,9 +140,9 @@ a {
   color: white;
 }
 
-a #go {
-  color: #939393;
-}
+/*a #go {*/
+/*  color: #939393;*/
+/*}*/
 
 
 .top #icon {
@@ -149,16 +151,25 @@ a #go {
 }
 
 .top #phone {
-  position: fixed;
-  left: 85%;
+  float: right;
+  /*position: fixed;*/
+  /*left: 85%;*/
   /*top: 10px;*/
   /*text-decoration:underline;*/
 }
 
-.top #bread {
+/*.top #bread {*/
+/*  float: left;*/
+/*  margin: 20px;*/
+/*  font-weight: bold;*/
+/*}*/
+
+.top #label {
   float: left;
-  margin: 20px;
+  margin-left: 15px;
+  letter-spacing: 2px;
   font-weight: bold;
+  size: 30px;
 }
 
 </style>

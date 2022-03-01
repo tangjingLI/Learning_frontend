@@ -67,9 +67,7 @@
 export default {
   name: "Login",
   data() {
-    let form;
     return {
-
     }
   },
   beforeCreate() {

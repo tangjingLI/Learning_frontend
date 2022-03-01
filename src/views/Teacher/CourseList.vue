@@ -14,7 +14,7 @@ export default {
       // console.log('this')
       let obj={1:'数据库'}
       this.$store.commit("saveMapTitle",obj)
-      this.$router.push({path:`/teacher/course/${id}`})
+      this.$router.push({path:`/teacher/courseInfo/${id}`})
     },
     // goDetail(row){
     //   this.$router.push({path:`/industry/dataAccount/Day/${row.id}`})
