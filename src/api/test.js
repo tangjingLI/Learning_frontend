@@ -1,5 +1,6 @@
 import axios from "axios";
 
+//获取题库列表
 export function getAllTestBank(id) {
     // return axios.get('/bank/list', {
     //     params: {
@@ -45,6 +46,7 @@ export function getAllTestBank(id) {
     }
 }
 
+//获取题库详情
 export function getTestBank(id) {
     // return axios.get('/bank/details/', {
     //         params: {
@@ -131,6 +133,7 @@ export function getTestBank(id) {
     }
 }
 
+//获取题目详情
 export function getTestDetail(id) {
     // return axios.get('/question/detail/', {
     //         params: {
@@ -146,22 +149,38 @@ export function getTestDetail(id) {
     //     })
     return {
         question: {
-            qTitle: "青蛙跳台阶",
-            qContent: "青蛙每次跳一步或两步，上n阶台阶有多少种跳法？",
-            qAnswer: "A",
-            qType: 1,
-            qAnalysis: "这里是分析",
-            qConsume: 1,
-            qRate: 0.7
+            id: 1,
+            bankId: 1,
+            title: "青蛙跳台阶",
+            content: "一只青蛙一次可以跳上1级台阶，也可以跳上2级台阶。求该青蛙跳上一个 n 级的台阶总共有多少种跳法?",
+            answer: "A",
+            type: 1,
+            analysis: "这里是分析",
+            consume: 10,
+            rate: 0.7
         },
         choices: [
             {
-                content: "青蛙要喝水",
-                number: 1
+                content: "青蛙一步两步往上跳",
+                number: 'A'
             },
             {
-                content: "青蛙骑摩托",
-                number: 2
+                content: "青蛙一次跳一步",
+                number: 'B'
+            },
+            {
+                content: "青蛙一次跳两步",
+                number: 'B'
+            }
+        ],
+        knowledges: [
+            {
+                knwoledgeId:1,
+                skillId:'xxx'
+            },
+            {
+                knwoledgeId:2,
+                skillId:'xxx'
             }
         ]
     }

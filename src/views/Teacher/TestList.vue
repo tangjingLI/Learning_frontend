@@ -4,6 +4,7 @@
       <a-button
           style=" float:left;margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;margin-left: 10px;height: 70%"
       @click="back">
+        <a-icon type="left-circle" />
         返回
       </a-button>
       <h1> {{ bankTitle }}</h1>
@@ -37,9 +38,17 @@
         </span>
 
         <span slot="action" slot-scope="text, record">
-          <a>查看</a>
+          <a @click="detail(record.id)">查看</a>
           <a-divider type="vertical"/>
-          <a>删除</a>
+          <a-popconfirm
+              title="确定删除该题库吗?"
+              ok-text="Yes"
+              cancel-text="No"
+              @confirm="confirm"
+              @cancel="cancel"
+          >
+            <a href="#">删除</a>
+          </a-popconfirm>
           <a-divider type="vertical"/>
           <a>移动</a>
         </span>
@@ -101,7 +110,18 @@ export default {
     },
     back(){
       this.$router.push({name:'testBank'})
-    }
+    },
+    detail(id){
+      this.$router.push({name:'testInfo',params:{testId:id}})
+    },
+    //删除
+    confirm(e) {
+      // console.log(e);
+      this.$message.success('删除成功！');
+    },
+    cancel(e) {
+      console.log(e);
+    },
   }
 }
 </script>

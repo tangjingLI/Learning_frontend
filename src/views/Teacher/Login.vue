@@ -82,6 +82,7 @@ export default {
           window.sessionStorage.setItem('isLogin', 'true');
           this.$store.dispatch('asyncUpdateTeacher', {phone: values.phone});
           this.$router.push('/teacher');
+          this.$message.success('欢迎登录');
         }
       });
     }

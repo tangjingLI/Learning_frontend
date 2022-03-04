@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <a-layout id="components-layout-demo-side" style="min-height: 100vh">
+    <a-layout id="components-layout-demo-side" style="min-height: 100vh;">
       <a-layout-sider v-model="collapsed" collapsible width="250px">
         <div class="logo">
           <p>源图</p>
@@ -21,7 +21,7 @@
           <a-menu-item key="3">
             <a-icon type="read"/>
             <span>
-              <router-link to="/teacher/testBank">题目管理</router-link>
+              <router-link to="/teacher/testBank">题库管理</router-link>
             </span>
           </a-menu-item>
           <a-menu-item key="4">
@@ -67,8 +67,8 @@
           </a-dropdown>
 
         </a-layout-header>
-        <a-layout-content style="margin:0">
-          <router-view></router-view>
+        <a-layout-content style="margin:0;">
+          <router-view style="height: 580px;"></router-view>
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -83,7 +83,7 @@ export default {
     return {
       collapsed: false,
       name: '',
-      // breadList: []
+      // breadList: [],
     };
   },
   created() {
@@ -117,11 +117,16 @@ export default {
     //   window.sessionStorage.setItem('breadList', JSON.stringify(this.$store.getters.getBread));
     //   return this.$store.getters.getBread;
     // }
-  }
+  },
 };
 </script>
 
 <style scoped>
+
+body{
+  overflow-y: hidden;
+}
+
 #components-layout-demo-side .logo {
   height: 50px;
   width: 100%;
