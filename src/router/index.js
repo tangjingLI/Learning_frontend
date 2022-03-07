@@ -13,6 +13,7 @@ import Control from "../views/Teacher/Control";
 import PaperBank from "../views/Teacher/PaperBank";
 import PaperInfo from "../views/Teacher/PaperInfo";
 import Task from "../views/Teacher/Task";
+import CreatePaper from "../views/Teacher/CreatePaper";
 
 Vue.use(VueRouter)
 
@@ -80,6 +81,11 @@ const routes = [
             {
                 path: '/teacher',
                 redirect: '/teacher/control'
+            },
+            {
+                path: 'createPaper/:bankId',
+                name: 'createPaper',
+                component: CreatePaper
             },
         ]
     },

@@ -14,36 +14,74 @@
         <a-icon type="setting"/>
         编辑试卷
       </a-button>
+      <a-button v-if="status==0" class="button" @click="showUpload">
+        <a-icon type="check-circle"/>
+        发布试卷
+      </a-button>
+      <a-tag color="green" v-else style="margin-left: 10px;margin-top: 5px;">已发布</a-tag>
     </div>
 
-    <div class="content" >
+    <div class="content">
       <div v-for="question in questions" class="block">
-          <h1>
-            {{question.title}}
-            <a-tag v-if="question.type==1" color="blue">单选</a-tag>
-            <a-tag v-else-if="question.type==2" color="purple">多选</a-tag>
-            <a-tag v-else color="pink">简答</a-tag>
-          </h1>
-          <a-divider />
+        <h1>
+          {{ question.title }}
+          <a-tag v-if="question.type==1" color="blue">单选</a-tag>
+          <a-tag v-else-if="question.type==2" color="purple">多选</a-tag>
+          <a-tag v-else color="pink">简答</a-tag>
+        </h1>
+        <a-divider/>
 
-          <p>
-            <a-tag color="orange" class="tag">题目描述</a-tag>
-            &emsp;{{question.content}}
-          </p>
-          <a-divider />
+        <p>
+          <a-tag color="orange" class="tag">题目描述</a-tag>
+          &emsp;{{ question.content }}
+        </p>
+        <a-divider/>
 
-          <p v-for="ch in question.choices">{{ch.number}} {{ch.content}}</p>
-          <p style="color: mediumseagreen">正确答案： {{question.answer}}</p>
-          <p> 解析： {{question.analysis}}</p>
-          <a-divider />
+        <p v-for="ch in question.choices">{{ ch.number }} {{ ch.content }}</p>
+        <p style="color: mediumseagreen">正确答案： {{ question.answer }}</p>
+        <p> 解析： {{ question.analysis }}</p>
+        <a-divider/>
 
-        </div>
       </div>
     </div>
+
+    <a-modal v-model="uploadFlag" title="发布试卷" @ok="upload" @cancel="cancel1">
+      <a-form :form="form1" :label-col="{ span: 5 }" :wrapper-col="{ span: 18 }"
+              style="height: 200px;overflow-y: scroll">
+        <a-form-item label="考试名称">
+          <a-input
+              v-decorator="['name', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{2,8}$/,message: '长度为2-8位'}
+                  ] }]"
+          />
+        </a-form-item>
+
+        <a-form-item label="考试简介">
+          <a-textarea
+              :auto-size="{ minRows: 1, maxRows: 6 }"
+              v-decorator="['intro', { rules: [
+                  // { required: true, message: '不能为空' },
+                  {pattern:/^.{1,100}$/,message: '长度为1-100位'}
+                  ] }]"
+          />
+        </a-form-item>
+
+        <a-form-item label="考试时长">
+          <a-input
+              v-decorator="['time', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^[1-9]\d{0,4}$/,message: '输入长度为1-5位的非0开头的数字'}
+                  ] }]"
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+  </div>
 </template>
 
 <script>
-import {getPaperDetail} from "../../api/paper";
+import {getPaperDetail, uploadPaper} from "../../api/paper";
 
 export default {
   name: "PaperInfo",
@@ -52,7 +90,10 @@ export default {
       paperTitle: '',
       questions: [],
       score: 0,
-      bankId:0
+      bankId: 0,
+      status: 0,
+      uploadFlag: false,
+      form1: this.$form.createForm(this, {name: 'uploadPaper'}),
     }
   },
   mounted() {
@@ -61,11 +102,35 @@ export default {
     this.paperTitle = response.res.title;
     this.score = response.res.score;
     this.questions = response.res.questions;
-    this.bankId=response.res.bankId;
+    this.bankId = response.res.bankId;
+    this.status = response.res.status;
   },
-  methods:{
-    back(id){
-      this.$router.push({name:'paperList',params:{bankId:id}});
+  methods: {
+    back(id) {
+      this.$router.push({name: 'paperList', params: {bankId: id}});
+    },
+    //发布试卷
+    showUpload() {
+      this.uploadFlag = true;
+    },
+    upload(e) {
+      e.preventDefault();
+      this.form1.validateFields((err, values) => {
+        if (!err) {
+          let intro = values.intro == null ? '' : values.intro;
+          let response = uploadPaper(this.$route.params.paperId, values.name, intro, values.time);
+          this.uploadFlag = false;
+          this.form1.resetFields()
+          if (response.res) {
+            this.$message.success('发布成功！');
+          } else {
+            this.$message.error("发布失败")
+          }
+        }
+      })
+    },
+    cancel1() {
+      this.form1.resetFields();
     }
   },
 
@@ -110,13 +175,13 @@ body {
   height: 30px;
 }
 
-.content{
+.content {
   text-align: center;
   height: 500px;
   overflow-y: scroll;
 }
 
-.block{
+.block {
   background-color: white;
   width: 95%;
   text-align: center;
@@ -125,14 +190,14 @@ body {
   /*box-shadow: 0 2px 2px #939393;*/
 }
 
-.block h1{
+.block h1 {
   letter-spacing: 2px;
   font-weight: bold;
   size: 25px;
   color: #6a6868;
 }
 
-.block p{
+.block p {
   font-size: 15px;
 }
 

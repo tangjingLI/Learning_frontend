@@ -30,7 +30,7 @@
               title="确定删除该题库吗?"
               ok-text="Yes"
               cancel-text="No"
-              @confirm="confirm"
+              @confirm="confirm(record.id)"
               @cancel="cancel"
           >
             <a href="#">删除</a>
@@ -39,7 +39,8 @@
 
       </a-table>
     </div>
-    <a-modal v-model="visible" title="新建题库" @ok="handleOk">
+
+    <a-modal v-model="visible" title="新建题库" @ok="handleOk" @cancel="handleCancel">
       <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
         <a-form-item label="题库名">
           <a-input
@@ -62,12 +63,14 @@
         </a-form-item>
       </a-form>
     </a-modal>
+
+
   </div>
 
 </template>
 
 <script>
-import {getAllTestBank} from "../../api/test";
+import {getAllTestBank,createTestBank,deleteTestBank} from "../../api/test";
 
 const columns = [
   {
@@ -115,9 +118,15 @@ export default {
       console.log(value)
     },
     //删除
-    confirm(e) {
-      // console.log(e);
-      this.$message.success('删除成功！');
+    confirm(id) {
+      console.log("delete:" + id);
+      let response = deleteTestBank(id, this.$store.getters.getTeacher.id);
+      if (response.res) {
+        this.$message.success('删除成功！');
+        // this.reload();
+      } else {
+        this.$message.warning("删除失败")
+      }
     },
     cancel(e) {
       console.log(e);
@@ -132,12 +141,24 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
+          let response = createTestBank(values.title, values.isPublic, this.$store.getters.getTeacher.id);
           this.form.resetFields();
           this.visible = false;
+          if (response.res) {
+            this.$message.success("新建题库成功！");
+            // this.reload();
+          } else {
+            this.$message.error("题库已存在");
+          }
         }
       });
     },
+    handleCancel(){
+      this.form.resetFields();
+    }
+
   },
+
   mounted() {
     let userId = this.$store.getters.getTeacher.id;
     let response = getAllTestBank(userId);

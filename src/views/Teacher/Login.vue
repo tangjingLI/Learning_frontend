@@ -64,6 +64,8 @@
 </template>
 
 <script>
+import {login} from "../../api/login";
+
 export default {
   name: "Login",
   data() {
@@ -78,11 +80,17 @@ export default {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log('state: ', this.$store.state);
-          window.sessionStorage.setItem('isLogin', 'true');
-          this.$store.dispatch('asyncUpdateTeacher', {phone: values.phone});
-          this.$router.push('/teacher');
-          this.$message.success('欢迎登录');
+          console.log(values);
+          let response=login(values.phone,values.password);
+          if(response.res.ok){
+            window.sessionStorage.setItem('isLogin', 'true');
+            this.$store.dispatch('asyncUpdateTeacher', {phone: values.phone,id:response.res.userId});
+            this.$router.push('/teacher');
+            this.$message.success('欢迎登录');
+          }else {
+            this.$message.warning("手机号或密码错误");
+            this.form.resetFields();
+          }
         }
       });
     }

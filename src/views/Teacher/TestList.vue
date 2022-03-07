@@ -3,21 +3,21 @@
     <div class="top">
       <a-button
           style=" float:left;margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;margin-left: 10px;height: 70%"
-      @click="back">
-        <a-icon type="left-circle" />
+          @click="back">
+        <a-icon type="left-circle"/>
         返回
       </a-button>
       <h1> {{ bankTitle }}</h1>
       <a-tag v-if="isPublic==0" color="green" style="margin-left: 5px;margin-top: 8px">public</a-tag>
       <a-tag v-else color="orange" style="margin-left: 5px;margin-top: 8px">private</a-tag>
-      <a-button id="edit"
+      <a-button id="edit" @click="showEdit"
                 style=" margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;margin-right: 10px;float: right">
         <a-icon type="setting"/>
         编辑题库
       </a-button>
 
 
-      <a-button id="add"
+      <a-button id="add" @click="showAddTest"
                 style="  margin-top: 5px;background-color: #1C90F5;color: white;border: none;float: right;margin-right: 5px">
         <a-icon type="plus-circle"/>
         添加题目
@@ -25,16 +25,29 @@
 
       <a-input-search placeholder="输入题目内容" enter-button @search="onSearch" id="search"
                       style="width: 30%; float: right;margin-top: 5px;margin-right: 5px"/>
+      <a-button @click="reset"
+          style="float: right;margin-right: 10px;margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;">
+        重置</a-button>
+
     </div>
 
     <div class="table">
-      <a-table :columns="columns" :data-source="questions" style="background-color: white" :pagination="pagination" rowKey="id">
-        <span slot="customTitle"><a-icon type="smile" theme="twoTone" /> 题目</span>
+      <a-table :columns="columns" :data-source="questions" style="background-color: white" :pagination="pagination"
+               rowKey="id">
+        <span slot="customTitle"><a-icon type="smile" theme="twoTone"/> 题目</span>
 
         <span slot="type" slot-scope="type">
           <a-tag v-if="type==1" color="blue">单选</a-tag>
           <a-tag v-else-if="type==2" color="purple">多选</a-tag>
           <a-tag v-else color="pink">简答</a-tag>
+        </span>
+
+        <span slot="rate" slot-scope="rate">
+          {{rate*100}}%
+        </span>
+
+        <span slot="consume" slot-scope="consume">
+          {{consume}} 分钟
         </span>
 
         <span slot="action" slot-scope="text, record">
@@ -44,22 +57,125 @@
               title="确定删除该题库吗?"
               ok-text="Yes"
               cancel-text="No"
-              @confirm="confirm"
+              @confirm="confirm(record.id)"
               @cancel="cancel"
           >
             <a href="#">删除</a>
           </a-popconfirm>
-          <a-divider type="vertical"/>
-          <a>移动</a>
         </span>
 
       </a-table>
     </div>
+
+    <a-modal v-model="editBank" title="编辑题库" @ok="edit" @cancel="cancel1">
+      <a-form :form="form1" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="题库名">
+          <a-input
+              v-decorator="['title', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{2,8}$/,message: '题库名长度为2-8位'},
+                  ] }]"
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
+    <a-modal v-model="showAdd" title="添加题目" @ok="addTest" @cancel="cancel2">
+      <a-form :form="form2" :label-col="{ span: 5 }" :wrapper-col="{ span: 18 }"
+              style="height: 350px;overflow-y: scroll">
+        <a-form-item label="题目标题">
+          <a-input
+              v-decorator="['title', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{2,8}$/,message: '题目标题长度为2-8位'}
+                  ] }]"
+          />
+        </a-form-item>
+
+        <a-form-item label="题目内容">
+          <a-textarea
+              :auto-size="{ minRows: 1, maxRows: 6 }"
+              v-decorator="['content', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{1,100}$/,message: '题目内容长度为1-100位'}
+                  ] }]"
+          />
+        </a-form-item>
+
+        <a-form-item label="题目类型">
+          <a-radio-group name="testType"
+                         v-decorator="['type',{rules:[{required: true,message:'不能为空'}]}]">
+            <a-radio :value="1" @click="()=>{this.testType=1;}">
+              单选
+            </a-radio>
+            <a-radio :value="2" @click="()=>{this.testType=2;}">
+              多选
+            </a-radio>
+            <a-radio :value="3" @click="()=>{this.testType=0;}">
+              简答
+            </a-radio>
+          </a-radio-group>
+        </a-form-item>
+
+        <div v-if="testType==1||testType==2" v-for="item in choices" class="choice">
+          <a-form-item >
+              <p>选项{{ item.ch }}&emsp;</p>
+              <a-input style="float: left;width: 240px"
+                       v-decorator="[item.ch, { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{1,12}$/,message: '答案长度为1-12位'}
+                  ] }]"
+              />
+          </a-form-item>
+        </div>
+
+        <a-form-item v-if="testType==1||testType==2">
+          <a-button @click="addChoice" id="btn1">
+            <a-icon type="plus-circle" theme="twoTone"/>
+            添加选项
+          </a-button>
+          <a-button @click="deleteChoice" id="btn2">
+            <a-icon type="delete"/>
+            删除选项
+          </a-button>
+        </a-form-item>
+
+        <a-form-item label="答案">
+          <a-input
+              v-decorator="['answer', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{1,100}$/,message: '答案长度为1-100位'}
+                  ] }]"
+          />
+        </a-form-item>
+
+        <a-form-item label="解析">
+          <a-input
+              v-decorator="['analysis', { rules: [
+                  { required: true, message: '不能为空' },
+                    {pattern:/^.{1,100}$/,message: '解析长度为1-100位'}
+                  ] }]"
+          />
+        </a-form-item>
+
+        <a-form-item label="预计用时">
+          <a-input
+              v-decorator="['consume', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^[1-9]\d{0,4}$/,message: '输入长度为1-5位的非0开头的数字'}
+                  ] }]"
+          />
+        </a-form-item>
+
+
+      </a-form>
+    </a-modal>
+
   </div>
 </template>
 
 <script>
-import {getTestBank} from "../../api/test";
+import {editTestBank, getTestBank, addTest,deleteTest,searchTest} from "../../api/test";
 
 const columns = [
   {
@@ -75,10 +191,22 @@ const columns = [
     scopedSlots: {customRender: 'type'},
   },
   {
+    title: '正确率',
+    key: 'rate',
+    dataIndex: 'rate',
+    scopedSlots: {customRender: 'rate'},
+  },
+  {
+    title: '预计耗时',
+    key: 'consume',
+    dataIndex: 'consume',
+    scopedSlots: {customRender: 'consume'},
+  },
+  {
     title: '操作',
     key: 'action',
     scopedSlots: {customRender: 'action'},
-  }
+  },
 ];
 
 
@@ -90,37 +218,132 @@ export default {
       questions: [],
       isPublic: 0,
       columns,
-      msg:'',
+      msg: '',
       pagination: {
         pageSize: 7
-      }
+      },
+      editBank: false,
+      showAdd: false,
+      testType: 0,
+      num: 2,
+      choices: [],
+      list: ['A', 'B', 'C', 'D', 'E', 'F'],
+      form1: this.$form.createForm(this, {name: 'editTestBank'}),
+      form2: this.$form.createForm(this, {name: 'addTest'}),
     }
   },
   mounted() {
     // console.log(this.$route.params);
-    let params = this.$route.params;
-    let response = getTestBank(params.bankId);
-    this.bankTitle = response.res.bankTitle;
-    this.questions = response.res.questions;
-    this.isPublic = response.isPublic;
+    this.reset();
+
+    this.choices.push({ch: 'A'});
+    this.choices.push({ch: 'B'});
   },
   methods: {
+    reset(){
+      let params = this.$route.params;
+      let response = getTestBank(params.bankId);
+      this.bankTitle = response.res.bankTitle;
+      this.questions = response.res.questions;
+      this.isPublic = response.isPublic;
+    },
     onSearch(value) {
-      console.log(value);
+      let response=searchTest(value);
+      this.bankTitle = response.res.bankTitle;
+      this.questions = response.res.questions;
+      this.isPublic = response.isPublic;
+      // console.log(value);
     },
-    back(){
-      this.$router.push({name:'testBank'})
+    back() {
+      this.$router.push({name: 'testBank'})
     },
-    detail(id){
-      this.$router.push({name:'testInfo',params:{testId:id}})
+    detail(id) {
+      this.$router.push({name: 'testInfo', params: {testId: id}})
     },
     //删除
-    confirm(e) {
-      // console.log(e);
-      this.$message.success('删除成功！');
+    confirm(id) {
+      let response=deleteTest(id);
+      if(response.res){
+        this.$message.success('删除成功！');
+      }else {
+        this.$message.error("删除失败");
+      }
     },
     cancel(e) {
       console.log(e);
+    },
+    //编辑题库
+    edit(e) {
+      e.preventDefault();
+      this.form1.validateFields((err, values) => {
+        if (!err) {
+          if (values.title == this.bankTitle) {
+            this.form1.resetFields();
+            this.editBank = false;
+          } else {
+            console.log('Received values of form: ', values);
+            let response = editTestBank(this.$route.params.bankId, this.$store.getters.getTeacher.id, values.title);
+            this.form1.resetFields();
+            this.editBank = false;
+            this.$message.success("编辑题库成功！");
+          }
+        }
+      });
+    },
+    showEdit() {
+      this.editBank = true;
+    },
+    cancel1() {
+      this.form1.resetFields();
+    },
+    //添加题目
+    showAddTest() {
+      this.showAdd = true;
+    },
+    addTest(e) {
+      e.preventDefault();
+      this.form2.validateFields((err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values);
+          let response = addTest(values,this.$route.params.bankId,this.num);
+          this.form2.resetFields();
+          this.testType = 0;
+          this.num = 2;
+          this.choices = [];
+          this.choices.push({ch: 'A'});
+          this.choices.push({ch: 'B'});
+          this.showAdd = false;
+          if (response.res) {
+            this.$message.success("添加题目成功！");
+          } else {
+            this.$message.error("添加题目失败");
+          }
+        }
+      });
+    },
+    cancel2() {
+      this.form2.resetFields();
+      this.testType = 0;
+      this.num = 2;
+      this.choices = [];
+      this.choices.push({ch: 'A'});
+      this.choices.push({ch: 'B'});
+    },
+    addChoice() {
+      if (this.num == 6) {
+        this.$message.warning("最多添加六个选项");
+      } else {
+        this.choices.push({ch: this.list[this.num]});
+        this.num++;
+      }
+    },
+    deleteChoice() {
+      if (this.num == 2) {
+        this.$message.warning("最少添加两个选项");
+      } else {
+        this.num--;
+        this.choices.pop();
+      }
     },
   }
 }
@@ -151,6 +374,32 @@ body {
 
 .table {
   margin: 0 20px;
+}
+
+.choice p {
+  font-weight: bold;
+  color: #6a6868;
+  float: left;
+  margin-left: 40px;
+  margin-bottom: 0;
+}
+
+#btn1 {
+  background-color: #1C90F5;
+  color: white;
+  border: none;
+  margin-left: 100px;
+  float: left;
+  margin-top: 10px;
+}
+
+#btn2 {
+  background-color: #ea5454;
+  color: white;
+  border: none;
+  margin-left: 20px;
+  float: left;
+  margin-top: 10px;
 }
 
 </style>

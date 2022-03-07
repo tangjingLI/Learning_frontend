@@ -30,7 +30,7 @@
               title="确定删除该试卷库吗?"
               ok-text="Yes"
               cancel-text="No"
-              @confirm="confirm"
+              @confirm="confirm(record.papersInfo.id)"
               @cancel="cancel"
           >
             <a href="#">删除</a>
@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import {getAllPaperBank} from "../../api/paper";
+import {getAllPaperBank, createPaperBank,deletePaperBank} from "../../api/paper";
 
 const columns = [
   {
@@ -120,10 +120,10 @@ export default {
   mounted() {
     let userId = this.$store.getters.getTeacher.id;
     let response = getAllPaperBank(userId);
-    this.msg=response.msg;
-    this.banks=response.res;
+    this.msg = response.msg;
+    this.banks = response.res;
   },
-  methods:{
+  methods: {
     //查看
     chooseBank(id) {
       this.$router.push({name: 'paperList', params: {bankId: id}});
@@ -133,9 +133,14 @@ export default {
       console.log(value)
     },
     //删除
-    confirm(e) {
-      // console.log(e);
-      this.$message.success('删除成功！');
+    confirm(id) {
+      console.log("delete:"+id);
+      let response=deletePaperBank(this.$store.getters.getTeacher.id,id)
+      if(response.res){
+        this.$message.success('删除成功！');
+      }else {
+        this.$message.error("删除失败")
+      }
     },
     cancel(e) {
       console.log(e);
@@ -152,6 +157,15 @@ export default {
           console.log('Received values of form: ', values);
           this.form.resetFields();
           this.visible = false;
+
+          let aData = new Date();
+          console.log(aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate())
+          let response = createPaperBank(values.title, this.$store.getters.getTeacher.id, aData)
+          if (response.res) {
+            this.$message.success("创建成功");
+          } else {
+            this.$message.error("创建失败")
+          }
         }
       });
     },

@@ -17,7 +17,7 @@
       </a-button>
 
 
-      <a-button id="add"
+      <a-button id="add" @click="addPaper"
                 style="  margin-top: 5px;background-color: #1C90F5;color: white;border: none;float: right;margin-right: 5px">
         <a-icon type="plus-circle"/>
         添加试卷
@@ -44,13 +44,11 @@
               title="确定删除该题库吗?"
               ok-text="Yes"
               cancel-text="No"
-              @confirm="confirm"
+              @confirm="confirm(record.paperInfo.id)"
               @cancel="cancel"
           >
             <a href="#">删除</a>
           </a-popconfirm>
-          <a-divider type="vertical"/>
-          <a>移动</a>
         </span>
 
       </a-table>
@@ -60,7 +58,7 @@
 </template>
 
 <script>
-import {getPaperBank} from "../../api/paper";
+import {getPaperBank,deletePaper} from "../../api/paper";
 
 const columns = [
   {
@@ -119,13 +117,23 @@ export default {
       this.$router.push({name: 'paperInfo', params: {paperId: id}})
     },
     //删除
-    confirm(e) {
-      // console.log(e);
-      this.$message.success('删除成功！');
+    confirm(id) {
+      let response=deletePaper(this.$store.getters.getTeacher.id,id)
+      if (response.res) {
+        console.log("删除试卷："+id)
+        this.$message.success('删除成功！');
+      } else {
+        this.$message.error("删除失败")
+      }
     },
     cancel(e) {
       console.log(e);
     },
+    //添加试卷
+    addPaper(){
+      let id=this.$route.params.bankId
+      this.$router.push({name:'createPaper',params:{bankId:id}})
+    }
   }
 
 }
