@@ -121,7 +121,7 @@ export default {
     confirm(id) {
       console.log("delete:" + id);
       let response = deleteTestBank(id, this.$store.getters.getTeacher.id);
-      if (response.res) {
+      if (response.code==0) {
         this.$message.success('删除成功！');
         // this.reload();
       } else {
@@ -144,7 +144,7 @@ export default {
           let response = createTestBank(values.title, values.isPublic, this.$store.getters.getTeacher.id);
           this.form.resetFields();
           this.visible = false;
-          if (response.res) {
+          if (response.code==0) {
             this.$message.success("新建题库成功！");
             // this.reload();
           } else {

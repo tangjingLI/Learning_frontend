@@ -47,11 +47,11 @@ export function getAllTestBank(id) {
 }
 
 //获取题库详情
-export function getTestBank(id) {
+export function getTestBank(bid, uid) {
     // return axios.get('/bank/details/', {
     //         params: {
-    //             bankId: id,
-    //             userId: this.$store.getters.getTeacher.phone
+    //             bankId: bid,
+    //             userId: uid
     //         }
     //     }
     // )
@@ -69,7 +69,7 @@ export function getTestBank(id) {
                 {
                     id: 1,
                     title: "青蛙跳台阶",
-                    content:"啦啦啦啦啦",
+                    content: "啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦拉鲁拉鲁来了来了啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦拉鲁拉鲁来了来了",
                     type: 1,
                     consume: 4,
                     rate: 0.45
@@ -77,7 +77,7 @@ export function getTestBank(id) {
                 {
                     id: 2,
                     title: "蚂蚁上树",
-                    content:"啦啦啦啦啦",
+                    content: "啦啦啦啦啦",
                     type: 2,
                     consume: 10,
                     rate: 0.5
@@ -85,7 +85,7 @@ export function getTestBank(id) {
                 {
                     id: 3,
                     title: "循环链表",
-                    content:"啦啦啦啦啦",
+                    content: "啦啦啦啦啦",
                     type: 2,
                     consume: 9,
                     rate: 0.89
@@ -93,7 +93,7 @@ export function getTestBank(id) {
                 {
                     id: 4,
                     title: "最高水位",
-                    content:"啦啦啦啦啦",
+                    content: "啦啦啦啦啦",
                     type: 3,
                     consume: 3,
                     rate: 0.67
@@ -101,7 +101,7 @@ export function getTestBank(id) {
                 {
                     id: 5,
                     title: "月亮弯弯",
-                    content:"啦啦啦啦啦",
+                    content: "啦啦啦啦啦",
                     type: 2,
                     consume: 18,
                     rate: 0.32
@@ -109,7 +109,7 @@ export function getTestBank(id) {
                 {
                     id: 6,
                     title: "小摩托",
-                    content:"啦啦啦啦啦",
+                    content: "啦啦啦啦啦",
                     type: 3,
                     consume: 9,
                     rate: 0.68
@@ -117,7 +117,7 @@ export function getTestBank(id) {
                 {
                     id: 7,
                     title: "猫猫虫",
-                    content:"啦啦啦啦啦",
+                    content: "啦啦啦啦啦",
                     type: 1,
                     consume: 9,
                     rate: 0.67
@@ -125,7 +125,7 @@ export function getTestBank(id) {
                 {
                     id: 8,
                     title: "青蛙跳台阶",
-                    content:"啦啦啦啦啦",
+                    content: "啦啦啦啦啦",
                     type: 1,
                     consume: 9,
                     rate: 0.67
@@ -133,7 +133,7 @@ export function getTestBank(id) {
                 {
                     id: 9,
                     title: "蚂蚁上树",
-                    content:"啦啦啦啦啦",
+                    content: "啦啦啦啦啦",
                     type: 2,
                     consume: 9,
                     rate: 0.67
@@ -141,7 +141,7 @@ export function getTestBank(id) {
                 {
                     id: 10,
                     title: "月亮弯弯",
-                    content:"啦啦啦啦啦",
+                    content: "啦啦啦啦啦",
                     type: 2,
                     consume: 9,
                     rate: 0.67
@@ -149,7 +149,7 @@ export function getTestBank(id) {
                 {
                     id: 11,
                     title: "小摩托",
-                    content:"啦啦啦啦啦",
+                    content: "啦啦啦啦啦",
                     type: 3,
                     consume: 9,
                     rate: 0.67
@@ -157,7 +157,7 @@ export function getTestBank(id) {
                 {
                     id: 12,
                     title: "猫猫虫",
-                    content:"啦啦啦啦啦",
+                    content: "啦啦啦啦啦",
                     type: 1,
                     consume: 9,
                     rate: 0.67
@@ -237,7 +237,7 @@ export function createTestBank(title, isPublic, id) {
     //         console.log(error);
     //     })
     return {
-        res: true
+        code: true
     }
 }
 
@@ -255,16 +255,17 @@ export function deleteTestBank(bId, uId) {
     //         console.log(error);
     //     })
     return {
-        res: true
+        code: true
     }
 }
 
 //编辑题库
-export function editTestBank(bId, uId, title) {
+export function editTestBank(bId, uId, title,isPublic) {
     // let data = {
     //     bankId: bId,
     //     userId: uId,
-    //     title: title
+    //     title: title,
+    //     isPublic: isPublic
     // }
     // return axios.post('/bank/edit/', data)
     //     .then(res => {
@@ -306,7 +307,7 @@ export function addTest(values, id, num) {
     //         console.log(error);
     //     })
     return {
-        res: true
+        code: true
     }
 }
 
@@ -323,12 +324,12 @@ export function deleteTest(id) {
     //         console.log(error);
     //     })
     return {
-        res: true
+        code: true
     }
 }
 
 //搜索题目
-export function searchTest(title){
+export function searchTest(title) {
     // return axios.get('/question/search/',{
     //     params:{
     //         title:title
@@ -340,7 +341,7 @@ export function searchTest(title){
     //     .catch(function (error) {
     //         console.log(error);
     //     })
-    return{
+    return {
         code: 200,
         res: {
             bankTitle: "数据结构题库",
@@ -365,4 +366,252 @@ export function searchTest(title){
         qPublic: 1
     }
 
+}
+
+//预览试卷
+export function getQuestionList(id, tests) {
+    let data = {
+        userId: id,
+        questions: tests
+    }
+
+    return {
+        res: {
+            questions: [
+                {
+                    id: 9,
+                    title: "蚂蚁上树",
+                    content: "啦啦啦啦啦",
+                    type: 2,
+                    consume: 9,
+                    rate: 0.67
+                },
+                {
+                    id: 10,
+                    title: "月亮弯弯",
+                    content: "啦啦啦啦啦",
+                    type: 2,
+                    consume: 9,
+                    rate: 0.67
+                },
+                {
+                    id: 11,
+                    title: "小摩托",
+                    content: "啦啦啦啦啦",
+                    type: 3,
+                    consume: 9,
+                    rate: 0.67
+                },
+                {
+                    id: 9,
+                    title: "蚂蚁上树",
+                    content: "啦啦啦啦啦",
+                    type: 2,
+                    consume: 9,
+                    rate: 0.67
+                },
+                {
+                    id: 10,
+                    title: "月亮弯弯",
+                    content: "啦啦啦啦啦",
+                    type: 2,
+                    consume: 9,
+                    rate: 0.67
+                },
+                {
+                    id: 11,
+                    title: "小摩托",
+                    content: "啦啦啦啦啦",
+                    type: 3,
+                    consume: 9,
+                    rate: 0.67
+                },
+                {
+                    id: 9,
+                    title: "蚂蚁上树",
+                    content: "啦啦啦啦啦",
+                    type: 2,
+                    consume: 9,
+                    rate: 0.67
+                },
+                {
+                    id: 10,
+                    title: "月亮弯弯",
+                    content: "啦啦啦啦啦",
+                    type: 2,
+                    consume: 9,
+                    rate: 0.67
+                },
+                {
+                    id: 11,
+                    title: "小摩托",
+                    content: "啦啦啦啦啦",
+                    type: 3,
+                    consume: 9,
+                    rate: 0.67
+                },
+                {
+                    id: 9,
+                    title: "蚂蚁上树",
+                    content: "啦啦啦啦啦",
+                    type: 2,
+                    consume: 9,
+                    rate: 0.67
+                },
+                {
+                    id: 10,
+                    title: "月亮弯弯",
+                    content: "啦啦啦啦啦",
+                    type: 2,
+                    consume: 9,
+                    rate: 0.67
+                },
+                {
+                    id: 11,
+                    title: "小摩托",
+                    content: "啦啦啦啦啦",
+                    type: 3,
+                    consume: 9,
+                    rate: 0.67
+                },
+            ]
+        }
+    }
+}
+
+//获取题目回收站
+export function getTestBin(uid) {
+    // return axios.get('/bank/recycle',{
+    //     params:{
+    //         userId:uid
+    //     }
+    // })
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        questions: [
+                {
+                    id: 11,
+                    title: "小摩托",
+                    type: 3,
+                    consume: 9,
+                    rate: 0.67
+                },
+                {
+                    id: 12,
+                    title: "猫猫虫",
+                    type: 1,
+                    consume: 9,
+                    rate: 0.67
+                },
+
+        ]
+    }
+}
+
+//恢复题目
+export function restoreTest(qid, uid) {
+    // let data = {
+    //     questionId: qid,
+    //     userId: uid
+    // }
+    // return axios.post('/question/restore', data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        code: true
+    }
+}
+
+//彻底删除题目
+export function dropTest(qid, uid) {
+    // let data = {
+    //     questionId: qid,
+    //     userId: uid
+    // }
+    // return axios.post('/question/physicalDelete', data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        code: true
+    }
+}
+
+//获取题库回收站
+export function getTestBankBin(uid) {
+    // return axios.get('/bank/recycle',{
+    //     params:{
+    //         userId:uid
+    //     }
+    // })
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        banks: [
+            {
+                id: 1,
+                title: "数据结构题库",
+                isPublic: 0
+            },
+            {
+                id: 5,
+                title: "c++题库",
+                isPublic: 0
+            },
+
+        ]
+    }
+
+}
+
+//恢复题库
+export function restoreTestBank(bid, uid) {
+    // let data = {
+    //     bankId: bid,
+    //     userId: uid
+    // }
+    // return axios.post('/bank/restore', data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        code: true
+    }
+}
+
+//彻底删除题库
+export function dropTestBank(bid, uid) {
+    // let data = {
+    //     bankId: bid,
+    //     userId: uid
+    // }
+    // return axios.post('/bank/physicalDelete', data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        code: true
+    }
 }

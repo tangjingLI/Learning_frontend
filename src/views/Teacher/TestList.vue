@@ -77,6 +77,17 @@
                   ] }]"
           />
         </a-form-item>
+        <a-form-item label="状态">
+          <a-radio-group name="radioGroup"
+                         v-decorator="['isPublic',{rules:[{required: true,message:'不能为空'}]}]">
+            <a-radio :value="0">
+              public
+            </a-radio>
+            <a-radio :value="1">
+              private
+            </a-radio>
+          </a-radio-group>
+        </a-form-item>
       </a-form>
     </a-modal>
 
@@ -242,7 +253,7 @@ export default {
   methods: {
     reset(){
       let params = this.$route.params;
-      let response = getTestBank(params.bankId);
+      let response = getTestBank(params.bankId,this.$store.getters.getTeacher.id);
       this.bankTitle = response.res.bankTitle;
       this.questions = response.res.questions;
       this.isPublic = response.isPublic;
@@ -263,7 +274,7 @@ export default {
     //删除
     confirm(id) {
       let response=deleteTest(id);
-      if(response.res){
+      if(response.code==0){
         this.$message.success('删除成功！');
       }else {
         this.$message.error("删除失败");
@@ -282,7 +293,7 @@ export default {
             this.editBank = false;
           } else {
             console.log('Received values of form: ', values);
-            let response = editTestBank(this.$route.params.bankId, this.$store.getters.getTeacher.id, values.title);
+            let response = editTestBank(this.$route.params.bankId, this.$store.getters.getTeacher.id, values.title,values.isPublic);
             this.form1.resetFields();
             this.editBank = false;
             this.$message.success("编辑题库成功！");
@@ -313,7 +324,7 @@ export default {
           this.choices.push({ch: 'A'});
           this.choices.push({ch: 'B'});
           this.showAdd = false;
-          if (response.res) {
+          if (response.code==0) {
             this.$message.success("添加题目成功！");
           } else {
             this.$message.error("添加题目失败");

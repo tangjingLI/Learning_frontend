@@ -212,12 +212,40 @@ export function uploadPaper(id, name, intro, time) {
 }
 
 //删除试卷
-export function deletePaper(uid,pid){
+export function deletePaper(uid, pid) {
     // let data={
     //     userId:uid,
     //     paperId:pid
     // }
     // return axios.post('/paper/delete/',data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        res: true
+    }
+}
+
+//新建试卷
+export function addPaper(tests, scores, bankId) {
+    let questions = []
+    for (let i = 0; i < tests.length; i++) {
+        let item = {
+            id: tests[i],
+            score: scores[i],
+            sequence: i
+        }
+        questions.push(item)
+    }
+    // console.log(questions)
+    let data = {
+        questions: questions,
+        bankId: bankId
+    }
+    // return axios.post('/paper/addByPaperId', data)
     //     .then(res => {
     //         return res.data
     //     })

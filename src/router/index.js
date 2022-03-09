@@ -14,6 +14,9 @@ import PaperBank from "../views/Teacher/PaperBank";
 import PaperInfo from "../views/Teacher/PaperInfo";
 import Task from "../views/Teacher/Task";
 import CreatePaper from "../views/Teacher/CreatePaper";
+import ReleasedPaper from "../views/Teacher/ReleasedPaper";
+import TestBin from "../views/Teacher/TestBin";
+import TestBankBin from "../views/Teacher/TestBankBin";
 
 Vue.use(VueRouter)
 
@@ -87,6 +90,21 @@ const routes = [
                 name: 'createPaper',
                 component: CreatePaper
             },
+            {
+                path: 'releasedPaper',
+                name: 'releasedPaper',
+                component: ReleasedPaper
+            },
+            {
+                path: 'testBin',
+                name: 'testBin',
+                component: TestBin
+            },
+            {
+                path: 'testBankBin',
+                name: 'testBankBin',
+                component: TestBankBin
+            }
         ]
     },
     {
