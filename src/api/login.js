@@ -7,7 +7,7 @@ export function login(phone, password) {
             password: password
         }
     }
-    // return axios.post('/user/userlogin', data)
+    // return axios.post('/api/user/userlogin', data)
     //     .then(res => {
     //         return res.data
     //     })

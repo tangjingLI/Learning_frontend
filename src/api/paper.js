@@ -2,7 +2,7 @@ import axios from "axios";
 
 // 获取考试库列表
 export function getAllPaperBank(id) {
-    // return axios.get('/papers/getAllPapers/',{
+    // return axios.get('/api/papers/getAllPapers/',{
     //     params:{
     //         papersId:id
     //     }
@@ -43,7 +43,7 @@ export function getAllPaperBank(id) {
 
 //获取试卷库详情
 export function getPaperBank(id) {
-    // return axios.get('/paper/ getAllPaper /',{
+    // return axios.get('/api/paper/ getAllPaper /',{
     //     params:{
     //         papersId:id
     //     }
@@ -85,7 +85,7 @@ export function getPaperBank(id) {
 
 //获取试卷详情
 export function getPaperDetail(id) {
-    // return axios.get('/paper/ getPaper/',{
+    // return axios.get('/api/paper/ getPaper/',{
     //     params:{
     //         paperId:id
     //     }
@@ -158,7 +158,7 @@ export function createPaperBank(title, id, time) {
     //     userId: id,
     //     createTime: time
     // }
-    // return axios.post('/ papers/add', data)
+    // return axios.post('/api/papers/add', data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -177,7 +177,7 @@ export function deletePaperBank(uid, bid) {
     //     userId: uid,
     //     paperId: bid
     // }
-    // return axios.post('/papers/delete/', data)
+    // return axios.post('/api/papers/delete/', data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -198,7 +198,7 @@ export function uploadPaper(id, name, intro, time) {
     //     introduction: intro,
     //     time: time
     // }
-    // return axios.post('/paper/upload/',data)
+    // return axios.post('/api/paper/upload/',data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -217,7 +217,7 @@ export function deletePaper(uid, pid) {
     //     userId:uid,
     //     paperId:pid
     // }
-    // return axios.post('/paper/delete/',data)
+    // return axios.post('/api/paper/delete/',data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -245,7 +245,7 @@ export function addPaper(tests, scores, bankId) {
         questions: questions,
         bankId: bankId
     }
-    // return axios.post('/paper/addByPaperId', data)
+    // return axios.post('/api/paper/addByPaperId', data)
     //     .then(res => {
     //         return res.data
     //     })

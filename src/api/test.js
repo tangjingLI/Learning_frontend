@@ -2,7 +2,7 @@ import axios from "axios";
 
 //获取题库列表
 export function getAllTestBank(id) {
-    // return axios.get('/bank/list', {
+    // return axios.get('/api/bank/list', {
     //     params: {
     //         userId: id
     //     }
@@ -48,7 +48,7 @@ export function getAllTestBank(id) {
 
 //获取题库详情
 export function getTestBank(bid, uid) {
-    // return axios.get('/bank/details/', {
+    // return axios.get('/api/bank/details/', {
     //         params: {
     //             bankId: bid,
     //             userId: uid
@@ -171,7 +171,7 @@ export function getTestBank(bid, uid) {
 
 //获取题目详情
 export function getTestDetail(id) {
-    // return axios.get('/question/detail/', {
+    // return axios.get('/api/question/detail/', {
     //         params: {
     //             questionId: id
     //         }
@@ -229,7 +229,7 @@ export function createTestBank(title, isPublic, id) {
     //     isPublic: isPublic,
     //     userId: id
     // }
-    // return axios.post('/bank/add', data)
+    // return axios.post('/api/bank/add', data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -247,7 +247,7 @@ export function deleteTestBank(bId, uId) {
     //     bankId: bId,
     //     userId: uId
     // }
-    // return axios.post('/bank/delete/', data)
+    // return axios.post('/api/bank/delete/', data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -267,7 +267,7 @@ export function editTestBank(bId, uId, title,isPublic) {
     //     title: title,
     //     isPublic: isPublic
     // }
-    // return axios.post('/bank/edit/', data)
+    // return axios.post('/api/bank/edit/', data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -299,7 +299,7 @@ export function addTest(values, id, num) {
     //     choices: arr,
     //     id: id,
     // }
-    // return axios.post('/question/add', data)
+    // return axios.post('/api/question/add', data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -316,7 +316,7 @@ export function deleteTest(id) {
     // let data={
     //     id:id
     // }
-    // return axios.post('/question/delete/',data)
+    // return axios.post('/api/question/delete/',data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -330,7 +330,7 @@ export function deleteTest(id) {
 
 //搜索题目
 export function searchTest(title) {
-    // return axios.get('/question/search/',{
+    // return axios.get('/api/question/search/',{
     //     params:{
     //         title:title
     //     }
@@ -481,7 +481,7 @@ export function getQuestionList(id, tests) {
 
 //获取题目回收站
 export function getTestBin(uid) {
-    // return axios.get('/bank/recycle',{
+    // return axios.get('/api/bank/recycle',{
     //     params:{
     //         userId:uid
     //     }
@@ -519,7 +519,7 @@ export function restoreTest(qid, uid) {
     //     questionId: qid,
     //     userId: uid
     // }
-    // return axios.post('/question/restore', data)
+    // return axios.post('/api/question/restore', data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -537,7 +537,7 @@ export function dropTest(qid, uid) {
     //     questionId: qid,
     //     userId: uid
     // }
-    // return axios.post('/question/physicalDelete', data)
+    // return axios.post('/api/question/physicalDelete', data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -551,7 +551,7 @@ export function dropTest(qid, uid) {
 
 //获取题库回收站
 export function getTestBankBin(uid) {
-    // return axios.get('/bank/recycle',{
+    // return axios.get('/api/bank/recycle',{
     //     params:{
     //         userId:uid
     //     }
@@ -586,7 +586,7 @@ export function restoreTestBank(bid, uid) {
     //     bankId: bid,
     //     userId: uid
     // }
-    // return axios.post('/bank/restore', data)
+    // return axios.post('/api/bank/restore', data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -604,7 +604,7 @@ export function dropTestBank(bid, uid) {
     //     bankId: bid,
     //     userId: uid
     // }
-    // return axios.post('/bank/physicalDelete', data)
+    // return axios.post('/api/bank/physicalDelete', data)
     //     .then(res => {
     //         return res.data
     //     })
