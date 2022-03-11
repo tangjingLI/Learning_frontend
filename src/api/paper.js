@@ -256,3 +256,79 @@ export function addPaper(tests, scores, bankId) {
         res: true
     }
 }
+
+
+//获取已发布试卷列表
+export function getReleasedPaper(uid){
+    // return axios.get('/api/paper/ getPaper/',{
+    //     params:{
+    //         userId:uid
+    //     }
+    // })
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return{
+        res:[
+            {
+                title:"试卷1",
+                name:"考试1",
+                id:1,
+                averageScore:65,
+                maxScore:98,
+                minScore:20
+            },
+            {
+                title:"试卷2",
+                name:"考试2",
+                id:2,
+                averageScore:75,
+                maxScore:88,
+                minScore:29
+            }
+        ]
+    }
+}
+
+//批量删除试卷库
+export function deletePaperBankGroup(uid,bidList){
+    // let data={
+    //     userId:uid,
+    //     idList:bidList
+    // }
+    //
+    // return axios.post('/api/papers/delete/',data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+
+    return{
+        res:true
+    }
+}
+
+//批量删除试卷
+export function deletePaperGroup(uid,pidList){
+    // let data={
+    //     userId:uid,
+    //     idList:pidList
+    // }
+    //
+    // return axios.post('/api/papers/delete/',data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+
+    return{
+        res:true
+    }
+}

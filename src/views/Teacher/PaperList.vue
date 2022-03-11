@@ -10,6 +10,18 @@
       <h1> {{ bankTitle }}</h1>
 <!--      <a-tag v-if="isPublic==0" color="green" style="margin-left: 5px;margin-top: 8px">public</a-tag>-->
 <!--      <a-tag v-else color="orange" style="margin-left: 5px;margin-top: 8px">private</a-tag>-->
+      <a-popconfirm
+          title="确定删除所选试卷吗?"
+          ok-text="Yes"
+          cancel-text="No"
+          @confirm="deleteGroup"
+      >
+        <a-button id="deleteAll" :disabled="!hasSelected" type="danger"
+                  style=" margin-top: 5px;margin-right: 10px;float: right">
+          删除试卷
+        </a-button>
+      </a-popconfirm>
+
       <a-button id="edit"
                 style=" margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;margin-right: 10px;float: right">
         <a-icon type="setting"/>
@@ -29,7 +41,9 @@
 
     <div class="table">
       <a-table :columns="columns" :data-source="papers" style="background-color: white" :pagination="pagination"
-               :rowKey="record=>record.paperInfo.id">
+               :rowKey="record=>record.paperInfo.id"
+               :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+      >
         <span slot="customTitle"><a-icon type="smile" theme="twoTone"/> 试卷</span>
 
         <span slot="status" slot-scope="status">
@@ -58,7 +72,7 @@
 </template>
 
 <script>
-import {getPaperBank,deletePaper} from "../../api/paper";
+import {getPaperBank,deletePaper,deletePaperGroup} from "../../api/paper";
 
 const columns = [
   {
@@ -98,6 +112,8 @@ export default {
         pageSize: 7
       },
       papers: [],
+      choose:[],
+      selectedRowKeys: [],
     }
   },
   mounted() {
@@ -133,8 +149,26 @@ export default {
     addPaper(){
       let id=this.$route.params.bankId
       this.$router.push({name:'createPaper',params:{bankId:id}})
-    }
-  }
+    },
+    //选择
+    onSelectChange(selectedRowKeys) {
+      console.log('selectedRowKeys changed: ', selectedRowKeys);
+      this.selectedRowKeys = selectedRowKeys;
+    },
+    deleteGroup(){
+      let response=deletePaperGroup(this.$store.getters.getTeacher.id,this.selectedRowKeys)
+      if (response.res) {
+        this.$message.success('删除成功！');
+      } else {
+        this.$message.error("删除失败")
+      }
+    },
+  },
+  computed: {
+    hasSelected() {
+      return this.selectedRowKeys.length > 0;
+    },
+  },
 
 }
 </script>

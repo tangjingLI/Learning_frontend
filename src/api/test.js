@@ -615,3 +615,43 @@ export function dropTestBank(bid, uid) {
         code: true
     }
 }
+
+//批量删除题库
+export function deleteTestBankGroup(uid,bidList){
+    // let data={
+    //     userId:uid,
+    //     idList:bidList
+    // }
+    //
+    // return axios.post('/api/bank/batchDelete',data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+
+    return{
+        code:0
+    }
+}
+
+//批量删除题目
+export function deleteTestGroup(uid,qidList){
+    // let data={
+    //     userId:uid,
+    //     idList:qidList
+    // }
+    //
+    // return axios.post('/api/question/batchDelete',data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+
+    return{
+        code:0
+    }
+}

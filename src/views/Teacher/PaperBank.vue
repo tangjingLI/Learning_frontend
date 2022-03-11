@@ -3,6 +3,20 @@
     <div class="top">
 
       <h1>试卷库列表</h1>
+
+      <a-popconfirm
+          title="确定删除所选试卷库吗?"
+          ok-text="Yes"
+          cancel-text="No"
+          @confirm="deleteGroup"
+      >
+        <a-button id="deleteAll" :disabled="!hasSelected" type="danger"
+                  style=" margin-top: 5px;margin-right: 10px;float: right">
+          删除试卷库
+        </a-button>
+      </a-popconfirm>
+
+
       <a-button id="add" @click="showModal"
                 style="  margin-top: 5px;background-color: #1C90F5;color: white;border: none;float: right;margin-right: 10px">
         <a-icon type="plus-circle"/>
@@ -15,7 +29,9 @@
 
     <div class="table">
       <a-table :columns="columns" :data-source="banks" style="background-color: white" :pagination="pagination"
-               :rowKey="record=>record.papersInfo.id">
+               :rowKey="record=>record.papersInfo.id"
+               :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+      >
         <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  试卷库</span>
 
         <span slot="isPublic" slot-scope="isPublic">
@@ -67,7 +83,12 @@
 </template>
 
 <script>
-import {getAllPaperBank, createPaperBank,deletePaperBank} from "../../api/paper";
+import {
+  getAllPaperBank,
+  createPaperBank,
+  deletePaperBank,
+  deletePaperBankGroup,
+} from "../../api/paper";
 
 const columns = [
   {
@@ -113,6 +134,7 @@ export default {
       columns,
       msg: '',
       visible: false,
+      selectedRowKeys: [],
       formLayout: 'horizontal',
       form: this.$form.createForm(this, {name: 'newPaperBank'}),
     }
@@ -169,7 +191,25 @@ export default {
         }
       });
     },
-  }
+    //选择
+    onSelectChange(selectedRowKeys) {
+      console.log('selectedRowKeys changed: ', selectedRowKeys);
+      this.selectedRowKeys = selectedRowKeys;
+    },
+    deleteGroup(){
+      let response=deletePaperBankGroup(this.$store.getters.getTeacher.id,this.selectedRowKeys)
+      if (response.res) {
+        this.$message.success('删除成功！');
+      } else {
+        this.$message.error("删除失败")
+      }
+    },
+  },
+  computed: {
+    hasSelected() {
+      return this.selectedRowKeys.length > 0;
+    },
+  },
 }
 </script>
 

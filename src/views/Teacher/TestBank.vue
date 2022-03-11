@@ -3,6 +3,17 @@
     <div class="top">
 
       <h1>题库列表</h1>
+      <a-popconfirm
+          title="确定删除所选题库吗?"
+          ok-text="Yes"
+          cancel-text="No"
+          @confirm="deleteGroup"
+      >
+        <a-button id="deleteAll" :disabled="!hasSelected" type="danger"
+                  style=" margin-top: 5px;margin-right: 10px;float: right">
+          删除题库
+        </a-button>
+      </a-popconfirm>
       <a-button id="add" @click="showModal"
                 style="  margin-top: 5px;background-color: #1C90F5;color: white;border: none;float: right;margin-right: 10px">
         <a-icon type="plus-circle"/>
@@ -13,9 +24,12 @@
                       style="width: 30%; float: right;margin-top: 5px;margin-right: 5px"/>
     </div>
 
+
     <div class="table">
       <a-table :columns="columns" :data-source="banks" style="background-color: white" :pagination="pagination"
-               rowKey="id">
+               rowKey="id"
+               :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+      >
         <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  题库</span>
 
         <span slot="isPublic" slot-scope="isPublic">
@@ -70,7 +84,7 @@
 </template>
 
 <script>
-import {getAllTestBank,createTestBank,deleteTestBank} from "../../api/test";
+import {getAllTestBank,createTestBank,deleteTestBank,deleteTestBankGroup} from "../../api/test";
 
 const columns = [
   {
@@ -103,6 +117,7 @@ export default {
       },
       columns,
       msg: '',
+      selectedRowKeys: [],
       visible: false,
       formLayout: 'horizontal',
       form: this.$form.createForm(this, {name: 'newTestBank'}),
@@ -155,7 +170,20 @@ export default {
     },
     handleCancel(){
       this.form.resetFields();
-    }
+    },
+    //选择
+    onSelectChange(selectedRowKeys) {
+      console.log('selectedRowKeys changed: ', selectedRowKeys);
+      this.selectedRowKeys = selectedRowKeys;
+    },
+    deleteGroup(){
+     let response=deleteTestBankGroup(this.$store.getters.getTeacher.id,this.selectedRowKeys)
+      if (response.code==0) {
+        this.$message.success('删除成功！');
+      } else {
+        this.$message.error("删除失败")
+      }
+    },
 
   },
 
@@ -163,7 +191,12 @@ export default {
     let userId = this.$store.getters.getTeacher.id;
     let response = getAllTestBank(userId);
     this.banks = response.res;
-  }
+  },
+  computed: {
+    hasSelected() {
+      return this.selectedRowKeys.length > 0;
+    },
+  },
 }
 </script>
 
