@@ -39,8 +39,9 @@
       <a-input-search placeholder="输入题目内容" enter-button @search="onSearch" id="search"
                       style="width: 30%; float: right;margin-top: 5px;margin-right: 5px"/>
       <a-button @click="reset"
-          style="float: right;margin-right: 10px;margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;">
-        重置</a-button>
+                style="float: right;margin-right: 10px;margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;">
+        重置
+      </a-button>
 
     </div>
 
@@ -58,11 +59,11 @@
         </span>
 
         <span slot="rate" slot-scope="rate">
-          {{rate*100}}%
+          {{ rate * 100 }}%
         </span>
 
         <span slot="consume" slot-scope="consume">
-          {{consume}} 分钟
+          {{ consume }} 分钟
         </span>
 
         <span slot="action" slot-scope="text, record">
@@ -144,14 +145,14 @@
         </a-form-item>
 
         <div v-if="testType==1||testType==2" v-for="item in choices" class="choice">
-          <a-form-item >
-              <p>选项{{ item.ch }}&emsp;</p>
-              <a-input style="float: left;width: 240px"
-                       v-decorator="[item.ch, { rules: [
+          <a-form-item>
+            <p>选项{{ item.ch }}&emsp;</p>
+            <a-input style="float: left;width: 240px"
+                     v-decorator="[item.ch, { rules: [
                   { required: true, message: '不能为空' },
                   {pattern:/^.{1,12}$/,message: '答案长度为1-12位'}
                   ] }]"
-              />
+            />
           </a-form-item>
         </div>
 
@@ -267,15 +268,15 @@ export default {
     this.choices.push({ch: 'B'});
   },
   methods: {
-    reset(){
+    reset() {
       let params = this.$route.params;
-      let response = getTestBank(params.bankId,this.$store.getters.getTeacher.id);
+      let response = getTestBank(params.bankId, this.$store.getters.getTeacher.id);
       this.bankTitle = response.res.bankTitle;
       this.questions = response.res.questions;
       this.isPublic = response.isPublic;
     },
     onSearch(value) {
-      let response=searchTest(value);
+      let response = searchTest(value);
       this.bankTitle = response.res.bankTitle;
       this.questions = response.res.questions;
       this.isPublic = response.isPublic;
@@ -289,10 +290,10 @@ export default {
     },
     //删除
     confirm(id) {
-      let response=deleteTest(id);
-      if(response.code==0){
+      let response = deleteTest(this.$store.getters.getTeacher.id, id);
+      if (response.code == 0) {
         this.$message.success('删除成功！');
-      }else {
+      } else {
         this.$message.error("删除失败");
       }
     },
@@ -309,7 +310,7 @@ export default {
             this.editBank = false;
           } else {
             console.log('Received values of form: ', values);
-            let response = editTestBank(this.$route.params.bankId, this.$store.getters.getTeacher.id, values.title,values.isPublic);
+            let response = editTestBank(this.$route.params.bankId, this.$store.getters.getTeacher.id, values.title, values.isPublic);
             this.form1.resetFields();
             this.editBank = false;
             this.$message.success("编辑题库成功！");
@@ -332,7 +333,7 @@ export default {
       this.form2.validateFields((err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
-          let response = addTest(values,this.$route.params.bankId,this.num);
+          let response = addTest(values, this.$store.getters.getTeacher.id, this.$route.params.bankId, this.num);
           this.form2.resetFields();
           this.testType = 0;
           this.num = 2;
@@ -340,7 +341,7 @@ export default {
           this.choices.push({ch: 'A'});
           this.choices.push({ch: 'B'});
           this.showAdd = false;
-          if (response.code==0) {
+          if (response.code == 0) {
             this.$message.success("添加题目成功！");
           } else {
             this.$message.error("添加题目失败");
@@ -377,9 +378,9 @@ export default {
       console.log('selectedRowKeys changed: ', selectedRowKeys);
       this.selectedRowKeys = selectedRowKeys;
     },
-    deleteGroup(){
-      let response=deleteTestGroup(this.$store.getters.getTeacher.id,this.selectedRowKeys)
-      if (response.code==0) {
+    deleteGroup() {
+      let response = deleteTestGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
+      if (response.code == 0) {
         this.$message.success('删除成功！');
       } else {
         this.$message.error("删除失败")

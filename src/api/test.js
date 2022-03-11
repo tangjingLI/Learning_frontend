@@ -277,7 +277,7 @@ export function editTestBank(bId, uId, title,isPublic) {
 }
 
 //添加题目
-export function addTest(values, id, num) {
+export function addTest(values,uid, bid, num) {
     // let arr = [];
     // let list = ['A', 'B', 'C', 'D', 'E', 'F'];
     // while (num > 0) {
@@ -298,6 +298,7 @@ export function addTest(values, id, num) {
     //     },
     //     choices: arr,
     //     id: id,
+    //     userId:uid
     // }
     // return axios.post('/api/question/add', data)
     //     .then(res => {
@@ -312,9 +313,10 @@ export function addTest(values, id, num) {
 }
 
 //删除题目
-export function deleteTest(id) {
+export function deleteTest(uid,qid) {
     // let data={
-    //     id:id
+    //     questionId:qid,
+    //     userId:uid
     // }
     // return axios.post('/api/question/delete/',data)
     //     .then(res => {
