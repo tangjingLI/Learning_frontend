@@ -2,7 +2,7 @@ import axios from "axios";
 
 //获取不分页题库列表
 export function getTestBankList(id) {
-    // return axios.get('/api', {
+    // return axios.get('/api/bank/listAll', {
     //     params: {
     //         userId: id
     //     }
@@ -25,21 +25,6 @@ export function getTestBankList(id) {
                 id: 2,
                 title: "云计算题库",
                 isPublic: 1
-            },
-            {
-                id: 3,
-                title: "设计模式题库",
-                isPublic: 1
-            },
-            {
-                id: 4,
-                title: "人机交互题库",
-                isPublic: 0
-            },
-            {
-                id: 5,
-                title: "c++题库",
-                isPublic: 0
             },
             {
                 id: 3,

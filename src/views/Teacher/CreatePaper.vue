@@ -301,6 +301,7 @@ export default {
 
 .active {
   color: #1c90f5;
+  font-weight: bold;
 }
 
 .top1 {

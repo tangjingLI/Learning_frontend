@@ -8,7 +8,7 @@
           title="确定删除所选课程吗?"
           ok-text="Yes"
           cancel-text="No"
-          @confirm=""
+          @confirm="deleteGroup"
       >
         <a-button id="deleteAll" :disabled="!hasSelected" type="danger"
                   style=" margin-top: 5px;margin-right: 10px;float: right">
@@ -33,15 +33,27 @@
       </div>
 
       <div class="content1">
-        <div v-for="type in types" class="type">
-          <p><a-icon type="smile" theme="twoTone"/>  {{type}}</p>
-          <a-divider class="divider"/>
+        <div v-for="type in types" class="box1">
+          <a :class="{active :active==type.name}" class="type" @click="selected(type.name),handleClick(type.id)">
+            <a-icon type="smile" theme="twoTone"/>
+            {{ type.name }}
+          </a>
+          <a-popconfirm
+              title="确定删除该课程分类吗?"
+              ok-text="Yes"
+              cancel-text="No"
+              @confirm="deleteType(type.id)"
+              v-if="type.id!=-1"
+          >
+            <a-icon type="delete" class="delete"/>
+          </a-popconfirm>
+          <a-divider class="line"/>
         </div>
       </div>
 
       <div class="footer1">
         <a-divider class="divider"/>
-        <a-button>
+        <a-button @click="()=>{this.addTypeFlag=true}">
           <a-icon type="plus-circle" theme="twoTone"/>
           新建课程分类
         </a-button>
@@ -52,20 +64,20 @@
     <div class="right">
 
       <div class="content2">
-        <a-table :columns="columns" :data-source="courses" style="background-color: white" :pagination="pagination"
-                 :rowKey="record=>record.papersInfo.id"
+        <a-table :columns="columns" :data-source="courses" style="background-color: white" :pagination="false"
+                 :rowKey="record=>record.id"
                  :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         >
           <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  课程名</span>
 
           <span slot="action" slot-scope="text, record">
-          <a @click="">查看</a>
+          <a @click="getCourseDetail(record.id)">查看</a>
           <a-divider type="vertical"/>
           <a-popconfirm
               title="确定删除该课程吗?"
               ok-text="Yes"
               cancel-text="No"
-              @confirm=""
+              @confirm="deleteCourseItem(record.id)"
           >
             <a href="#">删除</a>
           </a-popconfirm>
@@ -76,29 +88,78 @@
       </div>
 
       <div class="footer2">
-        <a-pagination show-quick-jumper :default-current="2" :total="500" @change="onChange" id="page"/>
+        <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
       </div>
 
     </div>
+
+    <a-modal v-model="addTypeFlag" title="添加课程分类" @ok="addType">
+      <a-form :form="form1" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="课程分类">
+          <a-input
+              v-decorator="['type', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{2,8}$/,message: '长度为2-8位'}
+                  ] }]"
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
+    <a-modal v-model="addCourseFlag" title="添加课程" @ok="addCourse">
+      <a-form :form="form2" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="课程名">
+          <a-input
+              v-decorator="['type', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{2,8}$/,message: '长度为2-8位'}
+                  ] }]"
+          />
+        </a-form-item>
+      </a-form>
+
+    </a-modal>
+
+
   </div>
 
 </template>
 
 <script>
-import {getCourseType} from "../../api/course";
+import {
+  getCourseType,
+  getCoursesByType,
+  getAllCourses,
+  addCoursesType,
+  deleteCoursesType,
+  deleteCourse, deleteCoursesGroup
+} from "../../api/course";
 
 const columns = [
   {
-    dataIndex: 'title',
+    dataIndex: 'name',
     key: 'title',
     slots: {title: 'customTitle'},
     scopedSlots: {customRender: 'title'},
   },
   {
     title: '课程简介',
-    key: 'content',
-    dataIndex: 'content',
-    scopedSlots: {customRender: 'content'},
+    key: 'brief',
+    dataIndex: 'brief',
+    ellipsis: true,
+    scopedSlots: {customRender: 'brief'},
+  },
+  {
+    title: '创建者',
+    key: 'create_user',
+    dataIndex: 'create_user',
+    scopedSlots: {customRender: 'create_user'},
+  },
+  {
+    title: '创建时间',
+    key: 'create_time',
+    dataIndex: 'create_time',
+    scopedSlots: {customRender: 'create_time'},
   },
   {
     title: '操作',
@@ -115,17 +176,108 @@ export default {
       selectedRowKeys: [],
       types: [],
       courses: [],
-      pagination: {
-        pageSize: 7
-      },
+      totalPage: 1,
+      bankId: -1,
+      addTypeFlag: false,
+      addCourseFlag: false,
+      active: '所有课程',
+      form1: this.$form.createForm(this, {name: 'addType'}),
+      form2: this.$form.createForm(this, {name: 'addTCourse'}),
     }
   },
   methods: {
+    //查看课程
+    getCourseDetail(id) {
+      this.$router.push({name: 'courseInfo', params: {courseId: id}})
+    },
     //选择
     onSelectChange(selectedRowKeys) {
       console.log('selectedRowKeys changed: ', selectedRowKeys);
       this.selectedRowKeys = selectedRowKeys;
     },
+    //分页
+    onChange(pageNumber) {
+      console.log('Page: ', pageNumber);
+      if (pageNumber <= this.totalPage) {
+        let response;
+        if (this.bankId != -1) {
+          response = getCoursesByType(this.$store.getters.getTeacher.id, this.bankId, pageNumber)
+        } else {
+          response = getAllCourses(this.$store.getters.getTeacher.id, pageNumber)
+        }
+        this.courses = response.courses
+        this.totalPage = response.totalPage
+      }
+    },
+    //选择课程分类
+    handleClick(id) {
+      let response;
+      if (id != -1) {
+        response = getCoursesByType(this.$store.getters.getTeacher.id, this.bankId, 1)
+      } else {
+        response = getAllCourses(this.$store.getters.getTeacher.id, 1)
+      }
+      this.courses = response.courses
+      this.bankId = id
+      this.totalPage = response.totalPage
+    },
+    selected(value) {
+      this.active = value;
+      // console.log(this.active)
+    },
+    //添加课程分类
+    addType(e) {
+      e.preventDefault();
+      this.form1.validateFields((err, values) => {
+        if (!err) {
+          this.addTypeFlag = false
+          // console.log(values)
+          let response = addCoursesType(this.$store.getters.getTeacher.id, values.type)
+          this.form1.resetFields();
+          if (response.code == 0) {
+            this.$message.success("添加成功！");
+            // this.reload();
+          } else {
+            this.$message.error("添加失败");
+          }
+        }
+      })
+    },
+    //删除课程分类
+    deleteType(id) {
+      let response = deleteCoursesType(this.$store.getters.getTeacher.id, id)
+      if (response.code == 0) {
+        this.$message.success("删除成功！");
+        // this.reload();
+      } else {
+        this.$message.error("删除失败");
+      }
+    },
+    //添加课程
+    addCourse() {
+
+    },
+    //删除课程
+    deleteCourseItem(id) {
+      let response = deleteCourse(this.$store.getters.getTeacher.id, id)
+      if (response.code == 0) {
+        this.$message.success("删除成功！");
+        // this.reload();
+      } else {
+        this.$message.error("删除失败");
+      }
+    },
+    deleteGroup() {
+      let response = deleteCoursesGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
+      console.log(this.selectedRowKeys)
+      if (response.code == 0) {
+        this.$message.success("删除成功！");
+        // this.reload();
+      } else {
+        this.$message.error("删除失败");
+      }
+    }
+
   },
   computed: {
     hasSelected() {
@@ -134,8 +286,11 @@ export default {
   },
   mounted() {
     let response = getCourseType(this.$store.getters.getTeacher.id)
-    this.types = response.res
-    this.types.unshift("所有课程")
+    this.types = response.classifies
+    this.types.unshift({id: -1, name: "所有课程"})
+    let res = getAllCourses(this.$store.getters.getTeacher.id, 1)
+    this.courses = res.courses
+    this.totalPage = res.totalPage
   }
 }
 </script>
@@ -187,11 +342,27 @@ export default {
   overflow-y: scroll;
 }
 
-.type p{
-  font-size: 13px;
-  margin-left: 20px;
+.box1 {
+  padding-top: 10px;
+}
+
+.line {
+  margin-bottom: 0;
   margin-top: 10px;
+}
+
+.type {
+  margin-left: 30px;
+  margin-top: 20px;
+  font-size: 13px;
   letter-spacing: 2px;
+  color: black;
+}
+
+.delete {
+  float: right;
+  margin-right: 10px;
+  margin-top: 5px;
 }
 
 .footer1 {
@@ -213,13 +384,19 @@ export default {
 }
 
 .content2 {
-  height: 90%;
+  height: 88%;
+  overflow-y: scroll;
 }
 
 #page {
   margin-right: 10px;
-  margin-top: 10px;
+  margin-top: 15px;
   float: right;
+}
+
+.active {
+  color: #1c90f5;
+  font-weight: bold;
 }
 
 

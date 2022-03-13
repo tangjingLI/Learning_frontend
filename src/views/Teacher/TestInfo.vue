@@ -112,9 +112,9 @@ body {
 }
 
 .content{
-  border-radius: 70px;
+  border-radius: 10px;
   box-shadow: 2px 2px 10px #939393;
-  width: 90%;
+  width: 95%;
   height: 520px;
   margin: 0 auto;
   overflow: auto;

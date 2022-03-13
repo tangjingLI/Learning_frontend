@@ -6,25 +6,25 @@
           <p>源图</p>
         </div>
         <a-menu theme="dark" :default-selected-keys="['1']" mode="inline">
-          <a-menu-item key="1">
+          <a-menu-item key="1" @click="()=>{this.$router.push('/teacher')}">
             <a-icon type="home"/>
             <span>
               <router-link to="/teacher">控制台</router-link>
             </span>
           </a-menu-item>
-          <a-menu-item key="2">
+          <a-menu-item key="2" @click="()=>{this.$router.push('/teacher/paperBank')}">
             <a-icon type="folder-open"/>
             <span>
               <router-link to="/teacher/paperBank">试卷管理</router-link>
             </span>
           </a-menu-item>
-          <a-menu-item key="3">
+          <a-menu-item key="3" @click="()=>{this.$router.push('/teacher/testBank')}">
             <a-icon type="read"/>
             <span>
               <router-link to="/teacher/testBank">题库管理</router-link>
             </span>
           </a-menu-item>
-          <a-menu-item key="4">
+          <a-menu-item key="4" @click="()=>{this.$router.push('/teacher/courseList')}">
             <a-icon type="schedule"/>
             <span>
               <router-link to="/teacher/courseList">课程管理</router-link>
