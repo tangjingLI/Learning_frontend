@@ -4,12 +4,12 @@
       <a-button
           style=" float:left;margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;margin-left: 10px;height: 70%"
           @click="back">
-        <a-icon type="left-circle" />
+        <a-icon type="left-circle"/>
         返回
       </a-button>
       <h1> {{ bankTitle }}</h1>
-<!--      <a-tag v-if="isPublic==0" color="green" style="margin-left: 5px;margin-top: 8px">public</a-tag>-->
-<!--      <a-tag v-else color="orange" style="margin-left: 5px;margin-top: 8px">private</a-tag>-->
+      <!--      <a-tag v-if="isPublic==0" color="green" style="margin-left: 5px;margin-top: 8px">public</a-tag>-->
+      <!--      <a-tag v-else color="orange" style="margin-left: 5px;margin-top: 8px">private</a-tag>-->
       <a-popconfirm
           :disabled="!hasSelected"
           title="确定删除所选试卷吗?"
@@ -41,7 +41,7 @@
     </div>
 
     <div class="table">
-      <a-table :columns="columns" :data-source="papers" style="background-color: white" :pagination="pagination"
+      <a-table :columns="columns" :data-source="papers" style="background-color: white" :pagination="false"
                :rowKey="record=>record.paperInfo.id"
                :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
@@ -68,12 +68,16 @@
 
       </a-table>
     </div>
+
+    <div class="footer">
+      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
+    </div>
   </div>
 
 </template>
 
 <script>
-import {getPaperBank,deletePaper,deletePaperGroup} from "../../api/paper";
+import {getPaperBank, deletePaper, deletePaperGroup} from "../../api/paper";
 
 const columns = [
   {
@@ -109,19 +113,18 @@ export default {
       bankTitle: '',
       columns,
       msg: '',
-      pagination: {
-        pageSize: 7
-      },
+      totalPage: 1,
       papers: [],
-      choose:[],
+      choose: [],
       selectedRowKeys: [],
     }
   },
   mounted() {
     let params = this.$route.params;
-    let response = getPaperBank(params.bankId);
+    let response = getPaperBank(params.bankId, 1);
     this.papers = response.res;
-    this.bankTitle=response.bankTitle;
+    this.bankTitle = response.bankTitle;
+    this.totalPage = response.totalPage
   },
   methods: {
     onSearch(value) {
@@ -135,9 +138,9 @@ export default {
     },
     //删除
     confirm(id) {
-      let response=deletePaper(this.$store.getters.getTeacher.id,id)
+      let response = deletePaper(this.$store.getters.getTeacher.id, id)
       if (response.res) {
-        console.log("删除试卷："+id)
+        console.log("删除试卷：" + id)
         this.$message.success('删除成功！');
       } else {
         this.$message.error("删除失败")
@@ -147,23 +150,34 @@ export default {
       console.log(e);
     },
     //添加试卷
-    addPaper(){
-      let id=this.$route.params.bankId
-      this.$router.push({name:'createPaper',params:{bankId:id}})
+    addPaper() {
+      let id = this.$route.params.bankId
+      this.$router.push({name: 'createPaper', params: {bankId: id}})
     },
     //选择
     onSelectChange(selectedRowKeys) {
       console.log('selectedRowKeys changed: ', selectedRowKeys);
       this.selectedRowKeys = selectedRowKeys;
     },
-    deleteGroup(){
-      let response=deletePaperGroup(this.$store.getters.getTeacher.id,this.selectedRowKeys)
+    deleteGroup() {
+      let response = deletePaperGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
       if (response.res) {
         this.$message.success('删除成功！');
       } else {
         this.$message.error("删除失败")
       }
     },
+    //分页
+    onChange(pageNumber) {
+      console.log('Page: ', pageNumber);
+      if (pageNumber <= this.totalPage) {
+        let params = this.$route.params;
+        let response = getPaperBank(params.bankId, 1);
+        this.papers = response.res;
+        this.totalPage = response.totalPage
+      }
+    }
+
   },
   computed: {
     hasSelected() {
@@ -198,7 +212,22 @@ body {
 }
 
 .table {
-  margin: 0 20px;
+  margin: 0 5px;
+  height: 80%;
+  overflow-y: scroll;
+  background-color: white;
+}
+
+#page {
+  margin-right: 10px;
+  margin-top: 10px;
+  float: right;
+}
+
+.footer {
+  height: 10%;
+  background-color: white;
+  margin: 0 5px;
 }
 
 </style>

@@ -27,8 +27,8 @@
 
 
     <div class="table">
-      <a-table :columns="columns" :data-source="banks" style="background-color: white" :pagination="pagination"
-               rowKey="id"
+      <a-table :columns="columns" :data-source="banks" style="background-color: white"
+               rowKey="id" :pagination="false"
                :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
         <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  题库</span>
@@ -53,6 +53,10 @@
         </span>
 
       </a-table>
+    </div>
+
+    <div class="footer">
+      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
     </div>
 
     <a-modal v-model="visible" title="新建题库" @ok="handleOk" @cancel="handleCancel">
@@ -85,7 +89,7 @@
 </template>
 
 <script>
-import {getAllTestBank,createTestBank,deleteTestBank,deleteTestBankGroup} from "../../api/test";
+import {getAllTestBank, createTestBank, deleteTestBank, deleteTestBankGroup} from "../../api/test";
 
 const columns = [
   {
@@ -113,13 +117,11 @@ export default {
   data() {
     return {
       banks: [],
-      pagination: {
-        pageSize: 7
-      },
       columns,
       msg: '',
       selectedRowKeys: [],
       visible: false,
+      totalPage: 1,
       formLayout: 'horizontal',
       form: this.$form.createForm(this, {name: 'newTestBank'}),
     }
@@ -137,7 +139,7 @@ export default {
     confirm(id) {
       console.log("delete:" + id);
       let response = deleteTestBank(id, this.$store.getters.getTeacher.id);
-      if (response.code==0) {
+      if (response.code == 0) {
         this.$message.success('删除成功！');
         // this.reload();
       } else {
@@ -160,7 +162,7 @@ export default {
           let response = createTestBank(values.title, values.isPublic, this.$store.getters.getTeacher.id);
           this.form.resetFields();
           this.visible = false;
-          if (response.code==0) {
+          if (response.code == 0) {
             this.$message.success("新建题库成功！");
             // this.reload();
           } else {
@@ -169,7 +171,7 @@ export default {
         }
       });
     },
-    handleCancel(){
+    handleCancel() {
       this.form.resetFields();
     },
     //选择
@@ -177,12 +179,22 @@ export default {
       console.log('selectedRowKeys changed: ', selectedRowKeys);
       this.selectedRowKeys = selectedRowKeys;
     },
-    deleteGroup(){
-     let response=deleteTestBankGroup(this.$store.getters.getTeacher.id,this.selectedRowKeys)
-      if (response.code==0) {
+    deleteGroup() {
+      let response = deleteTestBankGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
+      if (response.code == 0) {
         this.$message.success('删除成功！');
       } else {
         this.$message.error("删除失败")
+      }
+    },
+    //分页
+    onChange(pageNumber) {
+      console.log('Page: ', pageNumber);
+      if (pageNumber <= this.totalPage) {
+        let userId = this.$store.getters.getTeacher.id;
+        let response = getAllTestBank(userId, pageNumber);
+        this.banks = response.res;
+        this.totalPage = response.totalPage
       }
     },
 
@@ -190,8 +202,9 @@ export default {
 
   mounted() {
     let userId = this.$store.getters.getTeacher.id;
-    let response = getAllTestBank(userId);
+    let response = getAllTestBank(userId, 1);
     this.banks = response.res;
+    this.totalPage = response.totalPage
   },
   computed: {
     hasSelected() {
@@ -225,7 +238,22 @@ body {
 }
 
 .table {
-  margin: 0 20px;
+  margin: 0 5px;
+  height: 80%;
+  overflow-y: scroll;
+  background-color: white;
+}
+
+#page {
+  margin-right: 10px;
+  margin-top: 10px;
+  float: right;
+}
+
+.footer {
+  height: 10%;
+  background-color: white;
+  margin: 0 5px;
 }
 
 </style>

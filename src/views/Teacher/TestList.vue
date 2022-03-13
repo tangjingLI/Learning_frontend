@@ -47,7 +47,7 @@
     </div>
 
     <div class="table">
-      <a-table :columns="columns" :data-source="questions" style="background-color: white" :pagination="pagination"
+      <a-table :columns="columns" :data-source="questions" style="background-color: white" :pagination="false"
                rowKey="id"
                :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
@@ -82,6 +82,10 @@
         </span>
 
       </a-table>
+    </div>
+
+    <div class="footer">
+      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
     </div>
 
     <a-modal v-model="editBank" title="编辑题库" @ok="edit" @cancel="cancel1">
@@ -247,13 +251,11 @@ export default {
       isPublic: 0,
       columns,
       msg: '',
-      pagination: {
-        pageSize: 7
-      },
       editBank: false,
       showAdd: false,
       testType: 0,
       num: 2,
+      totalPage: 1,
       choices: [],
       selectedRowKeys: [],
       list: ['A', 'B', 'C', 'D', 'E', 'F'],
@@ -271,10 +273,11 @@ export default {
   methods: {
     reset() {
       let params = this.$route.params;
-      let response = getTestBank(params.bankId, this.$store.getters.getTeacher.id);
+      let response = getTestBank(params.bankId, this.$store.getters.getTeacher.id, 1);
       this.bankTitle = response.res.bankTitle;
       this.questions = response.res.questions;
       this.isPublic = response.isPublic;
+      this.totalPage = response.totalPage
     },
     onSearch(value) {
       let response = searchTest(value);
@@ -387,6 +390,17 @@ export default {
         this.$message.error("删除失败")
       }
     },
+    //分页
+    onChange(pageNumber) {
+      console.log('Page: ', pageNumber);
+      if (pageNumber <= this.totalPage) {
+        let params = this.$route.params;
+        let response = getTestBank(params.bankId, this.$store.getters.getTeacher.id, pageNumber);
+        this.questions = response.res.questions;
+        this.totalPage = response.totalPage
+      }
+    }
+
   },
   computed: {
     hasSelected() {
@@ -420,7 +434,10 @@ body {
 }
 
 .table {
-  margin: 0 20px;
+  margin: 0 5px;
+  height: 80%;
+  overflow-y: scroll;
+  background-color: white;
 }
 
 .choice p {
@@ -447,6 +464,18 @@ body {
   margin-left: 20px;
   float: left;
   margin-top: 10px;
+}
+
+#page {
+  margin-right: 10px;
+  margin-top: 10px;
+  float: right;
+}
+
+.footer {
+  height: 10%;
+  background-color: white;
+  margin: 0 5px;
 }
 
 </style>

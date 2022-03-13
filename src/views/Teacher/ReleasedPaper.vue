@@ -6,7 +6,7 @@
     </div>
 
     <div class="content">
-      <a-table :columns="columns" :data-source="papers" style="background-color: white" :pagination="pagination"
+      <a-table :columns="columns" :data-source="papers" style="background-color: white" :pagination="false"
                :rowKey="record=>record.id">
         <span slot="customTitle"><a-icon type="smile" theme="twoTone"/> 试卷名</span>
 
@@ -15,7 +15,10 @@
         </span>
 
       </a-table>
+    </div>
 
+    <div class="footer">
+      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
     </div>
   </div>
 </template>
@@ -68,9 +71,7 @@ export default {
     return {
       papers: [],
       columns,
-      pagination: {
-        pageSize: 7
-      },
+      totalPage: 1,
     }
   },
   methods: {
@@ -79,13 +80,23 @@ export default {
     },
     getExamDetail(id) {
       this.$router.push({name: 'paperInfo', params: {paperId: id}})
+    },
+    //分页
+    onChange(pageNumber) {
+      console.log('Page: ', pageNumber);
+      if (pageNumber <= this.totalPage) {
+        let response = getReleasedPaper(this.$store.getters.getTeacher.id,pageNumber)
+        this.papers = response.res
+        this.totalPage = response.totalPage
+      }
     }
 
   },
   mounted() {
-    let response = getReleasedPaper(this.$store.getters.getTeacher.id)
+    let response = getReleasedPaper(this.$store.getters.getTeacher.id,1)
     this.papers = response.res
     console.log(this.papers)
+    this.totalPage = response.totalPage
   }
 }
 </script>
@@ -116,6 +127,25 @@ export default {
   border: 1px solid #1C90F5;
   margin-right: 10px;
   float: right;
+}
+
+.content {
+  margin: 0 5px;
+  height: 80%;
+  overflow-y: scroll;
+  background-color: white;
+}
+
+#page {
+  margin-right: 10px;
+  margin-top: 10px;
+  float: right;
+}
+
+.footer {
+  height: 10%;
+  background-color: white;
+  margin: 0 5px;
 }
 
 </style>

@@ -12,7 +12,6 @@ import CourseInfo from "../views/Teacher/CourseInfo";
 import Control from "../views/Teacher/Control";
 import PaperBank from "../views/Teacher/PaperBank";
 import PaperInfo from "../views/Teacher/PaperInfo";
-import Task from "../views/Teacher/Task";
 import CreatePaper from "../views/Teacher/CreatePaper";
 import ReleasedPaper from "../views/Teacher/ReleasedPaper";
 import TestBin from "../views/Teacher/TestBin";
@@ -75,11 +74,6 @@ const routes = [
                 path: 'testInfo/:testId',
                 name: 'testInfo',
                 component: TestInfo
-            },
-            {
-                path: 'task',
-                name: 'task',
-                component: Task
             },
             {
                 path: '/teacher',

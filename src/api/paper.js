@@ -1,10 +1,11 @@
 import axios from "axios";
 
 // 获取考试库列表
-export function getAllPaperBank(id) {
+export function getAllPaperBank(id,pageNum) {
     // return axios.get('/api/papers/getAllPapers/',{
     //     params:{
     //         papersId:id
+    //         pageNum:pageNum
     //     }
     // })
     //     .then(res => {
@@ -38,14 +39,16 @@ export function getAllPaperBank(id) {
             },
         ],
         msg: '',
+        totalPage:14
     }
 }
 
 //获取试卷库详情
-export function getPaperBank(id) {
+export function getPaperBank(id,pageNum) {
     // return axios.get('/api/paper/ getAllPaper /',{
     //     params:{
     //         papersId:id
+    //         pageNum:pageNum
     //     }
     // })
     //     .then(res => {
@@ -78,7 +81,8 @@ export function getPaperBank(id) {
             }
         ],
         mag: '',
-        bankTitle: '人机交互试卷库'
+        bankTitle: '人机交互试卷库',
+        totalPage:9
     }
 
 }
@@ -259,10 +263,11 @@ export function addPaper(tests, scores, bankId) {
 
 
 //获取已发布试卷列表
-export function getReleasedPaper(uid){
+export function getReleasedPaper(uid,pageNum){
     // return axios.get('/api/paper/ getPaper/',{
     //     params:{
     //         userId:uid
+    //         pageNum:pageNum
     //     }
     // })
     //     .then(res => {
@@ -289,7 +294,8 @@ export function getReleasedPaper(uid){
                 maxScore:88,
                 minScore:29
             }
-        ]
+        ],
+        totalPage:19
     }
 }
 

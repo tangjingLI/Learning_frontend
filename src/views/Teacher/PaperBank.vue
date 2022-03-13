@@ -29,7 +29,7 @@
     </div>
 
     <div class="table">
-      <a-table :columns="columns" :data-source="banks" style="background-color: white" :pagination="pagination"
+      <a-table :columns="columns" :data-source="banks" style="background-color: white" :pagination="false"
                :rowKey="record=>record.papersInfo.id"
                :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
@@ -53,9 +53,13 @@
             <a href="#">删除</a>
           </a-popconfirm>
         </span>
-
       </a-table>
     </div>
+
+    <div class="footer">
+      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
+    </div>
+
     <a-modal v-model="visible" title="新建题库" @ok="handleOk">
       <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
         <a-form-item label="试卷库名">
@@ -129,11 +133,9 @@ export default {
   data() {
     return {
       banks: [],
-      pagination: {
-        pageSize: 7
-      },
       columns,
       msg: '',
+      totalPage: 1,
       visible: false,
       selectedRowKeys: [],
       formLayout: 'horizontal',
@@ -142,9 +144,10 @@ export default {
   },
   mounted() {
     let userId = this.$store.getters.getTeacher.id;
-    let response = getAllPaperBank(userId);
+    let response = getAllPaperBank(userId, 1);
     this.msg = response.msg;
     this.banks = response.res;
+    this.totalPage = response.totalPage
   },
   methods: {
     //查看
@@ -157,11 +160,11 @@ export default {
     },
     //删除
     confirm(id) {
-      console.log("delete:"+id);
-      let response=deletePaperBank(this.$store.getters.getTeacher.id,id)
-      if(response.res){
+      console.log("delete:" + id);
+      let response = deletePaperBank(this.$store.getters.getTeacher.id, id)
+      if (response.res) {
         this.$message.success('删除成功！');
-      }else {
+      } else {
         this.$message.error("删除失败")
       }
     },
@@ -197,12 +200,23 @@ export default {
       console.log('selectedRowKeys changed: ', selectedRowKeys);
       this.selectedRowKeys = selectedRowKeys;
     },
-    deleteGroup(){
-      let response=deletePaperBankGroup(this.$store.getters.getTeacher.id,this.selectedRowKeys)
+    deleteGroup() {
+      let response = deletePaperBankGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
       if (response.res) {
         this.$message.success('删除成功！');
       } else {
         this.$message.error("删除失败")
+      }
+    },
+    //分页
+    onChange(pageNumber) {
+      console.log('Page: ', pageNumber);
+      if (pageNumber <= this.totalPage) {
+        let userId = this.$store.getters.getTeacher.id;
+        let response = getAllPaperBank(userId, pageNumber);
+        this.msg = response.msg;
+        this.banks = response.res;
+        this.totalPage = response.totalPage
       }
     },
   },
@@ -238,7 +252,22 @@ body {
 }
 
 .table {
-  margin: 0 20px;
+  margin: 0 5px;
+  height: 80%;
+  overflow-y: scroll;
+  background-color: white;
+}
+
+#page {
+  margin-right: 10px;
+  margin-top: 10px;
+  float: right;
+}
+
+.footer {
+  height: 10%;
+  background-color: white;
+  margin: 0 5px;
 }
 
 </style>

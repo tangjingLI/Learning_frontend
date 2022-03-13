@@ -33,13 +33,14 @@
           <p>
             <a-icon type="rocket" theme="twoTone"/>
             总分
-            <span style="font-size: 18px;color: #1C90F5;margin-left: 5px;margin-right: 10px">{{totalScore}}</span>
+            <span style="font-size: 18px;color: #1C90F5;margin-left: 5px;margin-right: 10px">{{ totalScore }}</span>
           </p>
         </div>
         <div class="bar2">
           <a-input placeholder="请输入试卷名称" v-model="paperName"/>
           <p>分值</p>
         </div>
+
         <div class="bar3">
           <a-empty v-if="this.questions.length==0" style="margin-top: 50px"/>
 
@@ -117,7 +118,7 @@
         </div>
 
         <div class="footer">
-          <a-pagination show-quick-jumper :default-current="2" :total="500" @change="onChange" id="page"/>
+          <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
         </div>
       </div>
 
@@ -128,7 +129,7 @@
 </template>
 
 <script>
-import {getAllTestBank, getTestBank, getQuestionList} from "../../api/test";
+import {getTestBankList, getTestBank, getQuestionList} from "../../api/test";
 import {addPaper} from "../../api/paper";
 
 export default {
@@ -145,24 +146,23 @@ export default {
       choose: [],//选中题目id
       questions: [],//选中题目
       paperName: '',
-      scores:[],
-      totalScore:0,
+      scores: [],
+      totalScore: 0,
+      totalPage: 1,
+      bankId: 1,
     }
   },
   methods: {
     //选择题库
     handleClick(id) {
-      let response = getTestBank(id)
+      let response = getTestBank(id,1)
       this.tests = response.res.questions
-
+      this.bankId = id
+      this.totalPage = response.totalPage
     },
     selected(value) {
       this.active = value;
       // console.log(this.active)
-    },
-    //分页
-    onChange(pageNumber) {
-      console.log('Page: ', pageNumber);
     },
     //返回
     back() {
@@ -171,10 +171,10 @@ export default {
     },
     //选择题目
     addItem(id) {
-      if(this.testNum<30){
+      if (this.testNum < 30) {
         this.choose.push(id);
         this.testNum++;
-      }else {
+      } else {
         this.$message.warning("最多选择30个题目")
       }
 
@@ -212,40 +212,48 @@ export default {
       let response = getQuestionList(this.choose)
       this.questions = response.res.questions
       this.paperName = ''
-      this.scores=[]
-      this.totalScore=0
-      for(let i=0;i<this.questions.length;i++){
+      this.scores = []
+      this.totalScore = 0
+      for (let i = 0; i < this.questions.length; i++) {
         this.scores.push(1)
         this.totalScore++
       }
     },
     uploadPaper() {
       console.log(this.paperName)
-      if(this.paperName==''){
+      if (this.paperName == '') {
         this.$message.warning("请输入试卷名")
-      }else if(this.testNum==0){
+      } else if (this.testNum == 0) {
         this.$message.warning("请选择至少一个题目")
       } else {
-        let bankId=this.$route.params.bankId
-        let response=addPaper(this.choose,this.scores,bankId)
-        if(response.res){
+        let bankId = this.$route.params.bankId
+        let response = addPaper(this.choose, this.scores, bankId)
+        if (response.res) {
           this.$message.success("发布成功")
-        }else {
+        } else {
           this.$message.error("发布失败")
         }
         this.back()
       }
     },
     changeScore(index, value) {
-      this.totalScore-=this.scores[index]
-      this.totalScore+=value
-      this.scores[index]=value
+      this.totalScore -= this.scores[index]
+      this.totalScore += value
+      this.scores[index] = value
       // console.log(this.scores)
-    }
-
+    },
+    //分页
+    onChange(pageNumber) {
+      console.log('Page: ', pageNumber);
+      if(pageNumber<=this.totalPage){
+        let response = getTestBank(this.bankId,pageNumber)
+        this.tests = response.res.questions
+        this.totalPage = response.totalPage
+      }
+    },
   },
   mounted() {
-    let response = getAllTestBank(this.$store.getters.getTeacher.id);
+    let response = getTestBankList(this.$store.getters.getTeacher.id);
     this.banks = response.res;
     if (this.banks.length != 0) {
       this.selected(this.banks[0].title)
@@ -309,7 +317,7 @@ export default {
   height: 60%;
 }
 
-.top1 p ,.bar1 p{
+.top1 p, .bar1 p {
   float: right;
   margin-right: 10px;
   margin-top: 10px;

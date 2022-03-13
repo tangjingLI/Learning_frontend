@@ -14,7 +14,7 @@
     </div>
 
     <div class="content">
-      <a-table :columns="columns" :data-source="banks" style="background-color: white" :pagination="pagination"
+      <a-table :columns="columns" :data-source="banks" style="background-color: white" :pagination="false"
                rowKey="id">
         <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  题库</span>
 
@@ -37,13 +37,16 @@
         </span>
 
       </a-table>
+    </div>
 
+    <div class="footer">
+      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
     </div>
   </div>
 </template>
 
 <script>
-import {getTestBankBin,restoreTestBank,dropTestBank} from "../../api/test";
+import {getTestBankBin, restoreTestBank, dropTestBank} from "../../api/test";
 
 const columns = [
   {
@@ -67,44 +70,52 @@ const columns = [
 
 export default {
   name: "TestBankBin",
-  data(){
-    return{
+  data() {
+    return {
       columns,
-      banks:[],
-      pagination: {
-        pageSize: 7
-      },
+      banks: [],
+      totalPage: 1,
     }
   },
-  methods:{
-    back(){
-      this.$router.push({name:'control'})
+  methods: {
+    back() {
+      this.$router.push({name: 'control'})
     },
-    restore(id){
-      let response=restoreTestBank(id,this.$store.getters.getTeacher.id)
-      if(response.code==0){
+    restore(id) {
+      let response = restoreTestBank(id, this.$store.getters.getTeacher.id)
+      if (response.code == 0) {
         this.$message.success("恢复成功")
-      }else {
+      } else {
         this.$message.error("恢复失败")
       }
     },
-    confirm(id){
-      let response=dropTestBank(id,this.$store.getters.getTeacher.id)
-      if(response.code==0){
+    confirm(id) {
+      let response = dropTestBank(id, this.$store.getters.getTeacher.id)
+      if (response.code == 0) {
         this.$message.success("删除成功")
-      }else {
+      } else {
         this.$message.error("删除失败")
       }
     },
-    deleteAll(){
-      for(let i=0;i<this.banks.length;i++){
+    deleteAll() {
+      for (let i = 0; i < this.banks.length; i++) {
         this.confirm(this.banks[i].id)
+      }
+    },
+    //分页
+    onChange(pageNumber) {
+      console.log('Page: ', pageNumber);
+      if (pageNumber <= this.totalPage) {
+        let response = getTestBankBin(this.$store.getters.getTeacher.id, pageNumber)
+        this.banks = response.banks
+        this.totalPage = response.totalPage
       }
     }
   },
   mounted() {
-    let response = getTestBankBin(this.$store.getters.getTeacher.id)
+    let response = getTestBankBin(this.$store.getters.getTeacher.id, 1)
     this.banks = response.banks
+    this.totalPage = response.totalPage
   }
 }
 </script>
@@ -137,12 +148,31 @@ export default {
   float: right;
 }
 
-#all{
+#all {
   margin-top: 5px;
-  background-color:  #ea5454;
+  background-color: #ea5454;
   color: white;
   border: none;
   margin-right: 10px;
   float: right;
+}
+
+.content {
+  margin: 0 5px;
+  height: 80%;
+  overflow-y: scroll;
+  background-color: white;
+}
+
+#page {
+  margin-right: 10px;
+  margin-top: 10px;
+  float: right;
+}
+
+.footer {
+  height: 10%;
+  background-color: white;
+  margin: 0 5px;
 }
 </style>

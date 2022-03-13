@@ -14,7 +14,7 @@
     </div>
 
     <div class="content">
-      <a-table :columns="columns" :data-source="questions" style="background-color: white" :pagination="pagination"
+      <a-table :columns="columns" :data-source="questions" style="background-color: white" :pagination="false"
                rowKey="id">
         <span slot="customTitle"><a-icon type="smile" theme="twoTone"/> 题目</span>
 
@@ -46,7 +46,10 @@
         </span>
 
       </a-table>
+    </div>
 
+    <div class="footer">
+      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
     </div>
   </div>
 </template>
@@ -93,9 +96,7 @@ export default {
     return {
       columns,
       questions: [],
-      pagination: {
-        pageSize: 7
-      },
+      totalPage: 1,
     }
   },
   methods: {
@@ -104,7 +105,7 @@ export default {
     },
     confirm(id) {
       let response = dropTest(id, this.$store.getters.getTeacher.id)
-      if (response.code==0) {
+      if (response.code == 0) {
         this.$message.success("删除成功")
       } else {
         this.$message.error("删除失败")
@@ -112,7 +113,7 @@ export default {
     },
     restore(id) {
       let response = restoreTest(id, this.$store.getters.getTeacher.id)
-      if (response.code==0) {
+      if (response.code == 0) {
         this.$message.success("恢复成功")
       } else {
         this.$message.error("恢复失败")
@@ -122,11 +123,21 @@ export default {
       for (let i = 0; i < this.questions.length; i++) {
         this.confirm(this.questions[i].id)
       }
+    },
+    //分页
+    onChange(pageNumber) {
+      console.log('Page: ', pageNumber);
+      if (pageNumber <= this.totalPage) {
+        let response = getTestBin(this.$store.getters.getTeacher.id, pageNumber)
+        this.questions = response.questions
+        this.totalPage = response.totalPage
+      }
     }
   },
   mounted() {
-    let response = getTestBin(this.$store.getters.getTeacher.id)
+    let response = getTestBin(this.$store.getters.getTeacher.id, 1)
     this.questions = response.questions
+    this.totalPage = response.totalPage
   }
 }
 </script>
@@ -176,4 +187,24 @@ export default {
   margin-right: 10px;
   float: right;
 }
+
+.content {
+  margin: 0 5px;
+  height: 80%;
+  overflow-y: scroll;
+  background-color: white;
+}
+
+#page {
+  margin-right: 10px;
+  margin-top: 10px;
+  float: right;
+}
+
+.footer {
+  height: 10%;
+  background-color: white;
+  margin: 0 5px;
+}
+
 </style>

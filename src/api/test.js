@@ -1,8 +1,8 @@
 import axios from "axios";
 
-//获取题库列表
-export function getAllTestBank(id) {
-    // return axios.get('/api/bank/list', {
+//获取不分页题库列表
+export function getTestBankList(id) {
+    // return axios.get('/api', {
     //     params: {
     //         userId: id
     //     }
@@ -41,17 +41,97 @@ export function getAllTestBank(id) {
                 title: "c++题库",
                 isPublic: 0
             },
+            {
+                id: 3,
+                title: "设计模式题库",
+                isPublic: 1
+            },
+            {
+                id: 4,
+                title: "人机交互题库",
+                isPublic: 0
+            },
+            {
+                id: 5,
+                title: "c++题库",
+                isPublic: 0
+            },
 
         ]
     }
 }
 
+
+//获取题库列表
+export function getAllTestBank(id,pageNum) {
+    // return axios.get('/api/bank/list', {
+    //     params: {
+    //         userId: id
+    //         pageNum:pageNum
+    //     }
+    // })
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        code: 200,
+        res: [
+            {
+                id: 1,
+                title: "数据结构题库",
+                isPublic: 0
+            },
+            {
+                id: 2,
+                title: "云计算题库",
+                isPublic: 1
+            },
+            {
+                id: 3,
+                title: "设计模式题库",
+                isPublic: 1
+            },
+            {
+                id: 4,
+                title: "人机交互题库",
+                isPublic: 0
+            },
+            {
+                id: 5,
+                title: "c++题库",
+                isPublic: 0
+            },
+            {
+                id: 3,
+                title: "设计模式题库",
+                isPublic: 1
+            },
+            {
+                id: 4,
+                title: "人机交互题库",
+                isPublic: 0
+            },
+            {
+                id: 5,
+                title: "c++题库",
+                isPublic: 0
+            },
+
+        ],
+        totalPage:21
+    }
+}
+
 //获取题库详情
-export function getTestBank(bid, uid) {
+export function getTestBank(bid, uid,pageNum) {
     // return axios.get('/api/bank/details/', {
     //         params: {
     //             bankId: bid,
     //             userId: uid
+    //             pageNum:pageNum
     //         }
     //     }
     // )
@@ -165,7 +245,8 @@ export function getTestBank(bid, uid) {
 
             ]
         },
-        qPublic: 1
+        qPublic: 1,
+        totalPage:6
     }
 }
 
@@ -482,10 +563,11 @@ export function getQuestionList(id, tests) {
 }
 
 //获取题目回收站
-export function getTestBin(uid) {
+export function getTestBin(uid,pageNum) {
     // return axios.get('/api/bank/recycle',{
     //     params:{
     //         userId:uid
+    //         pageNum:pageNum
     //     }
     // })
     //     .then(res => {
@@ -511,7 +593,8 @@ export function getTestBin(uid) {
                     rate: 0.67
                 },
 
-        ]
+        ],
+        totalPage:4
     }
 }
 
@@ -552,10 +635,11 @@ export function dropTest(qid, uid) {
 }
 
 //获取题库回收站
-export function getTestBankBin(uid) {
+export function getTestBankBin(uid,pageNum) {
     // return axios.get('/api/bank/recycle',{
     //     params:{
     //         userId:uid
+    //         pageNum:pageNum
     //     }
     // })
     //     .then(res => {
@@ -577,7 +661,8 @@ export function getTestBankBin(uid) {
                 isPublic: 0
             },
 
-        ]
+        ],
+        totalPage:15
     }
 
 }
