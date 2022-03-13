@@ -30,12 +30,6 @@
               <router-link to="/teacher/courseList">课程管理</router-link>
             </span>
           </a-menu-item>
-          <a-menu-item key="5">
-            <a-icon type="book"/>
-            <span>
-              <router-link to="/teacher/task">目标与任务</router-link>
-            </span>
-          </a-menu-item>
         </a-menu>
       </a-layout-sider>
       <a-layout>

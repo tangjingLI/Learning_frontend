@@ -5,6 +5,7 @@
       <h1>试卷库列表</h1>
 
       <a-popconfirm
+          :disabled="!hasSelected"
           title="确定删除所选试卷库吗?"
           ok-text="Yes"
           cancel-text="No"

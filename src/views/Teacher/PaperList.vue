@@ -11,6 +11,7 @@
 <!--      <a-tag v-if="isPublic==0" color="green" style="margin-left: 5px;margin-top: 8px">public</a-tag>-->
 <!--      <a-tag v-else color="orange" style="margin-left: 5px;margin-top: 8px">private</a-tag>-->
       <a-popconfirm
+          :disabled="!hasSelected"
           title="确定删除所选试卷吗?"
           ok-text="Yes"
           cancel-text="No"
