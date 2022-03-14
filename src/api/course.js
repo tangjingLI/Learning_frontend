@@ -239,6 +239,157 @@ export function deleteCoursesGroup(uid, list) {
     }
 }
 
+//获取能力列表
+export function getAbilityList(uid, pageNum) {
+    // return axios.get('/api/ability/list',{
+    //     params:{
+    //         user_id:uid,
+    //         pageNum:pageNum
+    //     }
+    // })
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        abilities: [
+            {
+                id: 1,
+                name: "能力1",
+                brief: "这是简介"
+            },
+            {
+                id: 2,
+                name: "能力1",
+                brief: "这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介"
+            },
+            {
+                id: 3,
+                name: "能力1",
+                brief: "这是简介"
+            },
+            {
+                id: 4,
+                name: "能力1",
+                brief: "这是简介"
+            },
+            {
+                id: 5,
+                name: "能力1",
+                brief: "这是简介"
+            },
+            {
+                id: 6,
+                name: "能力1",
+                brief: "这是简介"
+            },
+
+        ],
+        totalPage: 6
+    }
+}
+
+//获取知识点列表
+export function getKnowledgeList(uid, pageNum) {
+    // return axios.get('/api/ability/knowledge_list', {
+    //     params: {
+    //         user_id: uid,
+    //         pageNum: pageNum
+    //     }
+    // })
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return{
+        knowledge:[
+            {
+                id:1,
+                name:"知识点1",
+                skill_level:"理解"
+            },
+            {
+                id:2,
+                name:"知识点1",
+                skill_level:"理解"
+            },
+            {
+                id:3,
+                name:"知识点1",
+                skill_level:"记忆"
+            },
+            {
+                id:4,
+                name:"知识点1",
+                skill_level:"记忆"
+            },
+            {
+                id:5,
+                name:"知识点1",
+                skill_level:"记忆"
+            },
+
+        ],
+        totalPage:8
+    }
+
+}
+
+//获取品行列表
+export function getQualityList(uid, pageNum) {
+    // return axios.get('/api/ability/quality_list', {
+    //     params: {
+    //         user_id: uid,
+    //         pageNum: pageNum
+    //     }
+    // })
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return{
+        qualities:[
+            {
+                id:1,
+                name:"品行1",
+            },
+            {
+                id:2,
+                name:"品行1",
+            },
+            {
+                id:3,
+                name:"品行1",
+            },
+            {
+                id:4,
+                name:"品行1",
+            },
+            {
+                id:5,
+                name:"品行1",
+            },
+            {
+                id:6,
+                name:"品行1",
+            },
+            {
+                id:7,
+                name:"品行1",
+            },
+        ],
+        totalPage:39
+    }
+}
+
+//
+
 //查看课程
 export function getCourseDetail(uid, cid) {
     // return axios.get('/api/course/detail/', {
@@ -256,6 +407,66 @@ export function getCourseDetail(uid, cid) {
     return {
         code: 0
     }
+}
+
+//添加知识点
+export function addKnowledge(){
+
+}
+
+//添加品行
+export function addQuality(){
+
+}
+
+//添加能力
+export function addAbility(){
+
+}
+
+//删除知识点
+export function deleteKnowledge(uid,kid){
+    let data={
+        user_id:uid,
+        id:kid
+    }
+    return axios.post('/api/course/knowledge_delete/',data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+}
+
+//删除品行
+export function deleteQuality(uid,qid){
+    let data={
+        user_id:uid,
+        id:qid
+    }
+    return axios.post('/api/course/quality_delete/',data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+}
+
+//删除能力
+export function deleteAbility(uid,aid){
+    let data={
+        user_id:uid,
+        id:aid
+    }
+    return axios.post('/api/course/ability_delete/',data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
 }
 
 //添加课程

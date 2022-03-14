@@ -13,21 +13,27 @@
             </span>
           </a-menu-item>
           <a-menu-item key="2" @click="()=>{this.$router.push('/teacher/paperBank')}">
-            <a-icon type="folder-open"/>
+            <a-icon type="coffee" />
             <span>
               <router-link to="/teacher/paperBank">试卷管理</router-link>
             </span>
           </a-menu-item>
           <a-menu-item key="3" @click="()=>{this.$router.push('/teacher/testBank')}">
-            <a-icon type="read"/>
+            <a-icon type="car" />
             <span>
               <router-link to="/teacher/testBank">题库管理</router-link>
             </span>
           </a-menu-item>
           <a-menu-item key="4" @click="()=>{this.$router.push('/teacher/courseList')}">
-            <a-icon type="schedule"/>
+            <a-icon type="rocket" />
             <span>
               <router-link to="/teacher/courseList">课程管理</router-link>
+            </span>
+          </a-menu-item>
+          <a-menu-item key="5" @click="()=>{this.$router.push('/teacher/knowledge')}">
+            <a-icon type="crown" />
+            <span>
+              <router-link to="/teacher/courseList">能力管理</router-link>
             </span>
           </a-menu-item>
         </a-menu>

@@ -6,7 +6,7 @@
         <a-menu-item key="knowledge">知识点</a-menu-item>
       </a-menu>
 
-      <div v-if="current=='bank'" style="height: 90%;overflow-y: scroll">
+      <div v-if="current[0]=='bank'" style="height: 90%;overflow-y: scroll">
         <a-list item-layout="horizontal" :data-source="banks">
           <a-list-item slot="renderItem" slot-scope="item, index" class="bankItem">
             <a-list-item-meta>
@@ -16,6 +16,10 @@
             </a-list-item-meta>
           </a-list-item>
         </a-list>
+      </div>
+
+      <div v-else>
+        hhhhhhh
       </div>
     </div>
 
