@@ -8,7 +8,6 @@ import 'ant-design-vue/dist/antd.css';
 import axios from "axios";
 
 Vue.config.productionTip = false;
-// axios.defaults.baseURL = 'http://123.57.150.160:8899';
 
 Vue.use(Antd);
 Vue.use(Vuex);

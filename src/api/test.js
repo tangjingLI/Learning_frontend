@@ -1,11 +1,10 @@
 import axios from "axios";
-
-axios.defaults.baseURL = 'http://123.57.150.160:8900';
+import {baseUrls} from "./baseUrl";
 
 
 //获取不分页题库列表
 export function getTestBankList(id) {
-    return axios.get('/bank/listAll', {
+    return axios.get(`${baseUrls.test}/bank/listAll`, {
         params: {
             userId: id
         }
@@ -52,7 +51,7 @@ export function getTestBankList(id) {
 
 //获取题库列表
 export function getAllTestBank(id, pageNum) {
-    return axios.get('/bank/list', {
+    return axios.get(`${baseUrls.test}/bank/list`, {
         params: {
             userId: id,
             page: pageNum
@@ -69,7 +68,7 @@ export function getAllTestBank(id, pageNum) {
 
 //获取题库详情
 export function getTestBank(bid, uid, pageNum) {
-    return axios.get('/bank/details/', {
+    return axios.get(`${baseUrls.test}/bank/details/`, {
             params: {
                 bankId: bid,
                 userId: uid,
@@ -88,7 +87,7 @@ export function getTestBank(bid, uid, pageNum) {
 
 //获取题目详情
 export function getTestDetail(id) {
-    return axios.get('/question/detail/', {
+    return axios.get(`${baseUrls.test}/question/detail/`, {
             params: {
                 questionId: id
             }
@@ -109,7 +108,7 @@ export function createTestBank(title, isPublic, id) {
     Form.append("isPublic", isPublic);
     Form.append("userId", id);
 
-    return axios.post('/bank/add', Form, {
+    return axios.post(`${baseUrls.test}/bank/add`, Form, {
         headers: {
             'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
         },
@@ -130,7 +129,7 @@ export function deleteTestBank(bid, uid) {
     Form.append("userId", uid);
 
 
-    return axios.post('/bank/delete/', Form, {
+    return axios.post(`${baseUrls.test}/bank/delete/`, Form, {
         headers: {
             'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
         },
@@ -152,7 +151,7 @@ export function editTestBank(bid, uid, title, isPublic) {
     Form.append("isPublic", isPublic);
 
 
-    return axios.post('/bank/edit/', Form, {
+    return axios.post(`${baseUrls.test}/bank/edit/`, Form, {
         headers: {
             'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
         },
@@ -177,6 +176,10 @@ export function addTest(values, uid, bid, num) {
         })
     }
 
+    let data = {
+        choices: arr
+    }
+
     let question = {
         title: values.title,
         content: values.content,
@@ -184,16 +187,13 @@ export function addTest(values, uid, bid, num) {
         type: values.type,
         analysis: values.analysis,
         consume: values.consume,
+        bankId: bid,
+        userId: uid
     }
 
-    let Form = new FormData();
-    Form.append("question", question);
-    Form.append("userId", uid);
-    Form.append("id", bid);
-    Form.append("choices", arr);
 
-
-    return axios.post('/bank/edit/', Form, {
+    return axios.post(`${baseUrls.test}/question/add`, data, {
+        params: question,
         headers: {
             'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
         },
@@ -231,25 +231,11 @@ export function addTest(values, uid, bid, num) {
 
 //删除题目
 export function deleteTest(uid, qid) {
-    // let data={
-    //     questionId:qid,
-    //     userId:uid
-    // }
-    // return axios.post('/api/question/delete/',data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    // return {
-    //     code: 0
-    // }
     let Form = new FormData();
     Form.append("questionId", qid);
     Form.append("userId", uid);
 
-    return axios.post('/question/delete/', Form, {
+    return axios.post(`${baseUrls.test}question/delete/`, Form, {
         headers: {
             'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
         },
@@ -264,7 +250,7 @@ export function deleteTest(uid, qid) {
 
 //搜索题目
 export function searchTest(title) {
-    // return axios.get('/api/question/search/',{
+    // return axios.get(`${baseUrls.test}/question/search/`,{
     //     params:{
     //         title:title
     //     }
@@ -415,10 +401,10 @@ export function getQuestionList(id, tests) {
 
 //获取题目回收站
 export function getTestBin(uid, page) {
-    return axios.get('/question/recycle',{
-        params:{
-            userId:uid,
-            page:page
+    return axios.get(`${baseUrls.test}/question/recycle`, {
+        params: {
+            userId: uid,
+            page: page
         }
     })
         .then(res => {
@@ -435,7 +421,7 @@ export function restoreTest(qid, uid) {
     Form.append("questionId", qid);
     Form.append("userId", uid);
 
-    return axios.post('/question/restore', Form, {
+    return axios.post(`${baseUrls.test}/question/restore`, Form, {
         headers: {
             'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
         },
@@ -454,7 +440,7 @@ export function dropTest(qid, uid) {
     Form.append("questionId", qid);
     Form.append("userId", uid);
 
-    return axios.post('/question/physicalDelete', Form, {
+    return axios.post(`${baseUrls.test}/question/physicalDelete`, Form, {
         headers: {
             'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
         },
@@ -469,10 +455,10 @@ export function dropTest(qid, uid) {
 
 //获取题库回收站
 export function getTestBankBin(uid, pageNum) {
-    return axios.get('/bank/recycle',{
-        params:{
-            userId:uid,
-            page:pageNum
+    return axios.get(`${baseUrls.test}/bank/recycle`, {
+        params: {
+            userId: uid,
+            page: pageNum
         }
     })
         .then(res => {
@@ -489,7 +475,7 @@ export function restoreTestBank(bid, uid) {
     Form.append("bankId", bid);
     Form.append("userId", uid);
 
-    return axios.post('/bank/restore', Form, {
+    return axios.post(`${baseUrls.test}/bank/restore`, Form, {
         headers: {
             'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
         },
@@ -508,7 +494,7 @@ export function dropTestBank(bid, uid) {
     Form.append("bankId", bid);
     Form.append("userId", uid);
 
-    return axios.post('/bank/physicalDelete', Form, {
+    return axios.post(`${baseUrls.test}/bank/physicalDelete`, Form, {
         headers: {
             'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
         },
@@ -528,7 +514,7 @@ export function deleteTestBankGroup(uid, bidList) {
     //     idList:bidList
     // }
     //
-    // return axios.post('/api/bank/batchDelete',data)
+    // return axios.post(`${baseUrls.test}/bank/batchDelete`,data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -548,7 +534,7 @@ export function deleteTestGroup(uid, qidList) {
     //     idList:qidList
     // }
     //
-    // return axios.post('/api/question/batchDelete',data)
+    // return axios.post(`${baseUrls.test}/question/batchDelete`,data)
     //     .then(res => {
     //         return res.data
     //     })

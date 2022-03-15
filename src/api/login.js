@@ -1,12 +1,11 @@
 import axios from "axios";
-// axios.defaults.baseURL = 'http://123.57.150.160:8899';
-
+import {baseUrls} from "./baseUrl";
 
 export function login(phone, password) {
     let LoginForm = new FormData();
     LoginForm.append("phone",phone);
     LoginForm.append("password",password);
-    return axios.post('/user/userlogin',LoginForm, {
+    return axios.post(`${baseUrls.login}/user/userlogin`,LoginForm, {
         headers: {
             'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
         },
