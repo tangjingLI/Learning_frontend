@@ -197,26 +197,26 @@ export default {
       this.selectedRowKeys = selectedRowKeys;
     },
     //分页
-    onChange(pageNumber) {
+    async onChange(pageNumber) {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.totalPage) {
         let response;
         if (this.bankId != -1) {
-          response = getCoursesByType(this.$store.getters.getTeacher.id, this.bankId, pageNumber)
+          response =await getCoursesByType(this.$store.getters.getTeacher.id, this.bankId, pageNumber)
         } else {
-          response = getAllCourses(this.$store.getters.getTeacher.id, pageNumber)
+          response =await getAllCourses(this.$store.getters.getTeacher.id, pageNumber)
         }
         this.courses = response.courses
         this.totalPage = response.totalPage
       }
     },
     //选择课程分类
-    handleClick(id) {
+    async handleClick(id) {
       let response;
       if (id != -1) {
-        response = getCoursesByType(this.$store.getters.getTeacher.id, this.bankId, 1)
+        response =await getCoursesByType(this.$store.getters.getTeacher.id, this.bankId, 1)
       } else {
-        response = getAllCourses(this.$store.getters.getTeacher.id, 1)
+        response =await getAllCourses(this.$store.getters.getTeacher.id, 1)
       }
       this.courses = response.courses
       this.bankId = id
@@ -229,15 +229,15 @@ export default {
     //添加课程分类
     addType(e) {
       e.preventDefault();
-      this.form1.validateFields((err, values) => {
+      this.form1.validateFields(async (err, values) => {
         if (!err) {
           this.addTypeFlag = false
           // console.log(values)
-          let response = addCoursesType(this.$store.getters.getTeacher.id, values.type)
+          let response =await addCoursesType(this.$store.getters.getTeacher.id, values.type)
           this.form1.resetFields();
           if (response.code == 0) {
             this.$message.success("添加成功！")
-            this.reset()
+            await this.reset()
           } else {
             this.$message.error("添加失败");
           }
@@ -245,11 +245,11 @@ export default {
       })
     },
     //删除课程分类
-    deleteType(id) {
-      let response = deleteCoursesType(this.$store.getters.getTeacher.id, id)
+    async deleteType(id) {
+      let response =await deleteCoursesType(this.$store.getters.getTeacher.id, id)
       if (response.code == 0) {
         this.$message.success("删除成功！")
-        this.reset()
+        await this.reset()
       } else {
         this.$message.error("删除失败");
       }
@@ -259,30 +259,30 @@ export default {
 
     },
     //删除课程
-    deleteCourseItem(id) {
-      let response = deleteCourse(this.$store.getters.getTeacher.id, id)
+    async deleteCourseItem(id) {
+      let response =await deleteCourse(this.$store.getters.getTeacher.id, id)
       if (response.code == 0) {
         this.$message.success("删除成功！")
-        this.reset()
+        await this.reset()
       } else {
         this.$message.error("删除失败");
       }
     },
-    deleteGroup() {
-      let response = deleteCoursesGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
+    async deleteGroup() {
+      let response =await deleteCoursesGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
       console.log(this.selectedRowKeys)
       if (response.code == 0) {
         this.$message.success("删除成功！")
-        this.reset()
+        await this.reset()
       } else {
         this.$message.error("删除失败");
       }
     },
-    reset() {
-      let response = getCourseType(this.$store.getters.getTeacher.id)
+    async reset() {
+      let response =await getCourseType(this.$store.getters.getTeacher.id)
       this.types = response.classifies
       this.types.unshift({id: -1, name: "所有课程"})
-      let res = getAllCourses(this.$store.getters.getTeacher.id, 1)
+      let res =await getAllCourses(this.$store.getters.getTeacher.id, 1)
       this.courses = res.courses
       this.totalPage = res.totalPage
       this.current = 1

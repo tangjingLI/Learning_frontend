@@ -1,4 +1,6 @@
 import axios from "axios";
+// axios.defaults.baseURL = 'http://123.57.150.160:8899';
+
 
 export function login(phone, password) {
     let LoginForm = new FormData();

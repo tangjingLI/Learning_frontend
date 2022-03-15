@@ -123,7 +123,7 @@ export default {
       visible: false,
       totalPage: 1,
       formLayout: 'horizontal',
-      current:1,
+      current: 1,
       form: this.$form.createForm(this, {name: 'newTestBank'}),
     }
   },
@@ -137,14 +137,15 @@ export default {
       console.log(value)
     },
     //删除
-    confirm(id) {
+    async confirm(id) {
       console.log("delete:" + id);
-      let response = deleteTestBank(id, this.$store.getters.getTeacher.id);
+      let response = await deleteTestBank(id, this.$store.getters.getTeacher.id);
+      console.log(response)
       if (response.code == 0) {
         this.$message.success('删除成功！')
-        this.reset()
+        await this.reset()
       } else {
-        this.$message.warning("删除失败")
+        this.$message.warning(response.msg)
       }
     },
     cancel(e) {
@@ -157,15 +158,16 @@ export default {
     handleOk(e) {
       // console.log(e);
       e.preventDefault();
-      this.form.validateFields((err, values) => {
+      this.form.validateFields(async (err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
-          let response = createTestBank(values.title, values.isPublic, this.$store.getters.getTeacher.id);
+          let response = await createTestBank(values.title, values.isPublic, this.$store.getters.getTeacher.id);
           this.form.resetFields();
           this.visible = false;
           if (response.code == 0) {
+            // console.log(response)
             this.$message.success("新建题库成功！")
-            this.reset()
+            await this.reset()
           } else {
             this.$message.error("题库已存在");
           }
@@ -180,31 +182,32 @@ export default {
       console.log('selectedRowKeys changed: ', selectedRowKeys);
       this.selectedRowKeys = selectedRowKeys;
     },
-    deleteGroup() {
-      let response = deleteTestBankGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
+    async deleteGroup() {
+      let response = await deleteTestBankGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
       if (response.code == 0) {
         this.$message.success('删除成功！')
-        this.reset()
+        await this.reset()
       } else {
         this.$message.error("删除失败")
       }
     },
     //分页
-    onChange(pageNumber) {
+    async onChange(pageNumber) {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.totalPage) {
         let userId = this.$store.getters.getTeacher.id;
-        let response = getAllTestBank(userId, pageNumber);
-        this.banks = response.res;
+        let response = await getAllTestBank(userId, pageNumber);
+        this.banks = response.content;
         this.totalPage = response.totalPage
       }
     },
-    reset(){
+    async reset() {
       let userId = this.$store.getters.getTeacher.id;
-      let response = getAllTestBank(userId, 1);
-      this.banks = response.res;
+      let response = await getAllTestBank(userId, 1);
+      console.log(response)
+      this.banks = response.content;
       this.totalPage = response.totalPage
-      this.current=1
+      this.current = 1
     }
 
   },

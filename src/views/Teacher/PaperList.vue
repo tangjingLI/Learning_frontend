@@ -124,9 +124,9 @@ export default {
     this.reset()
   },
   methods: {
-    reset(){
+    async reset(){
       let params = this.$route.params;
-      let response = getPaperBank(params.bankId, 1);
+      let response =await getPaperBank(params.bankId, 1);
       this.papers = response.res;
       this.bankTitle = response.bankTitle;
       this.totalPage = response.totalPage
@@ -142,12 +142,12 @@ export default {
       this.$router.push({name: 'paperInfo', params: {paperId: id}})
     },
     //删除
-    confirm(id) {
-      let response = deletePaper(this.$store.getters.getTeacher.id, id)
+    async confirm(id) {
+      let response =await deletePaper(this.$store.getters.getTeacher.id, id)
       if (response.res) {
         console.log("删除试卷：" + id)
         this.$message.success('删除成功！')
-        this.reset()
+        await this.reset()
       } else {
         this.$message.error("删除失败")
       }
@@ -165,21 +165,21 @@ export default {
       console.log('selectedRowKeys changed: ', selectedRowKeys);
       this.selectedRowKeys = selectedRowKeys;
     },
-    deleteGroup() {
-      let response = deletePaperGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
+    async deleteGroup() {
+      let response =await deletePaperGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
       if (response.res) {
         this.$message.success('删除成功！')
-        this.reset()
+        await this.reset()
       } else {
         this.$message.error("删除失败")
       }
     },
     //分页
-    onChange(pageNumber) {
+    async onChange(pageNumber) {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.totalPage) {
         let params = this.$route.params;
-        let response = getPaperBank(params.bankId, 1);
+        let response =await getPaperBank(params.bankId, 1);
         this.papers = response.res;
         this.totalPage = response.totalPage
       }

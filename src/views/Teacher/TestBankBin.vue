@@ -82,20 +82,21 @@ export default {
     back() {
       this.$router.push({name: 'control'})
     },
-    restore(id) {
-      let response = restoreTestBank(id, this.$store.getters.getTeacher.id)
+    async restore(id) {
+      let response =await restoreTestBank(id, this.$store.getters.getTeacher.id)
+      console.log(response)
       if (response.code == 0) {
         this.$message.success("恢复成功")
-        this.reset()
+        await this.reset()
       } else {
         this.$message.error("恢复失败")
       }
     },
-    confirm(id) {
-      let response = dropTestBank(id, this.$store.getters.getTeacher.id)
+    async confirm(id) {
+      let response =await dropTestBank(id, this.$store.getters.getTeacher.id)
       if (response.code == 0) {
         this.$message.success("删除成功")
-        this.reset()
+        await this.reset()
       } else {
         this.$message.error("删除失败")
       }
@@ -106,17 +107,18 @@ export default {
       }
     },
     //分页
-    onChange(pageNumber) {
+    async onChange(pageNumber) {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.totalPage) {
-        let response = getTestBankBin(this.$store.getters.getTeacher.id, pageNumber)
-        this.banks = response.banks
+        let response =await getTestBankBin(this.$store.getters.getTeacher.id, pageNumber)
+        this.banks = response.content
         this.totalPage = response.totalPage
       }
     },
-    reset(){
-      let response = getTestBankBin(this.$store.getters.getTeacher.id, 1)
-      this.banks = response.banks
+    async reset(){
+      let response =await getTestBankBin(this.$store.getters.getTeacher.id, 1)
+      console.log(response)
+      this.banks = response.content
       this.totalPage = response.totalPage
       this.current=1
     }

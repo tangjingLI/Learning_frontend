@@ -115,10 +115,10 @@ export default {
     },
     upload(e) {
       e.preventDefault();
-      this.form1.validateFields((err, values) => {
+      this.form1.validateFields(async (err, values) => {
         if (!err) {
           let intro = values.intro == null ? '' : values.intro;
-          let response = uploadPaper(this.$route.params.paperId, values.name, intro, values.time);
+          let response =await uploadPaper(this.$route.params.paperId, values.name, intro, values.time);
           this.uploadFlag = false;
           this.form1.resetFields()
           if (response.res) {

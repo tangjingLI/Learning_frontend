@@ -57,6 +57,7 @@
                 <a-tag v-else color="pink">简答</a-tag>
               </h1>
               <p>{{ test.content }}</p>
+
               <p>
                 正确率：{{ test.rate * 100 }}%
                 <a-divider type="vertical"/>
@@ -158,9 +159,9 @@ export default {
   },
   methods: {
     //选择题库
-    handleClick(id) {
-      let response = getTestBank(id,1)
-      this.tests = response.res.questions
+    async handleClick(id) {
+      let response =await getTestBank(id,1)
+      this.tests = response.questions
       this.bankId = id
       this.totalPage = response.totalPage
     },
@@ -210,11 +211,11 @@ export default {
       this.allFlag = true;
     },
     //预览试卷
-    getPaper() {
+    async getPaper() {
       this.paperFlag = true
       let id = this.$store.getters.getTeacher.id
-      let response = getQuestionList(this.choose)
-      this.questions = response.res.questions
+      let response =await getQuestionList(this.choose)
+      this.questions = response.questions
       this.paperName = ''
       this.scores = []
       this.totalScore = 0
@@ -223,7 +224,7 @@ export default {
         this.totalScore++
       }
     },
-    uploadPaper() {
+     async uploadPaper() {
       console.log(this.paperName)
       if (this.paperName == '') {
         this.$message.warning("请输入试卷名")
@@ -231,7 +232,7 @@ export default {
         this.$message.warning("请选择至少一个题目")
       } else {
         let bankId = this.$route.params.bankId
-        let response = addPaper(this.choose, this.scores, bankId)
+        let response =await addPaper(this.choose, this.scores, bankId)
         if (response.res) {
           this.$message.success("发布成功")
         } else {
@@ -247,22 +248,26 @@ export default {
       // console.log(this.scores)
     },
     //分页
-    onChange(pageNumber) {
+    async onChange(pageNumber) {
       console.log('Page: ', pageNumber);
       if(pageNumber<=this.totalPage){
-        let response = getTestBank(this.bankId,pageNumber)
+        let response =await getTestBank(this.bankId,pageNumber)
         this.tests = response.res.questions
         this.totalPage = response.totalPage
       }
     },
+    async reset(){
+      let response =await getTestBankList(this.$store.getters.getTeacher.id);
+      console.log(response)
+      this.banks = response;
+      if (this.banks.length != 0) {
+        this.selected(this.banks[0].title)
+        await this.handleClick(this.banks[0].id)
+      }
+    }
   },
   mounted() {
-    let response = getTestBankList(this.$store.getters.getTeacher.id);
-    this.banks = response.res;
-    if (this.banks.length != 0) {
-      this.selected(this.banks[0].title)
-      this.handleClick(this.banks[0].id)
-    }
+    this.reset()
   }
 }
 </script>

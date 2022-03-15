@@ -104,20 +104,20 @@ export default {
     back() {
       this.$router.push({name: 'control'})
     },
-    confirm(id) {
-      let response = dropTest(id, this.$store.getters.getTeacher.id)
+    async confirm(id) {
+      let response =await dropTest(id, this.$store.getters.getTeacher.id)
       if (response.code == 0) {
         this.$message.success("删除成功")
-        this.reset()
+        await this.reset()
       } else {
         this.$message.error("删除失败")
       }
     },
-    restore(id) {
-      let response = restoreTest(id, this.$store.getters.getTeacher.id)
+    async restore(id) {
+      let response =await restoreTest(id, this.$store.getters.getTeacher.id)
       if (response.code == 0) {
         this.$message.success("恢复成功")
-        this.reset()
+        await this.reset()
       } else {
         this.$message.error("恢复失败")
       }
@@ -128,17 +128,18 @@ export default {
       }
     },
     //分页
-    onChange(pageNumber) {
+    async onChange(pageNumber) {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.totalPage) {
-        let response = getTestBin(this.$store.getters.getTeacher.id, pageNumber)
-        this.questions = response.questions
+        let response =await getTestBin(this.$store.getters.getTeacher.id, pageNumber)
+        this.questions = response.content
         this.totalPage = response.totalPage
       }
     },
-    reset(){
-      let response = getTestBin(this.$store.getters.getTeacher.id, 1)
-      this.questions = response.questions
+    async reset(){
+      let response =await getTestBin(this.$store.getters.getTeacher.id, 1)
+      console.log(response)
+      this.questions = response.content
       this.totalPage = response.totalPage
       this.current=1
     }

@@ -83,18 +83,18 @@ export default {
       this.$router.push({name: 'paperInfo', params: {paperId: id}})
     },
     //分页
-    onChange(pageNumber) {
+    async onChange(pageNumber) {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.totalPage) {
-        let response = getReleasedPaper(this.$store.getters.getTeacher.id, pageNumber)
+        let response =await getReleasedPaper(this.$store.getters.getTeacher.id, pageNumber)
         this.papers = response.res
         this.totalPage = response.totalPage
       }
     }
 
   },
-  mounted() {
-    let response = getReleasedPaper(this.$store.getters.getTeacher.id, 1)
+  async mounted() {
+    let response =await getReleasedPaper(this.$store.getters.getTeacher.id, 1)
     this.papers = response.res
     console.log(this.papers)
     this.totalPage = response.totalPage

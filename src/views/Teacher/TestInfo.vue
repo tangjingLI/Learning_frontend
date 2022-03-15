@@ -72,14 +72,18 @@ export default {
   methods: {
     back(id) {
       this.$router.push({name: 'testList', params: {bankId: id}})
+    },
+    async reset(){
+      let params = this.$route.params;
+      let response =await getTestDetail(params.testId);
+      console.log(response)
+      this.question = response;
+      this.choices = response.choices;
+      this.knowledge = response.knowledges;
     }
   },
   mounted() {
-    let params = this.$route.params;
-    let response = getTestDetail(params.testId);
-    this.question = response.question;
-    this.choices = response.choices;
-    this.knowledge = response.knowledges;
+    this.reset()
   }
 }
 </script>

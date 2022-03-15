@@ -40,7 +40,7 @@
       <a-input-search placeholder="输入题目内容" enter-button @search="onSearch" id="search"
                       style="width: 30%; float: right;margin-top: 5px;margin-right: 5px"/>
       <a-button @click="reset"
-                style="float: right;margin-right: 10px;margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;">
+                style="padding-left:5px;padding-right:5px;float: right;margin-right: 10px;margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;">
         重置
       </a-button>
 
@@ -71,7 +71,7 @@
           <a @click="detail(record.id)">查看</a>
           <a-divider type="vertical"/>
           <a-popconfirm
-              title="确定删除该题库吗?"
+              title="确定删除该题目吗?"
               ok-text="Yes"
               cancel-text="No"
               @confirm="confirm(record.id)"
@@ -269,11 +269,12 @@ export default {
     this.reset();
   },
   methods: {
-    reset() {
+    async reset() {
       let params = this.$route.params;
-      let response = getTestBank(params.bankId, this.$store.getters.getTeacher.id, 1);
-      this.bankTitle = response.res.bankTitle;
-      this.questions = response.res.questions;
+      let response =await getTestBank(params.bankId, this.$store.getters.getTeacher.id, 1);
+      console.log(response)
+      this.bankTitle = response.title;
+      this.questions = response.questions;
       this.isPublic = response.isPublic;
       this.totalPage = response.totalPage
       this.current=1
@@ -281,8 +282,8 @@ export default {
       this.choices.push({ch: 'A'});
       this.choices.push({ch: 'B'});
     },
-    onSearch(value) {
-      let response = searchTest(value);
+    async onSearch(value) {
+      let response =await searchTest(value);
       this.bankTitle = response.res.bankTitle;
       this.questions = response.res.questions;
       this.isPublic = response.isPublic;
@@ -295,13 +296,14 @@ export default {
       this.$router.push({name: 'testInfo', params: {testId: id}})
     },
     //删除
-    confirm(id) {
-      let response = deleteTest(this.$store.getters.getTeacher.id, id);
+    async confirm(id) {
+      let response =await deleteTest(this.$store.getters.getTeacher.id, id);
+      console.log(response)
       if (response.code == 0) {
         this.$message.success('删除成功！');
-        this.reset()
+        await this.reset()
       } else {
-        this.$message.error("删除失败");
+        this.$message.error(response.msg);
       }
     },
     cancel(e) {
@@ -310,15 +312,16 @@ export default {
     //编辑题库
     edit(e) {
       e.preventDefault();
-      this.form1.validateFields((err, values) => {
+      this.form1.validateFields(async(err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
-          let response = editTestBank(this.$route.params.bankId, this.$store.getters.getTeacher.id, values.title, values.isPublic);
+          let response = await editTestBank(this.$route.params.bankId, this.$store.getters.getTeacher.id, values.title, values.isPublic);
           this.form1.resetFields();
           this.editBank = false;
+          console.log(response)
           if (response.code == 0) {
             this.$message.success('编辑成功！');
-            this.reset()
+            await this.reset()
           } else {
             this.$message.error("编辑失败");
           }
@@ -337,10 +340,10 @@ export default {
     },
     addTest(e) {
       e.preventDefault();
-      this.form2.validateFields((err, values) => {
+      this.form2.validateFields(async(err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
-          let response = addTest(values, this.$store.getters.getTeacher.id, this.$route.params.bankId, this.num);
+          let response =await addTest(values, this.$store.getters.getTeacher.id, this.$route.params.bankId, this.num);
           this.form2.resetFields();
           this.testType = 0;
           this.num = 2;
@@ -350,7 +353,7 @@ export default {
           this.showAdd = false;
           if (response.code == 0) {
             this.$message.success("添加题目成功！");
-            this.reset()
+            await this.reset()
           } else {
             this.$message.error("添加题目失败");
           }
@@ -386,22 +389,22 @@ export default {
       console.log('selectedRowKeys changed: ', selectedRowKeys);
       this.selectedRowKeys = selectedRowKeys;
     },
-    deleteGroup() {
-      let response = deleteTestGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
+    async deleteGroup() {
+      let response =await deleteTestGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
       if (response.code == 0) {
         this.$message.success('删除成功！');
-        this.reset()
+        await this.reset()
       } else {
         this.$message.error("删除失败")
       }
     },
     //分页
-    onChange(pageNumber) {
+    async onChange(pageNumber) {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.totalPage) {
         let params = this.$route.params;
-        let response = getTestBank(params.bankId, this.$store.getters.getTeacher.id, pageNumber);
-        this.questions = response.res.questions;
+        let response =await getTestBank(params.bankId, this.$store.getters.getTeacher.id, pageNumber);
+        this.questions = response.questions;
         this.totalPage = response.totalPage
       }
     }

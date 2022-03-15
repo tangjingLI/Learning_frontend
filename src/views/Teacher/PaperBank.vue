@@ -147,9 +147,9 @@ export default {
     this.reset()
   },
   methods: {
-    reset(){
+    async reset(){
       let userId = this.$store.getters.getTeacher.id;
-      let response = getAllPaperBank(userId, 1);
+      let response =await getAllPaperBank(userId, 1);
       this.msg = response.msg;
       this.banks = response.res;
       this.totalPage = response.totalPage
@@ -164,12 +164,12 @@ export default {
       console.log(value)
     },
     //删除
-    confirm(id) {
+    async confirm(id) {
       console.log("delete:" + id);
-      let response = deletePaperBank(this.$store.getters.getTeacher.id, id)
+      let response =await deletePaperBank(this.$store.getters.getTeacher.id, id)
       if (response.res) {
         this.$message.success('删除成功！')
-        this.reset()
+        await this.reset()
       } else {
         this.$message.error("删除失败")
       }
@@ -184,18 +184,18 @@ export default {
     handleOk(e) {
       // console.log(e);
       e.preventDefault();
-      this.form.validateFields((err, values) => {
+      this.form.validateFields(async (err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
           this.form.resetFields();
           this.visible = false;
 
           let aData = new Date();
-          console.log(aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate())
-          let response = createPaperBank(values.title, this.$store.getters.getTeacher.id, aData)
+          // console.log(aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate())
+          let response =await createPaperBank(values.title, this.$store.getters.getTeacher.id, aData)
           if (response.res) {
             this.$message.success("创建成功")
-            this.reset()
+            await this.reset()
 
           } else {
             this.$message.error("创建失败")
@@ -208,22 +208,22 @@ export default {
       console.log('selectedRowKeys changed: ', selectedRowKeys);
       this.selectedRowKeys = selectedRowKeys;
     },
-    deleteGroup() {
-      let response = deletePaperBankGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
+    async deleteGroup() {
+      let response =await deletePaperBankGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
       if (response.res) {
         this.$message.success('删除成功！')
-        this.reset()
+        await this.reset()
 
       } else {
         this.$message.error("删除失败")
       }
     },
     //分页
-    onChange(pageNumber) {
+    async onChange(pageNumber) {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.totalPage) {
         let userId = this.$store.getters.getTeacher.id;
-        let response = getAllPaperBank(userId, pageNumber);
+        let response =await getAllPaperBank(userId, pageNumber);
         this.msg = response.msg;
         this.banks = response.res;
         this.totalPage = response.totalPage
