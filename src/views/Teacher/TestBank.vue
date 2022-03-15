@@ -56,7 +56,7 @@
     </div>
 
     <div class="footer">
-      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
+      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page" v-model="current"/>
     </div>
 
     <a-modal v-model="visible" title="新建题库" @ok="handleOk" @cancel="handleCancel">
@@ -123,6 +123,7 @@ export default {
       visible: false,
       totalPage: 1,
       formLayout: 'horizontal',
+      current:1,
       form: this.$form.createForm(this, {name: 'newTestBank'}),
     }
   },
@@ -140,8 +141,8 @@ export default {
       console.log("delete:" + id);
       let response = deleteTestBank(id, this.$store.getters.getTeacher.id);
       if (response.code == 0) {
-        this.$message.success('删除成功！');
-        // this.reload();
+        this.$message.success('删除成功！')
+        this.reset()
       } else {
         this.$message.warning("删除失败")
       }
@@ -163,8 +164,8 @@ export default {
           this.form.resetFields();
           this.visible = false;
           if (response.code == 0) {
-            this.$message.success("新建题库成功！");
-            // this.reload();
+            this.$message.success("新建题库成功！")
+            this.reset()
           } else {
             this.$message.error("题库已存在");
           }
@@ -172,7 +173,7 @@ export default {
       });
     },
     handleCancel() {
-      this.form.resetFields();
+      this.form.resetFields()
     },
     //选择
     onSelectChange(selectedRowKeys) {
@@ -182,7 +183,8 @@ export default {
     deleteGroup() {
       let response = deleteTestBankGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
       if (response.code == 0) {
-        this.$message.success('删除成功！');
+        this.$message.success('删除成功！')
+        this.reset()
       } else {
         this.$message.error("删除失败")
       }
@@ -197,14 +199,18 @@ export default {
         this.totalPage = response.totalPage
       }
     },
+    reset(){
+      let userId = this.$store.getters.getTeacher.id;
+      let response = getAllTestBank(userId, 1);
+      this.banks = response.res;
+      this.totalPage = response.totalPage
+      this.current=1
+    }
 
   },
 
   mounted() {
-    let userId = this.$store.getters.getTeacher.id;
-    let response = getAllTestBank(userId, 1);
-    this.banks = response.res;
-    this.totalPage = response.totalPage
+    this.reset()
   },
   computed: {
     hasSelected() {

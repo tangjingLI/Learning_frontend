@@ -69,8 +69,7 @@ import {login} from "../../api/login";
 export default {
   name: "Login",
   data() {
-    return {
-    }
+    return {}
   },
   beforeCreate() {
     this.form = this.$form.createForm(this, {name: 'normal_login'});
@@ -78,16 +77,17 @@ export default {
   methods: {
     handleSubmit(e) {
       e.preventDefault();
-      this.form.validateFields((err, values) => {
+      this.form.validateFields(async(err, values) => {
         if (!err) {
           console.log(values);
-          let response=login(values.phone,values.password);
-          if(response.res.ok){
+          let response = await login(values.phone, values.password);
+          if (response.code==0) {
+            console.log(response.data)
             window.sessionStorage.setItem('isLogin', 'true');
-            this.$store.dispatch('asyncUpdateTeacher', {phone: values.phone,id:response.res.userId});
-            this.$router.push('/teacher');
+            await this.$store.dispatch('asyncUpdateTeacher', {phone: values.phone, id: response.data.id});
+            await this.$router.push('/teacher');
             this.$message.success('欢迎登录');
-          }else {
+          } else {
             this.$message.warning("手机号或密码错误");
             this.form.resetFields();
           }

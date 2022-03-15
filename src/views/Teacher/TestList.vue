@@ -85,7 +85,7 @@
     </div>
 
     <div class="footer">
-      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
+      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page" v-model="current"/>
     </div>
 
     <a-modal v-model="editBank" title="编辑题库" @ok="edit" @cancel="cancel1">
@@ -258,6 +258,7 @@ export default {
       totalPage: 1,
       choices: [],
       selectedRowKeys: [],
+      current:1,
       list: ['A', 'B', 'C', 'D', 'E', 'F'],
       form1: this.$form.createForm(this, {name: 'editTestBank'}),
       form2: this.$form.createForm(this, {name: 'addTest'}),
@@ -266,9 +267,6 @@ export default {
   mounted() {
     // console.log(this.$route.params);
     this.reset();
-
-    this.choices.push({ch: 'A'});
-    this.choices.push({ch: 'B'});
   },
   methods: {
     reset() {
@@ -278,6 +276,10 @@ export default {
       this.questions = response.res.questions;
       this.isPublic = response.isPublic;
       this.totalPage = response.totalPage
+      this.current=1
+      this.choices = [];
+      this.choices.push({ch: 'A'});
+      this.choices.push({ch: 'B'});
     },
     onSearch(value) {
       let response = searchTest(value);
@@ -297,6 +299,7 @@ export default {
       let response = deleteTest(this.$store.getters.getTeacher.id, id);
       if (response.code == 0) {
         this.$message.success('删除成功！');
+        this.reset()
       } else {
         this.$message.error("删除失败");
       }
@@ -309,15 +312,15 @@ export default {
       e.preventDefault();
       this.form1.validateFields((err, values) => {
         if (!err) {
-          if (values.title == this.bankTitle) {
-            this.form1.resetFields();
-            this.editBank = false;
+          console.log('Received values of form: ', values);
+          let response = editTestBank(this.$route.params.bankId, this.$store.getters.getTeacher.id, values.title, values.isPublic);
+          this.form1.resetFields();
+          this.editBank = false;
+          if (response.code == 0) {
+            this.$message.success('编辑成功！');
+            this.reset()
           } else {
-            console.log('Received values of form: ', values);
-            let response = editTestBank(this.$route.params.bankId, this.$store.getters.getTeacher.id, values.title, values.isPublic);
-            this.form1.resetFields();
-            this.editBank = false;
-            this.$message.success("编辑题库成功！");
+            this.$message.error("编辑失败");
           }
         }
       });
@@ -347,6 +350,7 @@ export default {
           this.showAdd = false;
           if (response.code == 0) {
             this.$message.success("添加题目成功！");
+            this.reset()
           } else {
             this.$message.error("添加题目失败");
           }
@@ -386,6 +390,7 @@ export default {
       let response = deleteTestGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
       if (response.code == 0) {
         this.$message.success('删除成功！');
+        this.reset()
       } else {
         this.$message.error("删除失败")
       }

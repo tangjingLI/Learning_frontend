@@ -70,7 +70,7 @@
     </div>
 
     <div class="footer">
-      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
+      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page" v-model="current"/>
     </div>
   </div>
 
@@ -117,16 +117,21 @@ export default {
       papers: [],
       choose: [],
       selectedRowKeys: [],
+      current:1,
     }
   },
   mounted() {
-    let params = this.$route.params;
-    let response = getPaperBank(params.bankId, 1);
-    this.papers = response.res;
-    this.bankTitle = response.bankTitle;
-    this.totalPage = response.totalPage
+    this.reset()
   },
   methods: {
+    reset(){
+      let params = this.$route.params;
+      let response = getPaperBank(params.bankId, 1);
+      this.papers = response.res;
+      this.bankTitle = response.bankTitle;
+      this.totalPage = response.totalPage
+      this.current=1
+    },
     onSearch(value) {
       console.log(value);
     },
@@ -141,7 +146,8 @@ export default {
       let response = deletePaper(this.$store.getters.getTeacher.id, id)
       if (response.res) {
         console.log("删除试卷：" + id)
-        this.$message.success('删除成功！');
+        this.$message.success('删除成功！')
+        this.reset()
       } else {
         this.$message.error("删除失败")
       }
@@ -162,7 +168,8 @@ export default {
     deleteGroup() {
       let response = deletePaperGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
       if (response.res) {
-        this.$message.success('删除成功！');
+        this.$message.success('删除成功！')
+        this.reset()
       } else {
         this.$message.error("删除失败")
       }

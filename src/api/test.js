@@ -321,7 +321,7 @@ export function deleteTestBank(bId, uId) {
     //         console.log(error);
     //     })
     return {
-        code: true
+        code: 0
     }
 }
 
@@ -392,7 +392,7 @@ export function deleteTest(uid,qid) {
     //         console.log(error);
     //     })
     return {
-        code: true
+        code: 0
     }
 }
 

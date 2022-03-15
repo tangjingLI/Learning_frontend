@@ -57,7 +57,7 @@
     </div>
 
     <div class="footer">
-      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
+      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page" v-model="current"/>
     </div>
 
     <a-modal v-model="visible" title="新建题库" @ok="handleOk">
@@ -139,17 +139,22 @@ export default {
       visible: false,
       selectedRowKeys: [],
       formLayout: 'horizontal',
+      current:1,
       form: this.$form.createForm(this, {name: 'newPaperBank'}),
     }
   },
   mounted() {
-    let userId = this.$store.getters.getTeacher.id;
-    let response = getAllPaperBank(userId, 1);
-    this.msg = response.msg;
-    this.banks = response.res;
-    this.totalPage = response.totalPage
+    this.reset()
   },
   methods: {
+    reset(){
+      let userId = this.$store.getters.getTeacher.id;
+      let response = getAllPaperBank(userId, 1);
+      this.msg = response.msg;
+      this.banks = response.res;
+      this.totalPage = response.totalPage
+      this.current=1
+    },
     //查看
     chooseBank(id) {
       this.$router.push({name: 'paperList', params: {bankId: id}});
@@ -163,7 +168,8 @@ export default {
       console.log("delete:" + id);
       let response = deletePaperBank(this.$store.getters.getTeacher.id, id)
       if (response.res) {
-        this.$message.success('删除成功！');
+        this.$message.success('删除成功！')
+        this.reset()
       } else {
         this.$message.error("删除失败")
       }
@@ -188,7 +194,9 @@ export default {
           console.log(aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate())
           let response = createPaperBank(values.title, this.$store.getters.getTeacher.id, aData)
           if (response.res) {
-            this.$message.success("创建成功");
+            this.$message.success("创建成功")
+            this.reset()
+
           } else {
             this.$message.error("创建失败")
           }
@@ -203,7 +211,9 @@ export default {
     deleteGroup() {
       let response = deletePaperBankGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
       if (response.res) {
-        this.$message.success('删除成功！');
+        this.$message.success('删除成功！')
+        this.reset()
+
       } else {
         this.$message.error("删除失败")
       }

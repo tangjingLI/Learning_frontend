@@ -305,36 +305,36 @@ export function getKnowledgeList(uid, pageNum) {
     //     .catch(function (error) {
     //         console.log(error);
     //     })
-    return{
-        knowledge:[
+    return {
+        knowledge: [
             {
-                id:1,
-                name:"知识点1",
-                skill_level:"理解"
+                id: 1,
+                name: "知识点1",
+                skill_level: "理解"
             },
             {
-                id:2,
-                name:"知识点1",
-                skill_level:"理解"
+                id: 2,
+                name: "知识点1",
+                skill_level: "理解"
             },
             {
-                id:3,
-                name:"知识点1",
-                skill_level:"记忆"
+                id: 3,
+                name: "知识点1",
+                skill_level: "记忆"
             },
             {
-                id:4,
-                name:"知识点1",
-                skill_level:"记忆"
+                id: 4,
+                name: "知识点1",
+                skill_level: "记忆"
             },
             {
-                id:5,
-                name:"知识点1",
-                skill_level:"记忆"
+                id: 5,
+                name: "知识点1",
+                skill_level: "记忆"
             },
 
         ],
-        totalPage:8
+        totalPage: 8
     }
 
 }
@@ -353,38 +353,38 @@ export function getQualityList(uid, pageNum) {
     //     .catch(function (error) {
     //         console.log(error);
     //     })
-    return{
-        qualities:[
+    return {
+        qualities: [
             {
-                id:1,
-                name:"品行1",
+                id: 1,
+                name: "品行1",
             },
             {
-                id:2,
-                name:"品行1",
+                id: 2,
+                name: "品行1",
             },
             {
-                id:3,
-                name:"品行1",
+                id: 3,
+                name: "品行1",
             },
             {
-                id:4,
-                name:"品行1",
+                id: 4,
+                name: "品行1",
             },
             {
-                id:5,
-                name:"品行1",
+                id: 5,
+                name: "品行1",
             },
             {
-                id:6,
-                name:"品行1",
+                id: 6,
+                name: "品行1",
             },
             {
-                id:7,
-                name:"品行1",
+                id: 7,
+                name: "品行1",
             },
         ],
-        totalPage:39
+        totalPage: 39
     }
 }
 
@@ -410,64 +410,313 @@ export function getCourseDetail(uid, cid) {
 }
 
 //添加知识点
-export function addKnowledge(){
-
+export function addKnowledge(uid, name, skill_level) {
+    // let data = {
+    //     user_id: uid,
+    //     knowledge:{
+    //         name: name,
+    //         skill_level:skill_level
+    //     },
+    // }
+    // return axios.post('/api/ability/knowledge_add/', data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        code: 0
+    }
 }
 
 //添加品行
-export function addQuality(){
+export function addQuality(uid, name) {
+    // let data = {
+    //     user_id: uid,
+    //     quality:{
+    //         name: name
+    //     }
+    // }
+    // return axios.post('/api/ability/quality_add/', data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        code: 0
+    }
 
 }
 
 //添加能力
-export function addAbility(){
-
+export function addAbility(uid, name, brief) {
+    // let data = {
+    //     user_id: uid,
+    //     ability: {
+    //         name: name,
+    //         brief: brief
+    //     }
+    // }
+    // return axios.post('/api/ability/add/', data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        code: 0
+    }
 }
 
 //删除知识点
-export function deleteKnowledge(uid,kid){
-    let data={
-        user_id:uid,
-        id:kid
-    }
-    return axios.post('/api/course/knowledge_delete/',data)
+export function deleteKnowledge(uid, kid) {
+    // let data={
+    //     user_id:uid,
+    //     id:kid
+    // }
+    // return axios.post('/api/course/knowledge_delete/',data)
     //     .then(res => {
     //         return res.data
     //     })
     //     .catch(function (error) {
     //         console.log(error);
     //     })
+    return {
+        code: 0
+    }
 }
 
 //删除品行
-export function deleteQuality(uid,qid){
-    let data={
-        user_id:uid,
-        id:qid
-    }
-    return axios.post('/api/course/quality_delete/',data)
+export function deleteQuality(uid, qid) {
+    // let data={
+    //     user_id:uid,
+    //     id:qid
+    // }
+    // return axios.post('/api/course/quality_delete/',data)
     //     .then(res => {
     //         return res.data
     //     })
     //     .catch(function (error) {
     //         console.log(error);
     //     })
+    return {
+        code: 0
+    }
 }
 
 //删除能力
-export function deleteAbility(uid,aid){
-    let data={
-        user_id:uid,
-        id:aid
-    }
-    return axios.post('/api/course/ability_delete/',data)
+export function deleteAbility(uid, aid) {
+    // let data={
+    //     user_id:uid,
+    //     id:aid
+    // }
+    // return axios.post('/api/course/ability_delete/',data)
     //     .then(res => {
     //         return res.data
     //     })
     //     .catch(function (error) {
     //         console.log(error);
     //     })
+    return {
+        code: 0
+    }
 }
+
+//按能力查看知识点
+export function getKnowledgeListByAbility(uid, aid,pageNum) {
+    // return axios.get('/api/ability/knowledge_select_list', {
+    //     params: {
+    //         user_id: uid,
+    //         ability_id: aid,
+    //         pageNum:pageNum
+    //     }
+    // })
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        knowledge: [
+            {
+                id: 1,
+                name: "知识点1",
+                skill_level: "理解"
+            },
+            {
+                id: 2,
+                name: "知识点1",
+                skill_level: "理解"
+            },
+            {
+                id: 3,
+                name: "知识点1",
+                skill_level: "记忆"
+            },
+            {
+                id: 4,
+                name: "知识点1",
+                skill_level: "记忆"
+            },
+            {
+                id: 5,
+                name: "知识点1",
+                skill_level: "记忆"
+            },
+            {
+                id: 6,
+                name: "知识点1",
+                skill_level: "记忆"
+            },
+            {
+                id: 7,
+                name: "知识点1",
+                skill_level: "记忆"
+            },
+            {
+                id: 8,
+                name: "知识点1",
+                skill_level: "记忆"
+            },
+
+        ],
+        totalPage: 17
+    }
+
+}
+
+//按能力查看品行
+export function getQualityListByAbility(uid, aid,pageNum) {
+    // return axios.get('/api/ability/quality_select_list', {
+    //     params: {
+    //         user_id: uid,
+    //         ability_id: aid,
+    //         pageNum:pageNum
+    //     }
+    // })
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        qualities: [
+            {
+                id: 1,
+                name: "品行1",
+            },
+            {
+                id: 2,
+                name: "品行1",
+            },
+            {
+                id: 3,
+                name: "品行1",
+            },
+            {
+                id: 4,
+                name: "品行1",
+            },
+            {
+                id: 5,
+                name: "品行1",
+            },
+            {
+                id: 6,
+                name: "品行1",
+            },
+            {
+                id: 7,
+                name: "品行1",
+            },
+        ],
+        totalPage: 24
+    }
+
+}
+
+//能力解绑知识点
+export function unbindKnowledge(uid, aid,list) {
+    // let data={
+    //     user_id:uid,
+    //     ability_id:aid,
+    //     id_list:list
+    // }
+    // return axios.post('/api/ability/knowledge_unbind/',data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        code: 0
+    }
+}
+
+//能力解绑品行
+export function unbindQuality(uid, aid,list) {
+    // let data={
+    //     user_id:uid,
+    //     ability_id:aid,
+    //     id_list:list
+    // }
+    // return axios.post('/api/ability/quality_unbind/',data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        code: 0
+    }
+}
+
+//能力绑定知识点
+export function bindKnowledge(uid, aid,list) {
+    // let data={
+    //     user_id:uid,
+    //     ability_id:aid,
+    //     id_list:list
+    // }
+    // return axios.post('/api/ability/knowledge_bind/',data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        code: 0
+    }
+}
+
+//能力绑定品行
+export function bindQuality(uid, aid,list) {
+    // let data={
+    //     user_id:uid,
+    //     ability_id:aid,
+    //     id_list:list
+    // }
+    // return axios.post('/api/ability/quality_bind/',data)
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+    return {
+        code: 0
+    }
+}
+
 
 //添加课程
 

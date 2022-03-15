@@ -49,7 +49,7 @@
     </div>
 
     <div class="footer">
-      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
+      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page" v-model="current"/>
     </div>
   </div>
 </template>
@@ -97,6 +97,7 @@ export default {
       columns,
       questions: [],
       totalPage: 1,
+      current:1,
     }
   },
   methods: {
@@ -107,6 +108,7 @@ export default {
       let response = dropTest(id, this.$store.getters.getTeacher.id)
       if (response.code == 0) {
         this.$message.success("删除成功")
+        this.reset()
       } else {
         this.$message.error("删除失败")
       }
@@ -115,6 +117,7 @@ export default {
       let response = restoreTest(id, this.$store.getters.getTeacher.id)
       if (response.code == 0) {
         this.$message.success("恢复成功")
+        this.reset()
       } else {
         this.$message.error("恢复失败")
       }
@@ -132,12 +135,16 @@ export default {
         this.questions = response.questions
         this.totalPage = response.totalPage
       }
+    },
+    reset(){
+      let response = getTestBin(this.$store.getters.getTeacher.id, 1)
+      this.questions = response.questions
+      this.totalPage = response.totalPage
+      this.current=1
     }
   },
   mounted() {
-    let response = getTestBin(this.$store.getters.getTeacher.id, 1)
-    this.questions = response.questions
-    this.totalPage = response.totalPage
+    this.reset()
   }
 }
 </script>

@@ -88,7 +88,7 @@
       </div>
 
       <div class="footer2">
-        <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
+        <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page" v-model="current"/>
       </div>
 
     </div>
@@ -181,6 +181,7 @@ export default {
       addTypeFlag: false,
       addCourseFlag: false,
       active: '所有课程',
+      current: 1,
       form1: this.$form.createForm(this, {name: 'addType'}),
       form2: this.$form.createForm(this, {name: 'addTCourse'}),
     }
@@ -235,8 +236,8 @@ export default {
           let response = addCoursesType(this.$store.getters.getTeacher.id, values.type)
           this.form1.resetFields();
           if (response.code == 0) {
-            this.$message.success("添加成功！");
-            // this.reload();
+            this.$message.success("添加成功！")
+            this.reset()
           } else {
             this.$message.error("添加失败");
           }
@@ -247,8 +248,8 @@ export default {
     deleteType(id) {
       let response = deleteCoursesType(this.$store.getters.getTeacher.id, id)
       if (response.code == 0) {
-        this.$message.success("删除成功！");
-        // this.reload();
+        this.$message.success("删除成功！")
+        this.reset()
       } else {
         this.$message.error("删除失败");
       }
@@ -261,8 +262,8 @@ export default {
     deleteCourseItem(id) {
       let response = deleteCourse(this.$store.getters.getTeacher.id, id)
       if (response.code == 0) {
-        this.$message.success("删除成功！");
-        // this.reload();
+        this.$message.success("删除成功！")
+        this.reset()
       } else {
         this.$message.error("删除失败");
       }
@@ -271,12 +272,22 @@ export default {
       let response = deleteCoursesGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
       console.log(this.selectedRowKeys)
       if (response.code == 0) {
-        this.$message.success("删除成功！");
-        // this.reload();
+        this.$message.success("删除成功！")
+        this.reset()
       } else {
         this.$message.error("删除失败");
       }
-    }
+    },
+    reset() {
+      let response = getCourseType(this.$store.getters.getTeacher.id)
+      this.types = response.classifies
+      this.types.unshift({id: -1, name: "所有课程"})
+      let res = getAllCourses(this.$store.getters.getTeacher.id, 1)
+      this.courses = res.courses
+      this.totalPage = res.totalPage
+      this.current = 1
+
+    },
 
   },
   computed: {
@@ -285,12 +296,7 @@ export default {
     },
   },
   mounted() {
-    let response = getCourseType(this.$store.getters.getTeacher.id)
-    this.types = response.classifies
-    this.types.unshift({id: -1, name: "所有课程"})
-    let res = getAllCourses(this.$store.getters.getTeacher.id, 1)
-    this.courses = res.courses
-    this.totalPage = res.totalPage
+    this.reset()
   }
 }
 </script>

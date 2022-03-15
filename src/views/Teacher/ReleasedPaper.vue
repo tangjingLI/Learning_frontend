@@ -18,7 +18,7 @@
     </div>
 
     <div class="footer">
-      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
+      <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page" v-model="current"/>
     </div>
   </div>
 </template>
@@ -72,6 +72,7 @@ export default {
       papers: [],
       columns,
       totalPage: 1,
+      current: 1,
     }
   },
   methods: {
@@ -85,7 +86,7 @@ export default {
     onChange(pageNumber) {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.totalPage) {
-        let response = getReleasedPaper(this.$store.getters.getTeacher.id,pageNumber)
+        let response = getReleasedPaper(this.$store.getters.getTeacher.id, pageNumber)
         this.papers = response.res
         this.totalPage = response.totalPage
       }
@@ -93,10 +94,11 @@ export default {
 
   },
   mounted() {
-    let response = getReleasedPaper(this.$store.getters.getTeacher.id,1)
+    let response = getReleasedPaper(this.$store.getters.getTeacher.id, 1)
     this.papers = response.res
     console.log(this.papers)
     this.totalPage = response.totalPage
+    this.current = 1
   }
 }
 </script>

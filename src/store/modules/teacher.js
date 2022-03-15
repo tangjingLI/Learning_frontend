@@ -14,6 +14,7 @@ const teacher = {
     mutations: {
         updateTeacher(state, user) {
             state.user = user;
+            console.log(state.user)
         }
     },
     actions: {
