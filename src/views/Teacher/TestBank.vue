@@ -23,6 +23,10 @@
 
       <a-input-search placeholder="输入题库名" enter-button @search="onSearch" id="search"
                       style="width: 30%; float: right;margin-top: 5px;margin-right: 5px"/>
+      <a-button @click="reset"
+                style="padding-left:5px;padding-right:5px;float: right;margin-right: 10px;margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;">
+        重置
+      </a-button>
     </div>
 
 
@@ -89,7 +93,7 @@
 </template>
 
 <script>
-import {getAllTestBank, createTestBank, deleteTestBank, deleteTestBankGroup} from "../../api/test";
+import {getAllTestBank, createTestBank, deleteTestBank, deleteTestBankGroup,searchBank} from "../../api/test";
 
 const columns = [
   {
@@ -133,8 +137,10 @@ export default {
       this.$router.push({name: 'testList', params: {bankId: id}});
     },
     //搜索框
-    onSearch(value) {
-      console.log(value)
+    async onSearch(value) {
+      let response=await searchBank(this.$store.getters.getTeacher.id,value)
+      console.log(response)
+      this.banks=response
     },
     //删除
     async confirm(id) {

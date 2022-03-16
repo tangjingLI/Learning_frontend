@@ -15,37 +15,6 @@ export function getTestBankList(id) {
         .catch(function (error) {
             console.log(error);
         })
-    // return {
-    //     code: 200,
-    //     res: [
-    //         {
-    //             id: 1,
-    //             title: "数据结构题库",
-    //             isPublic: 0
-    //         },
-    //         {
-    //             id: 2,
-    //             title: "云计算题库",
-    //             isPublic: 1
-    //         },
-    //         {
-    //             id: 3,
-    //             title: "设计模式题库",
-    //             isPublic: 1
-    //         },
-    //         {
-    //             id: 4,
-    //             title: "人机交互题库",
-    //             isPublic: 0
-    //         },
-    //         {
-    //             id: 5,
-    //             title: "c++题库",
-    //             isPublic: 0
-    //         },
-    //
-    //     ]
-    // }
 }
 
 
@@ -63,12 +32,11 @@ export function getAllTestBank(id, pageNum) {
         .catch(function (error) {
             console.log(error);
         })
-
 }
 
-//获取题库详情
+//获取题目列表
 export function getTestBank(bid, uid, pageNum) {
-    return axios.get(`${baseUrls.test}/bank/details/`, {
+    return axios.get(`${baseUrls.test}/question/list`, {
             params: {
                 bankId: bid,
                 userId: uid,
@@ -165,20 +133,8 @@ export function editTestBank(bid, uid, title, isPublic) {
 }
 
 //添加题目
-export function addTest(values, uid, bid, num) {
-    let arr = [];
-    let list = ['A', 'B', 'C', 'D', 'E', 'F'];
-    while (num > 0) {
-        num--;
-        arr.push({
-            number: list[num],
-            content: values.number
-        })
-    }
+export function addTest(values, uid, bid, arr) {
 
-    let data = {
-        choices: arr
-    }
 
     let question = {
         title: values.title,
@@ -191,12 +147,13 @@ export function addTest(values, uid, bid, num) {
         userId: uid
     }
 
+    let data = {
+        choices: arr
+    }
+
 
     return axios.post(`${baseUrls.test}/question/add`, data, {
         params: question,
-        headers: {
-            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
-        },
     })
         .then(res => {
             return res.data
@@ -204,29 +161,6 @@ export function addTest(values, uid, bid, num) {
         .catch(function (error) {
             console.log(error);
         })
-    // let data = {
-    //     question: {
-    //         title: values.title,
-    //         content: values.content,
-    //         answer: values.answer,
-    //         type: values.type,
-    //         analysis: values.analysis,
-    //         consume: values.consume,
-    //     },
-    //     choices: arr,
-    //     id: id,
-    //     userId:uid
-    // }
-    // return axios.post('/api/question/add', data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: true
-    }
 }
 
 //删除题目
@@ -235,7 +169,7 @@ export function deleteTest(uid, qid) {
     Form.append("questionId", qid);
     Form.append("userId", uid);
 
-    return axios.post(`${baseUrls.test}question/delete/`, Form, {
+    return axios.post(`${baseUrls.test}/question/delete/`, Form, {
         headers: {
             'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
         },
@@ -249,42 +183,36 @@ export function deleteTest(uid, qid) {
 }
 
 //搜索题目
-export function searchTest(title) {
-    // return axios.get(`${baseUrls.test}/question/search/`,{
-    //     params:{
-    //         title:title
-    //     }
-    // })
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 200,
-        res: {
-            bankTitle: "数据结构题库",
-            questions: [
-                {
-                    id: 11,
-                    title: "小摩托",
-                    type: 3,
-                    consume: 9,
-                    rate: 0.67
-                },
-                {
-                    id: 12,
-                    title: "猫猫虫",
-                    type: 1,
-                    consume: 9,
-                    rate: 0.67
-                },
+export function searchTest(bid, title) {
+    return axios.get(`${baseUrls.test}/question/search`, {
+        params: {
+            bankId: bid,
+            title: title
+        }
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 
-            ]
-        },
-        qPublic: 1
-    }
+}
+
+//搜索题库
+export function searchBank(uid, title) {
+    return axios.get(`${baseUrls.test}/bank/search`, {
+        params: {
+            userId: uid,
+            title: title
+        }
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 
 }
 
@@ -509,40 +437,31 @@ export function dropTestBank(bid, uid) {
 
 //批量删除题库
 export function deleteTestBankGroup(uid, bidList) {
-    // let data={
-    //     userId:uid,
-    //     idList:bidList
-    // }
-    //
-    // return axios.post(`${baseUrls.test}/bank/batchDelete`,data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-
-    return {
-        code: 0
-    }
+    return axios.post(`${baseUrls.test}/bank/batchDelete`, bidList, {
+        params: {
+            userId: uid
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 }
 
 //批量删除题目
 export function deleteTestGroup(uid, qidList) {
-    // let data={
-    //     userId:uid,
-    //     idList:qidList
-    // }
-    //
-    // return axios.post(`${baseUrls.test}/question/batchDelete`,data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
+    return axios.post(`${baseUrls.test}/question/batchDelete`, qidList, {
+        params: {
+            userId: uid
+        }
 
-    return {
-        code: 0
-    }
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 }

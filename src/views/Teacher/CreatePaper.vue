@@ -160,8 +160,10 @@ export default {
   methods: {
     //选择题库
     async handleClick(id) {
-      let response =await getTestBank(id,1)
-      this.tests = response.questions
+      let response =await getTestBank(id,1,1)
+      // let res=await getQuestionList()
+      console.log(response)
+      this.tests = response.content
       this.bankId = id
       this.totalPage = response.totalPage
     },
@@ -215,7 +217,7 @@ export default {
       this.paperFlag = true
       let id = this.$store.getters.getTeacher.id
       let response =await getQuestionList(this.choose)
-      this.questions = response.questions
+      this.questions = response.res.questions
       this.paperName = ''
       this.scores = []
       this.totalScore = 0

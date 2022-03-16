@@ -1,8 +1,9 @@
 import axios from "axios";
+import {baseUrls} from "./baseUrl";
 
 //获取所有课程
 export function getAllCourses(uid, pageNum) {
-    // return axios.get('/api/course/tcourse_list',{
+    // return axios.get(`${baseUrls.course}/course/tcourse_list`,{
     //     params:{
     //         user_id:uid
     //         pageNum: pageNum
@@ -94,7 +95,7 @@ export function getAllCourses(uid, pageNum) {
 
 //根据分类查看课程
 export function getCoursesByType(uid, typeId, pageNum) {
-    // return axios.get('/api/course/list',{
+    // return axios.get(`${baseUrls.course}/course/list`,{
     //     params:{
     //         user_id:id,
     //         classify:typeId,
@@ -141,7 +142,7 @@ export function addCoursesType(uid, type) {
     //     user_id: uid,
     //     name: type
     // }
-    // return axios.post('/api/course/classify_add/', data)
+    // return axios.post(`${baseUrls.course}/course/classify_add/`, data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -159,7 +160,7 @@ export function deleteCoursesType(uid, typeId) {
     //     user_id: uid,
     //     id:typeId
     // }
-    // return axios.post('/api/course/classify_delete/', data)
+    // return axios.post(`${baseUrls.course}/course/classify_delete/`, data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -174,7 +175,7 @@ export function deleteCoursesType(uid, typeId) {
 
 //获取课程分类
 export function getCourseType(uid) {
-    // return axios.get('/api/course/classify_list', {
+    // return axios.get(`${baseUrls.course}/course/classify_list`, {
     //     params: {
     //         user_id: uid
     //     }
@@ -209,7 +210,7 @@ export function deleteCourse(uid, cid) {
     //     user_id: uid,
     //     id: cid
     // }
-    // return axios.post('/api/course/delete/', data)
+    // return axios.post(`${baseUrls.course}/course/delete/`, data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -227,7 +228,7 @@ export function deleteCoursesGroup(uid, list) {
     //     user_id: uid,
     //     course_id: list
     // }
-    // return axios.post('/api/course/batch_delete/', data)
+    // return axios.post(`${baseUrls.course}/course/batch_delete/`, data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -241,7 +242,7 @@ export function deleteCoursesGroup(uid, list) {
 
 //获取能力列表
 export function getAbilityList(uid, pageNum) {
-    // return axios.get('/api/ability/list',{
+    // return axios.get(`${baseUrls.course}/ability/list`,{
     //     params:{
     //         user_id:uid,
     //         pageNum:pageNum
@@ -293,7 +294,7 @@ export function getAbilityList(uid, pageNum) {
 
 //获取知识点列表
 export function getKnowledgeList(uid, pageNum) {
-    // return axios.get('/api/ability/knowledge_list', {
+    // return axios.get(`${baseUrls.course}/ability/knowledge_list`, {
     //     params: {
     //         user_id: uid,
     //         pageNum: pageNum
@@ -341,7 +342,7 @@ export function getKnowledgeList(uid, pageNum) {
 
 //获取品行列表
 export function getQualityList(uid, pageNum) {
-    // return axios.get('/api/ability/quality_list', {
+    // return axios.get(`${baseUrls.course}/ability/quality_list`, {
     //     params: {
     //         user_id: uid,
     //         pageNum: pageNum
@@ -388,26 +389,6 @@ export function getQualityList(uid, pageNum) {
     }
 }
 
-//
-
-//查看课程
-export function getCourseDetail(uid, cid) {
-    // return axios.get('/api/course/detail/', {
-    //     params: {
-    //         user_id: uid,
-    //         course_id: cid
-    //     }
-    // })
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 0
-    }
-}
 
 //添加知识点
 export function addKnowledge(uid, name, skill_level) {
@@ -418,7 +399,7 @@ export function addKnowledge(uid, name, skill_level) {
     //         skill_level:skill_level
     //     },
     // }
-    // return axios.post('/api/ability/knowledge_add/', data)
+    // return axios.post(`${baseUrls.course}/ability/knowledge_add/`, data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -438,7 +419,7 @@ export function addQuality(uid, name) {
     //         name: name
     //     }
     // }
-    // return axios.post('/api/ability/quality_add/', data)
+    // return axios.post(`${baseUrls.course}/ability/quality_add/`, data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -460,7 +441,7 @@ export function addAbility(uid, name, brief) {
     //         brief: brief
     //     }
     // }
-    // return axios.post('/api/ability/add/', data)
+    // return axios.post(`${baseUrls.course}/ability/add/`, data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -478,7 +459,7 @@ export function deleteKnowledge(uid, kid) {
     //     user_id:uid,
     //     id:kid
     // }
-    // return axios.post('/api/course/knowledge_delete/',data)
+    // return axios.post(`${baseUrls.course}/course/knowledge_delete/`,data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -496,7 +477,7 @@ export function deleteQuality(uid, qid) {
     //     user_id:uid,
     //     id:qid
     // }
-    // return axios.post('/api/course/quality_delete/',data)
+    // return axios.post(`${baseUrls.course}/course/quality_delete/`,data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -514,7 +495,7 @@ export function deleteAbility(uid, aid) {
     //     user_id:uid,
     //     id:aid
     // }
-    // return axios.post('/api/course/ability_delete/',data)
+    // return axios.post(`${baseUrls.course}/course/ability_delete/`,data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -527,8 +508,8 @@ export function deleteAbility(uid, aid) {
 }
 
 //按能力查看知识点
-export function getKnowledgeListByAbility(uid, aid,pageNum) {
-    // return axios.get('/api/ability/knowledge_select_list', {
+export function getKnowledgeListByAbility(uid, aid, pageNum) {
+    // return axios.get(`${baseUrls.course}/ability/knowledge_select_list`, {
     //     params: {
     //         user_id: uid,
     //         ability_id: aid,
@@ -553,36 +534,7 @@ export function getKnowledgeListByAbility(uid, aid,pageNum) {
                 name: "知识点1",
                 skill_level: "理解"
             },
-            {
-                id: 3,
-                name: "知识点1",
-                skill_level: "记忆"
-            },
-            {
-                id: 4,
-                name: "知识点1",
-                skill_level: "记忆"
-            },
-            {
-                id: 5,
-                name: "知识点1",
-                skill_level: "记忆"
-            },
-            {
-                id: 6,
-                name: "知识点1",
-                skill_level: "记忆"
-            },
-            {
-                id: 7,
-                name: "知识点1",
-                skill_level: "记忆"
-            },
-            {
-                id: 8,
-                name: "知识点1",
-                skill_level: "记忆"
-            },
+
 
         ],
         totalPage: 17
@@ -591,8 +543,8 @@ export function getKnowledgeListByAbility(uid, aid,pageNum) {
 }
 
 //按能力查看品行
-export function getQualityListByAbility(uid, aid,pageNum) {
-    // return axios.get('/api/ability/quality_select_list', {
+export function getQualityListByAbility(uid, aid, pageNum) {
+    // return axios.get(`${baseUrls.course}/ability/quality_select_list`, {
     //     params: {
     //         user_id: uid,
     //         ability_id: aid,
@@ -619,22 +571,7 @@ export function getQualityListByAbility(uid, aid,pageNum) {
                 id: 3,
                 name: "品行1",
             },
-            {
-                id: 4,
-                name: "品行1",
-            },
-            {
-                id: 5,
-                name: "品行1",
-            },
-            {
-                id: 6,
-                name: "品行1",
-            },
-            {
-                id: 7,
-                name: "品行1",
-            },
+
         ],
         totalPage: 24
     }
@@ -642,13 +579,13 @@ export function getQualityListByAbility(uid, aid,pageNum) {
 }
 
 //能力解绑知识点
-export function unbindKnowledge(uid, aid,list) {
+export function unbindKnowledge(uid, aid, list) {
     // let data={
     //     user_id:uid,
     //     ability_id:aid,
     //     id_list:list
     // }
-    // return axios.post('/api/ability/knowledge_unbind/',data)
+    // return axios.post(`${baseUrls.course}/ability/knowledge_unbind/`,data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -661,13 +598,13 @@ export function unbindKnowledge(uid, aid,list) {
 }
 
 //能力解绑品行
-export function unbindQuality(uid, aid,list) {
+export function unbindQuality(uid, aid, list) {
     // let data={
     //     user_id:uid,
     //     ability_id:aid,
     //     id_list:list
     // }
-    // return axios.post('/api/ability/quality_unbind/',data)
+    // return axios.post(`${baseUrls.course}/ability/quality_unbind/`,data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -680,13 +617,13 @@ export function unbindQuality(uid, aid,list) {
 }
 
 //能力绑定知识点
-export function bindKnowledge(uid, aid,list) {
+export function bindKnowledge(uid, aid, list) {
     // let data={
     //     user_id:uid,
     //     ability_id:aid,
     //     id_list:list
     // }
-    // return axios.post('/api/ability/knowledge_bind/',data)
+    // return axios.post(`${baseUrls.course}/ability/knowledge_bind/`,data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -699,13 +636,13 @@ export function bindKnowledge(uid, aid,list) {
 }
 
 //能力绑定品行
-export function bindQuality(uid, aid,list) {
+export function bindQuality(uid, aid, list) {
     // let data={
     //     user_id:uid,
     //     ability_id:aid,
     //     id_list:list
     // }
-    // return axios.post('/api/ability/quality_bind/',data)
+    // return axios.post(`${baseUrls.course}/ability/quality_bind/`,data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -719,6 +656,85 @@ export function bindQuality(uid, aid,list) {
 
 
 //添加课程
+export function addCourse(course) {
+    return {
+        code: 0
+    }
+}
+
+
+//查看课程
+export function getCourseDetail(uid, cid) {
+    // return axios.get(`${baseUrls.course}/course/detail/`, {
+    //     params: {
+    //         user_id: uid,
+    //         course_id: cid
+    //     }
+    // })
+    //     .then(res => {
+    //         return res.data
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     })
+
+
+    return {
+        course: {
+            name: "c++",
+            picture: '',
+            brief: '这是简介'
+        },
+        chapters: [
+            {
+                id: 1,
+                name: "章节1",
+                children: [
+                    {
+                        id: 1,
+                        name: "小节1",
+                        video_url: '',
+                        create_time: "2022-3-7",
+                        create_user: "西瓜"
+                        //其他选项
+                    },
+                    {
+                        id: 2,
+                        name: "小节1",
+                        video_url: '',
+                        create_time: "2022-3-7",
+                        create_user: "西瓜"
+                        //其他选项
+                    }
+                ]
+            },
+            {
+                id: 2,
+                name: "章节2",
+                children: [
+                    {
+                        id: 1,
+                        name: "小节1",
+                        video_url: '',
+                        create_time: "2022-3-7",
+                        create_user: "西瓜"
+                        //其他选项
+                    }
+                ]
+            }
+        ],
+        abilities: [
+            {
+                id: 1,
+                name: "团队协作"
+            },
+            {
+                id: 2,
+                name: "超能力"
+            }
+        ]
+    }
+}
 
 //修改课程
 

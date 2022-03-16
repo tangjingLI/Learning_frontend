@@ -118,7 +118,7 @@
         <div v-else style="height: 100%;background-color: #e4e9ef;">
           <div class="box1">
             <div class="action">
-              <a-button class="btn" @click="()=>{this.bindKnowledgeFlag=true}"
+              <a-button class="btn" @click="showBindKnowledge"
                         style="float: right;margin-right: 15px;margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;">
 
                 <a-icon type="plus-circle"/>
@@ -155,7 +155,7 @@
 
           <div class="box2">
             <div class="action">
-              <a-button class="btn" @click="()=>{this.bindQualityFlag=true}"
+              <a-button class="btn" @click="showBindQuality"
                         style="float: right;margin-right: 15px;margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;">
 
                 <a-icon type="plus-circle"/>
@@ -266,17 +266,34 @@
 
     <a-modal v-model="bindKnowledgeFlag" title="绑定知识点" @ok="bindKnowledgeItems" @cancel="">
       <div class="add">
-        <a-table :columns="columns1" :data-source="knowledgeArray" style="background-color: white"
+        <a-table :columns="columns1" :data-source="knowledgeList" style="background-color: white"
                  :pagination="false"
                  :rowKey="record=>record.id"
-                 :row-selection="{ selectedRowKeys: selectedRowKeys1, onChange: onSelectChange1 }"
+                 :row-selection="{ selectedRowKeys: selectedRowKeys3, onChange: onSelectChange3}"
         >
           <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  知识点</span>
         </a-table>
       </div>
       <div class="bottom">
-        <a-pagination simple :default-current="1" :pageSize="1" :total="page4" @change="onChange2" class="page"
-                      v-model="current3"/>
+        <a-pagination simple :default-current="1" :pageSize="1" :total="page4" @change="onChange4" class="page"
+                      v-model="current4"/>
+      </div>
+
+    </a-modal>
+
+    <a-modal v-model="bindQualityFlag" title="绑定品行" @ok="bindKnowledgeItems" @cancel="">
+      <div class="add">
+        <a-table :columns="columns2" :data-source="qualityList" style="background-color: white"
+                 :pagination="false"
+                 :rowKey="record=>record.id"
+                 :row-selection="{ selectedRowKeys: selectedRowKeys4, onChange: onSelectChange4}"
+        >
+          <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  品行</span>
+        </a-table>
+      </div>
+      <div class="bottom">
+        <a-pagination simple :default-current="1" :pageSize="1" :total="page5" @change="onChange5" class="page"
+                      v-model="current5"/>
       </div>
 
     </a-modal>
@@ -373,35 +390,35 @@ export default {
     async onChange1(pageNumber) {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.page1) {
-        let res1 =await getKnowledgeListByAbility(this.$store.getters.getTeacher.id, this.chooseItem.id, pageNumber)
+        let res1 = await getKnowledgeListByAbility(this.$store.getters.getTeacher.id, this.chooseItem.id, pageNumber)
         this.knowledgeArray = res1.knowledge
       }
     },
     async onChange2(pageNumber) {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.page2) {
-        let res2 =await getQualityListByAbility(this.$store.getters.getTeacher.id, this.chooseItem.id, pageNumber)
+        let res2 = await getQualityListByAbility(this.$store.getters.getTeacher.id, this.chooseItem.id, pageNumber)
         this.qualityArray = res2.qualities
       }
     },
     async onChange3(pageNumber) {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.page3) {
-        let response =await getAbilityList(this.$store.getters.getTeacher.id, pageNumber)
+        let response = await getAbilityList(this.$store.getters.getTeacher.id, pageNumber)
         this.abilityList = response.abilities
       }
     },
     async onChange4(pageNumber) {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.page4) {
-        let response =await getKnowledgeList(this.$store.getters.getTeacher.id, pageNumber)
+        let response = await getKnowledgeList(this.$store.getters.getTeacher.id, pageNumber)
         this.knowledgeList = response.knowledge
       }
     },
     async onChange5(pageNumber) {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.page5) {
-        let response =await getQualityList(this.$store.getters.getTeacher.id, pageNumber)
+        let response = await getQualityList(this.$store.getters.getTeacher.id, pageNumber)
         this.qualityList = response.qualities
       }
     },
@@ -410,11 +427,11 @@ export default {
       this.active = item.id
       this.chooseItem = item
 
-      let res1 =await getKnowledgeListByAbility(this.$store.getters.getTeacher.id, item.id, 1)
+      let res1 = await getKnowledgeListByAbility(this.$store.getters.getTeacher.id, item.id, 1)
       this.knowledgeArray = res1.knowledge
       this.page1 = res1.totalPage
 
-      let res2 =await getQualityListByAbility(this.$store.getters.getTeacher.id, item.id, 1)
+      let res2 = await getQualityListByAbility(this.$store.getters.getTeacher.id, item.id, 1)
       this.qualityArray = res2.qualities
       this.page2 = res2.totalPage
 
@@ -433,7 +450,7 @@ export default {
       this.form1.validateFields(async (err, values) => {
         if (!err) {
           console.log('Received values of form: ', values)
-          let response =await addQuality(this.$store.getters.getTeacher.id, values.name, values.brief)
+          let response = await addQuality(this.$store.getters.getTeacher.id, values.name, values.brief)
           this.addAbilityFlag = false
           if (response.code == 0) {
             this.$message.success("添加成功！")
@@ -449,7 +466,7 @@ export default {
       this.form2.validateFields(async (err, values) => {
         if (!err) {
           console.log('Received values of form: ', values.skill_level)
-          let response =await addQuality(this.$store.getters.getTeacher.id, values.name, values.skill_level)
+          let response = await addQuality(this.$store.getters.getTeacher.id, values.name, values.skill_level)
           this.addKnowledgeFlag = false
 
           if (response.code == 0) {
@@ -466,12 +483,12 @@ export default {
       this.form3.validateFields(async (err, values) => {
         if (!err) {
           console.log('Received values of form: ', values)
-          let response =await addQuality(this.$store.getters.getTeacher.id, values.name)
+          let response = await addQuality(this.$store.getters.getTeacher.id, values.name)
           this.addQualityFlag = false
 
           if (response.code == 0) {
             this.$message.success("添加成功！")
-            this.reset5()
+            await this.reset5()
           } else {
             this.$message.error("添加失败");
           }
@@ -489,7 +506,7 @@ export default {
     },
     //删除
     async deleteAbilityItem(id) {
-      let response =await deleteAbility(this.$store.getters.getTeacher.id, id)
+      let response = await deleteAbility(this.$store.getters.getTeacher.id, id)
       if (response.code == 0) {
         this.$message.success("删除成功！")
         this.chooseItem = null
@@ -500,7 +517,7 @@ export default {
       }
     },
     async deleteKnowledgeItem(id) {
-      let response =await deleteKnowledge(this.$store.getters.getTeacher.id, id)
+      let response = await deleteKnowledge(this.$store.getters.getTeacher.id, id)
       if (response.code == 0) {
         this.$message.success("删除成功！")
         await this.reset4()
@@ -510,7 +527,7 @@ export default {
       }
     },
     async deleteQualityItem(id) {
-      let response =await deleteQuality(this.$store.getters.getTeacher.id, id)
+      let response = await deleteQuality(this.$store.getters.getTeacher.id, id)
       if (response.code == 0) {
         this.$message.success("删除成功！")
         await this.reset5()
@@ -521,37 +538,37 @@ export default {
     },
     //刷新
     async reset3() {
-      let res1 =await getAbilityList(this.$store.getters.getTeacher.id, 1)
+      let res1 = await getAbilityList(this.$store.getters.getTeacher.id, 1)
       this.abilityList = res1.abilities
       this.page3 = res1.totalPage
       this.current3 = 1
     },
     async reset4() {
-      let res2 =await getKnowledgeList(this.$store.getters.getTeacher.id, 1)
+      let res2 = await getKnowledgeList(this.$store.getters.getTeacher.id, 1)
       this.knowledgeList = res2.knowledge
       this.page4 = res2.totalPage
       this.current4 = 1
     },
     async reset5() {
-      let res3 =await getQualityList(this.$store.getters.getTeacher.id, 1)
+      let res3 = await getQualityList(this.$store.getters.getTeacher.id, 1)
       this.qualityList = res3.qualities
       this.page5 = res3.totalPage
       this.current5 = 1
     },
     async reset1() {
-      let res1 =await getKnowledgeListByAbility(this.$store.getters.getTeacher.id, this.chooseItem.id, 1)
+      let res1 = await getKnowledgeListByAbility(this.$store.getters.getTeacher.id, this.chooseItem.id, 1)
       this.knowledgeArray = res1.knowledge
       this.page1 = res1.totalPage
       this.current1 = 1
     },
     async reset2() {
-      let res2 =await getQualityListByAbility(this.$store.getters.getTeacher.id, this.chooseItem.id, 1)
+      let res2 = await getQualityListByAbility(this.$store.getters.getTeacher.id, this.chooseItem.id, 1)
       this.qualityArray = res2.qualities
       this.page2 = res2.totalPage
       this.current2 = 1
 
     },
-    //多选
+    //解绑多选
     onSelectChange1(selectedRowKeys) {
       this.selectedRowKeys1 = selectedRowKeys;
 
@@ -559,9 +576,33 @@ export default {
     onSelectChange2(selectedRowKeys) {
       this.selectedRowKeys2 = selectedRowKeys;
     },
+    //绑定多选
+    onSelectChange3(selectedRowKeys) {
+      this.selectedRowKeys3 = selectedRowKeys;
+
+    },
+    onSelectChange4(selectedRowKeys) {
+      this.selectedRowKeys4 = selectedRowKeys;
+
+    },
+    //显示绑定框
+    showBindKnowledge() {
+      this.bindKnowledgeFlag = true
+      this.selectedRowKeys3 = []
+      for (let i = 0; i < this.knowledgeArray.length; i++) {
+        this.selectedRowKeys3.push(this.knowledgeArray[i].id)
+      }
+    },
+    showBindQuality() {
+      this.bindQualityFlag = true
+      this.selectedRowKeys4 = []
+      for (let i = 0; i < this.qualityArray.length; i++) {
+        this.selectedRowKeys4.push(this.qualityArray[i].id)
+      }
+    },
     //绑定
     async bindKnowledgeItems() {
-      let response =await bindKnowledge(this.$store.getters.getTeacher.id, this.chooseItem.id, this.selectedRowKeys1)
+      let response = await bindKnowledge(this.$store.getters.getTeacher.id, this.chooseItem.id, this.selectedRowKeys1)
       this.bindKnowledgeFlag = false
       if (response.code == 0) {
         this.$message.success("绑定成功！")
@@ -572,7 +613,7 @@ export default {
       }
     },
     async bindQualityItems() {
-      let response =await bindQuality(this.$store.getters.getTeacher.id, this.chooseItem.id, this.selectedRowKeys2)
+      let response = await bindQuality(this.$store.getters.getTeacher.id, this.chooseItem.id, this.selectedRowKeys2)
       this.bindQualityFlag = false
       if (response.code == 0) {
         this.$message.success("绑定成功！")
@@ -584,7 +625,7 @@ export default {
     },
     //解绑
     async unbindKnowledgeItems() {
-      let response =await unbindKnowledge(this.$store.getters.getTeacher.id, this.chooseItem.id, this.selectedRowKeys1)
+      let response = await unbindKnowledge(this.$store.getters.getTeacher.id, this.chooseItem.id, this.selectedRowKeys1)
       if (response.code == 0) {
         this.$message.success("解绑成功！")
         this.selectedRowKeys1 = []
@@ -595,7 +636,7 @@ export default {
       }
     },
     async unbindQualityItems() {
-      let response =await unbindQuality(this.$store.getters.getTeacher.id, this.chooseItem.id, this.selectedRowKeys2)
+      let response = await unbindQuality(this.$store.getters.getTeacher.id, this.chooseItem.id, this.selectedRowKeys2)
       if (response.code == 0) {
         this.$message.success("解绑成功！")
         this.selectedRowKeys2 = []
@@ -608,15 +649,15 @@ export default {
 
   },
   async mounted() {
-    let res1 =await getAbilityList(this.$store.getters.getTeacher.id, 1)
+    let res1 = await getAbilityList(this.$store.getters.getTeacher.id, 1)
     this.abilityList = res1.abilities
     this.page3 = res1.totalPage
 
-    let res2 =await getKnowledgeList(this.$store.getters.getTeacher.id, 1)
+    let res2 = await getKnowledgeList(this.$store.getters.getTeacher.id, 1)
     this.knowledgeList = res2.knowledge
     this.page4 = res2.totalPage
 
-    let res3 =await getQualityList(this.$store.getters.getTeacher.id, 1)
+    let res3 = await getQualityList(this.$store.getters.getTeacher.id, 1)
     this.qualityList = res3.qualities
     this.page5 = res3.totalPage
 

@@ -97,15 +97,18 @@ export default {
     }
   },
   mounted() {
-    let params = this.$route.params;
-    let response = getPaperDetail(params.paperId);
-    this.paperTitle = response.res.title;
-    this.score = response.res.score;
-    this.questions = response.res.questions;
-    this.bankId = response.res.bankId;
-    this.status = response.res.status;
+    this.reset()
   },
   methods: {
+    async reset(){
+      let params = this.$route.params;
+      let response =await getPaperDetail(params.paperId);
+      this.paperTitle = response.res.title;
+      this.score = response.res.score;
+      this.questions = response.res.questions;
+      this.bankId = response.res.bankId;
+      this.status = response.res.status;
+    },
     back(id) {
       this.$router.push({name: 'paperList', params: {bankId: id}});
     },

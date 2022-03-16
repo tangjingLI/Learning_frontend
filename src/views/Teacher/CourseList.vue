@@ -16,7 +16,7 @@
         </a-button>
       </a-popconfirm>
 
-      <a-button id="add" @click=""
+      <a-button id="add" @click="()=>{this.addCourseFlag=true}"
                 style="  margin-top: 5px;background-color: #1C90F5;color: white;border: none;float: right;margin-right: 10px">
         <a-icon type="plus-circle"/>
         新建课程
@@ -88,7 +88,8 @@
       </div>
 
       <div class="footer2">
-        <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page" v-model="current"/>
+        <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"
+                      v-model="current"/>
       </div>
 
     </div>
@@ -106,13 +107,35 @@
       </a-form>
     </a-modal>
 
-    <a-modal v-model="addCourseFlag" title="添加课程" @ok="addCourse">
+    <a-modal v-model="addCourseFlag" title="添加课程" @ok="addCourseItem">
       <a-form :form="form2" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
         <a-form-item label="课程名">
           <a-input
-              v-decorator="['type', { rules: [
+              v-decorator="['name', { rules: [
                   { required: true, message: '不能为空' },
                   {pattern:/^.{2,8}$/,message: '长度为2-8位'}
+                  ] }]"
+          />
+
+        </a-form-item>
+
+        <a-form-item label="课程分类">
+          <a-select style="width: 120px"
+                    v-decorator="['type',{rules:[{required: true,message:'不能为空'}]}]">
+
+            <a-select-option v-for="item in types" v-if="item.id!=-1" :value="item.name" :key="item.id">
+              {{ item.name }}
+            </a-select-option>
+
+          </a-select>
+        </a-form-item>
+
+        <a-form-item label="简介">
+          <a-textarea
+              :auto-size="{ minRows: 1, maxRows: 3 }"
+              v-decorator="['brief', { rules: [
+                  {required: true,message:'不能为空'},
+                  {pattern:/^.{1,30}$/,message: '长度为1-30位'}
                   ] }]"
           />
         </a-form-item>
@@ -131,6 +154,7 @@ import {
   getCoursesByType,
   getAllCourses,
   addCoursesType,
+  addCourse,
   deleteCoursesType,
   deleteCourse, deleteCoursesGroup
 } from "../../api/course";
@@ -202,9 +226,9 @@ export default {
       if (pageNumber <= this.totalPage) {
         let response;
         if (this.bankId != -1) {
-          response =await getCoursesByType(this.$store.getters.getTeacher.id, this.bankId, pageNumber)
+          response = await getCoursesByType(this.$store.getters.getTeacher.id, this.bankId, pageNumber)
         } else {
-          response =await getAllCourses(this.$store.getters.getTeacher.id, pageNumber)
+          response = await getAllCourses(this.$store.getters.getTeacher.id, pageNumber)
         }
         this.courses = response.courses
         this.totalPage = response.totalPage
@@ -214,9 +238,9 @@ export default {
     async handleClick(id) {
       let response;
       if (id != -1) {
-        response =await getCoursesByType(this.$store.getters.getTeacher.id, this.bankId, 1)
+        response = await getCoursesByType(this.$store.getters.getTeacher.id, this.bankId, 1)
       } else {
-        response =await getAllCourses(this.$store.getters.getTeacher.id, 1)
+        response = await getAllCourses(this.$store.getters.getTeacher.id, 1)
       }
       this.courses = response.courses
       this.bankId = id
@@ -232,9 +256,48 @@ export default {
       this.form1.validateFields(async (err, values) => {
         if (!err) {
           this.addTypeFlag = false
-          // console.log(values)
-          let response =await addCoursesType(this.$store.getters.getTeacher.id, values.type)
+          console.log(values)
+          let response = await addCoursesType(this.$store.getters.getTeacher.id, values.type)
           this.form1.resetFields();
+          if (response.code == 0) {
+            this.$message.success("添加成功！")
+            await this.reset()
+          } else {
+            this.$message.error("添加失败")
+          }
+        }
+      })
+    },
+    //删除课程分类
+    async deleteType(id) {
+      let response = await deleteCoursesType(this.$store.getters.getTeacher.id, id)
+      if (response.code == 0) {
+        this.$message.success("删除成功！")
+        await this.reset()
+      } else {
+        this.$message.error("删除失败");
+      }
+    },
+    //添加课程
+    addCourseItem(e) {
+      e.preventDefault();
+      this.form2.validateFields(async (err, values) => {
+        if (!err) {
+          this.addCourseFlag = false
+
+          let aData = new Date();
+          let course = {
+            name: values.name,
+            classify_name: "所有课程",
+            sub_classify_name: values.type,
+            brief: values.brief,
+            user_id: this.$store.getters.getTeacher.id,
+            create_user: this.$store.getters.getTeacher.phone,
+            create_time: aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate()
+          }
+          console.log(course)
+          let response = await addCourse(course)
+          this.form2.resetFields();
           if (response.code == 0) {
             this.$message.success("添加成功！")
             await this.reset()
@@ -244,23 +307,9 @@ export default {
         }
       })
     },
-    //删除课程分类
-    async deleteType(id) {
-      let response =await deleteCoursesType(this.$store.getters.getTeacher.id, id)
-      if (response.code == 0) {
-        this.$message.success("删除成功！")
-        await this.reset()
-      } else {
-        this.$message.error("删除失败");
-      }
-    },
-    //添加课程
-    addCourse() {
-
-    },
     //删除课程
     async deleteCourseItem(id) {
-      let response =await deleteCourse(this.$store.getters.getTeacher.id, id)
+      let response = await deleteCourse(this.$store.getters.getTeacher.id, id)
       if (response.code == 0) {
         this.$message.success("删除成功！")
         await this.reset()
@@ -269,7 +318,7 @@ export default {
       }
     },
     async deleteGroup() {
-      let response =await deleteCoursesGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
+      let response = await deleteCoursesGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
       console.log(this.selectedRowKeys)
       if (response.code == 0) {
         this.$message.success("删除成功！")
@@ -279,10 +328,10 @@ export default {
       }
     },
     async reset() {
-      let response =await getCourseType(this.$store.getters.getTeacher.id)
+      let response = await getCourseType(this.$store.getters.getTeacher.id)
       this.types = response.classifies
       this.types.unshift({id: -1, name: "所有课程"})
-      let res =await getAllCourses(this.$store.getters.getTeacher.id, 1)
+      let res = await getAllCourses(this.$store.getters.getTeacher.id, 1)
       this.courses = res.courses
       this.totalPage = res.totalPage
       this.current = 1

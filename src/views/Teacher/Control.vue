@@ -12,7 +12,7 @@
         <div class="func1">
           <a-icon type="carry-out" theme="twoTone" class="icon"/>
           <p>我的课程</p>
-          <router-link to="">查看>></router-link>
+          <router-link to="/teacher/courseList">查看>></router-link>
         </div>
 
         <div class="func1">
@@ -29,8 +29,8 @@
 
         <div class="func1">
           <a-icon type="bulb" theme="twoTone" class="icon"/>
-          <p>我的目标</p>
-          <router-link to="">查看>></router-link>
+          <p>我的能力</p>
+          <router-link to="/teacher/knowledge">查看>></router-link>
         </div>
 
         <div class="func1">

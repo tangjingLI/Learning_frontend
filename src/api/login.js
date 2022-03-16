@@ -18,11 +18,9 @@ export function login(phone, password) {
         })
 
     // return {
-    //     code: 200,
-    //     res: {
-    //         ok: true,
+    //     code: 0,
+    //     data: {
     //         userId: 1,
     //     },
-    //     msg: ''
     // }
 }

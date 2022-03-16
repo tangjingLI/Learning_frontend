@@ -12,16 +12,16 @@
               <router-link to="/teacher">控制台</router-link>
             </span>
           </a-menu-item>
-          <a-menu-item key="2" @click="()=>{this.$router.push('/teacher/paperBank')}">
+          <a-menu-item key="2" @click="()=>{this.$router.push('/teacher/testBank')}">
             <a-icon type="coffee" />
             <span>
-              <router-link to="/teacher/paperBank">试卷管理</router-link>
+              <router-link to="/teacher/testBank">题库管理</router-link>
             </span>
           </a-menu-item>
-          <a-menu-item key="3" @click="()=>{this.$router.push('/teacher/testBank')}">
-            <a-icon type="car" />
+          <a-menu-item key="3" @click="()=>{this.$router.push('/teacher/paperBank')}">
+            <a-icon type="experiment" />
             <span>
-              <router-link to="/teacher/testBank">题库管理</router-link>
+              <router-link to="/teacher/paperBank">试卷管理</router-link>
             </span>
           </a-menu-item>
           <a-menu-item key="4" @click="()=>{this.$router.push('/teacher/courseList')}">

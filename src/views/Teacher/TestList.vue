@@ -149,11 +149,11 @@
           </a-radio-group>
         </a-form-item>
 
-        <div v-if="testType==1||testType==2" v-for="item in choices" class="choice">
+        <div v-if="testType==1||testType==2" v-for="(choice,index) in choices" class="choice">
           <a-form-item>
-            <p>选项{{ item.ch }}&emsp;</p>
+            <p>选项{{ choice.ch }}&emsp;</p>
             <a-input style="float: left;width: 240px"
-                     v-decorator="[item.ch, { rules: [
+                     v-decorator="[choice.ch, { rules: [
                   { required: true, message: '不能为空' },
                   {pattern:/^.{1,12}$/,message: '答案长度为1-12位'}
                   ] }]"
@@ -258,7 +258,7 @@ export default {
       totalPage: 1,
       choices: [],
       selectedRowKeys: [],
-      current:1,
+      current: 1,
       list: ['A', 'B', 'C', 'D', 'E', 'F'],
       form1: this.$form.createForm(this, {name: 'editTestBank'}),
       form2: this.$form.createForm(this, {name: 'addTest'}),
@@ -269,25 +269,28 @@ export default {
     this.reset();
   },
   methods: {
+    changeChoice(value, index) {
+      // this.content[index] = value.data
+      // console.log(this.content)
+      console.log(this.form2[title])
+    },
     async reset() {
       let params = this.$route.params;
-      let response =await getTestBank(params.bankId, this.$store.getters.getTeacher.id, 1);
+      let response = await getTestBank(params.bankId, this.$store.getters.getTeacher.id, 1);
       console.log(response)
-      this.bankTitle = response.title;
-      this.questions = response.questions;
-      this.isPublic = response.isPublic;
+      this.bankTitle = response.title
+      this.questions = response.content
+      this.isPublic = response.isPublic
       this.totalPage = response.totalPage
-      this.current=1
+      this.current = 1
       this.choices = [];
       this.choices.push({ch: 'A'});
       this.choices.push({ch: 'B'});
     },
     async onSearch(value) {
-      let response =await searchTest(value);
-      this.bankTitle = response.res.bankTitle;
-      this.questions = response.res.questions;
-      this.isPublic = response.isPublic;
-      // console.log(value);
+      let response = await searchTest(this.$route.params.bankId, value);
+      this.questions = response
+      console.log(response);
     },
     back() {
       this.$router.push({name: 'testBank'})
@@ -297,7 +300,7 @@ export default {
     },
     //删除
     async confirm(id) {
-      let response =await deleteTest(this.$store.getters.getTeacher.id, id);
+      let response = await deleteTest(this.$store.getters.getTeacher.id, id);
       console.log(response)
       if (response.code == 0) {
         this.$message.success('删除成功！');
@@ -312,7 +315,7 @@ export default {
     //编辑题库
     edit(e) {
       e.preventDefault();
-      this.form1.validateFields(async(err, values) => {
+      this.form1.validateFields(async (err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
           let response = await editTestBank(this.$route.params.bankId, this.$store.getters.getTeacher.id, values.title, values.isPublic);
@@ -340,23 +343,34 @@ export default {
     },
     addTest(e) {
       e.preventDefault();
-      this.form2.validateFields(async(err, values) => {
+      this.form2.validateFields(async (err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
-          let response =await addTest(values, this.$store.getters.getTeacher.id, this.$route.params.bankId, this.num);
-          this.form2.resetFields();
-          this.testType = 0;
-          this.num = 2;
-          this.choices = [];
-          this.choices.push({ch: 'A'});
-          this.choices.push({ch: 'B'});
-          this.showAdd = false;
-          if (response.code == 0) {
-            this.$message.success("添加题目成功！");
-            await this.reset()
-          } else {
-            this.$message.error("添加题目失败");
+          console.log('Received values of form: ', values)
+          let arr = []
+          let list = ['A', 'B', 'C', 'D', 'E', 'F']
+          while (this.num > 0) {
+            this.num--;
+            let key = list[this.num]
+            arr.push({
+              number: key,
+              content:values[key]
+            })
+            console.log(arr)
           }
+            let response = await addTest(values, this.$store.getters.getTeacher.id, this.$route.params.bankId, arr);
+            this.form2.resetFields();
+            this.testType = 0;
+            this.num = 2;
+            this.choices = [];
+            this.choices.push({ch: 'A'});
+            this.choices.push({ch: 'B'});
+            this.showAdd = false;
+            if (response.code == 0) {
+              this.$message.success("添加题目成功！");
+              await this.reset()
+            } else {
+              this.$message.error("添加题目失败");
+            }
         }
       });
     },
@@ -390,7 +404,7 @@ export default {
       this.selectedRowKeys = selectedRowKeys;
     },
     async deleteGroup() {
-      let response =await deleteTestGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
+      let response = await deleteTestGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
       if (response.code == 0) {
         this.$message.success('删除成功！');
         await this.reset()
@@ -403,8 +417,8 @@ export default {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.totalPage) {
         let params = this.$route.params;
-        let response =await getTestBank(params.bankId, this.$store.getters.getTeacher.id, pageNumber);
-        this.questions = response.questions;
+        let response = await getTestBank(params.bankId, this.$store.getters.getTeacher.id, pageNumber);
+        this.questions = response.content
         this.totalPage = response.totalPage
       }
     }
