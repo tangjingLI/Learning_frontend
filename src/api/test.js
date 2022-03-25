@@ -132,6 +132,37 @@ export function editTestBank(bid, uid, title, isPublic) {
         })
 }
 
+//修改题目
+export function editTest(values, qid,uid,bid, arr) {
+    let question = {
+        title: values.title,
+        content: values.content,
+        answer: values.answer,
+        type: values.type,
+        analysis: values.analysis,
+        consume: values.consume,
+        userId:uid,
+        bankId:bid,
+        id:qid
+    }
+
+    let data = {
+        choices: arr
+    }
+
+
+    return axios.post(`${baseUrls.test}/question/edit`, data, {
+        params: question,
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+
 //添加题目
 export function addTest(values, uid, bid, arr) {
 
@@ -217,114 +248,19 @@ export function searchBank(uid, title) {
 }
 
 //预览试卷
-export function getQuestionList(id, tests) {
-    let data = {
-        userId: id,
-        questions: tests
-    }
-
-    return {
-        res: {
-            questions: [
-                {
-                    id: 9,
-                    title: "蚂蚁上树",
-                    content: "啦啦啦啦啦",
-                    type: 2,
-                    consume: 9,
-                    rate: 0.67
-                },
-                {
-                    id: 10,
-                    title: "月亮弯弯",
-                    content: "啦啦啦啦啦",
-                    type: 2,
-                    consume: 9,
-                    rate: 0.67
-                },
-                {
-                    id: 11,
-                    title: "小摩托",
-                    content: "啦啦啦啦啦",
-                    type: 3,
-                    consume: 9,
-                    rate: 0.67
-                },
-                {
-                    id: 9,
-                    title: "蚂蚁上树",
-                    content: "啦啦啦啦啦",
-                    type: 2,
-                    consume: 9,
-                    rate: 0.67
-                },
-                {
-                    id: 10,
-                    title: "月亮弯弯",
-                    content: "啦啦啦啦啦",
-                    type: 2,
-                    consume: 9,
-                    rate: 0.67
-                },
-                {
-                    id: 11,
-                    title: "小摩托",
-                    content: "啦啦啦啦啦",
-                    type: 3,
-                    consume: 9,
-                    rate: 0.67
-                },
-                {
-                    id: 9,
-                    title: "蚂蚁上树",
-                    content: "啦啦啦啦啦",
-                    type: 2,
-                    consume: 9,
-                    rate: 0.67
-                },
-                {
-                    id: 10,
-                    title: "月亮弯弯",
-                    content: "啦啦啦啦啦",
-                    type: 2,
-                    consume: 9,
-                    rate: 0.67
-                },
-                {
-                    id: 11,
-                    title: "小摩托",
-                    content: "啦啦啦啦啦",
-                    type: 3,
-                    consume: 9,
-                    rate: 0.67
-                },
-                {
-                    id: 9,
-                    title: "蚂蚁上树",
-                    content: "啦啦啦啦啦",
-                    type: 2,
-                    consume: 9,
-                    rate: 0.67
-                },
-                {
-                    id: 10,
-                    title: "月亮弯弯",
-                    content: "啦啦啦啦啦",
-                    type: 2,
-                    consume: 9,
-                    rate: 0.67
-                },
-                {
-                    id: 11,
-                    title: "小摩托",
-                    content: "啦啦啦啦啦",
-                    type: 3,
-                    consume: 9,
-                    rate: 0.67
-                },
-            ]
+export function getQuestionList(uid, idList) {
+    return axios.post(`${baseUrls.test}/question/showList`, idList, {
+        params: {
+            userId: uid
         }
-    }
+
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 }
 
 //获取题目回收站
@@ -465,3 +401,5 @@ export function deleteTestGroup(uid, qidList) {
             console.log(error);
         })
 }
+
+

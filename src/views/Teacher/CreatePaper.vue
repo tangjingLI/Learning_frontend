@@ -160,7 +160,7 @@ export default {
   methods: {
     //选择题库
     async handleClick(id) {
-      let response =await getTestBank(id,1,1)
+      let response = await getTestBank(id, 1, 1)
       // let res=await getQuestionList()
       console.log(response)
       this.tests = response.content
@@ -216,8 +216,9 @@ export default {
     async getPaper() {
       this.paperFlag = true
       let id = this.$store.getters.getTeacher.id
-      let response =await getQuestionList(this.choose)
-      this.questions = response.res.questions
+      let response = await getQuestionList(this.$store.getters.getTeacher.id, this.choose)
+      console.log(response)
+      this.questions = response
       this.paperName = ''
       this.scores = []
       this.totalScore = 0
@@ -226,7 +227,7 @@ export default {
         this.totalScore++
       }
     },
-     async uploadPaper() {
+    async uploadPaper() {
       console.log(this.paperName)
       if (this.paperName == '') {
         this.$message.warning("请输入试卷名")
@@ -234,7 +235,7 @@ export default {
         this.$message.warning("请选择至少一个题目")
       } else {
         let bankId = this.$route.params.bankId
-        let response =await addPaper(this.choose, this.scores, bankId)
+        let response = await addPaper(this.choose, this.scores, bankId)
         if (response.res) {
           this.$message.success("发布成功")
         } else {
@@ -252,14 +253,14 @@ export default {
     //分页
     async onChange(pageNumber) {
       console.log('Page: ', pageNumber);
-      if(pageNumber<=this.totalPage){
-        let response =await getTestBank(this.bankId,pageNumber)
+      if (pageNumber <= this.totalPage) {
+        let response = await getTestBank(this.bankId, pageNumber)
         this.tests = response.res.questions
         this.totalPage = response.totalPage
       }
     },
-    async reset(){
-      let response =await getTestBankList(this.$store.getters.getTeacher.id);
+    async reset() {
+      let response = await getTestBankList(this.$store.getters.getTeacher.id);
       console.log(response)
       this.banks = response;
       if (this.banks.length != 0) {
