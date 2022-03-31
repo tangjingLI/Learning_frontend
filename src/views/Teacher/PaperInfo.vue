@@ -48,21 +48,13 @@
     <a-modal v-model="uploadFlag" title="发布试卷" @ok="upload" @cancel="cancel1">
       <a-form :form="form1" :label-col="{ span: 5 }" :wrapper-col="{ span: 18 }"
               style="height: 200px;overflow-y: scroll">
-        <a-form-item label="考试名称">
-          <a-input
-              v-decorator="['name', { rules: [
-                  { required: true, message: '不能为空' },
-                  {pattern:/^.{2,8}$/,message: '长度为2-8位'}
-                  ] }]"
-          />
-        </a-form-item>
 
         <a-form-item label="考试简介">
           <a-textarea
               :auto-size="{ minRows: 1, maxRows: 6 }"
-              v-decorator="['intro', { rules: [
-                  // { required: true, message: '不能为空' },
-                  {pattern:/^.{1,100}$/,message: '长度为1-100位'}
+              v-decorator="['remark', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{1,100}$/,message: '长度为1-50位'}
                   ] }]"
           />
         </a-form-item>
@@ -100,9 +92,9 @@ export default {
     this.reset()
   },
   methods: {
-    async reset(){
+    async reset() {
       let params = this.$route.params;
-      let response =await getPaperDetail(params.paperId);
+      let response = await getPaperDetail(params.paperId);
       this.paperTitle = response.res.title;
       this.score = response.res.score;
       this.questions = response.res.questions;
@@ -120,11 +112,10 @@ export default {
       e.preventDefault();
       this.form1.validateFields(async (err, values) => {
         if (!err) {
-          let intro = values.intro == null ? '' : values.intro;
-          let response =await uploadPaper(this.$route.params.paperId, values.name, intro, values.time);
+          let response = await uploadPaper(this.$route.params.paperId, values.time, values.remark);
           this.uploadFlag = false;
           this.form1.resetFields()
-          if (response.res) {
+          if (response.code == 0) {
             this.$message.success('发布成功！');
           } else {
             this.$message.error("发布失败")

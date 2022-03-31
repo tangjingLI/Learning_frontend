@@ -2,240 +2,176 @@ import axios from "axios";
 import {baseUrls} from "./baseUrl";
 
 // 获取考试库列表
-export function getAllPaperBank(id,pageNum) {
-    // return axios.get(`${baseUrls.paper}/papers/getAllPapers/`,{
-    //     params:{
-    //         papersId:id
-    //         pageNum:pageNum
-    //     }
-    // })
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 200,
-        res: [
-            {
-                title: '人机交互试卷库',
-                papersInfo: {
-                    id: 6,
-                    num: 7,
-                    creator: '西瓜',
-                    isPublic: 0,
-                    createTime: ''
-                }
-            },
-            {
-                title: 'c++试卷库',
-                papersInfo: {
-                    id: 8,
-                    num: 9,
-                    creator: '金毛',
-                    isPublic: 1,
-                    createTime: ''
-                }
-            },
-        ],
-        msg: '',
-        totalPage:14
+export function getAllPaperBank(id, pageNum) {
+    let data = {
+        userId: id,
+        pageNum: pageNum
     }
+
+    return axios.post(`${baseUrls.paper}/papers/getAllPapers/`, data, {
+        headers: {
+            'Content-Type': "application/json;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 }
 
-//获取试卷库详情
-export function getPaperBank(id,pageNum) {
-    // return axios.get(`${baseUrls.paper}/paper/ getAllPaper /`,{
-    //     params:{
-    //         papersId:id
-    //         pageNum:pageNum
-    //     }
-    // })
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 200,
-        res: [
-            {
-                title: "期中测试",
-                paperInfo: {
-                    status: 0,
-                    creator: '金毛',
-                    createTime: '',
-                    id: 1,
-                },
-                mag: ''
-            },
-            {
-                title: "期末测试",
-                paperInfo: {
-                    status: 1,
-                    creator: '金毛',
-                    createTime: '',
-                    id: 6
-                },
-            }
-        ],
-        mag: '',
-        bankTitle: '人机交互试卷库',
-        totalPage:9
+// 考试库模糊搜索
+export function getPaperBankByName(id, pageNum,name) {
+    let data = {
+        userId: id,
+        pageNum: pageNum,
+        name:name
     }
 
+    return axios.post(`${baseUrls.paper}/papers/getAllPapers/`, data, {
+        headers: {
+            'Content-Type': "application/json;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+
+//获取试卷库详情
+export function getPaperBank(id, pageNum) {
+    let data={
+        papersId: id,
+        currentPage:pageNum
+    }
+    return axios.post(`${baseUrls.paper}/paper/selectPaperByPapersId`, data, {
+        headers: {
+            'Content-Type': "application/json;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
+}
+
+//试卷模糊搜索
+export function getPaperByName(id, pageNum,paperName) {
+    let data={
+        papersId: id,
+        currentPage:pageNum,
+        paperName:paperName
+    }
+    return axios.post(`${baseUrls.paper}/paper/selectAllPaper`, data, {
+        headers: {
+            'Content-Type': "application/json;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
 }
 
 //获取试卷详情
 export function getPaperDetail(id) {
-    // return axios.get(`${baseUrls.paper}/paper/ getPaper/`,{
-    //     params:{
-    //         paperId:id
-    //     }
-    // })
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 200,
-        res:
-            {
-                title: "期末测试",
-                status: 0,
-                questions: [
-                    {
-                        id: 1,
-                        title: "猫猫",
-                        content: "这里是题目",
-                        answer: "这里是答案",
-                        type: 2,
-                        analysis: "这里是解析",
-                        score: 50,
-                        sequence: 2,
-                        choices: [
-                            {
-                                number: 'A',
-                                content: 'aaa',
-                            },
-                            {
-                                number: 'B',
-                                content: 'bbb',
-                            },
-                        ]
-                    },
-                    {
-                        id: 2,
-                        title: "狗狗",
-                        content: "这里是题目",
-                        answer: "这里是答案",
-                        type: 1,
-                        analysis: "这里是解析",
-                        score: 50,
-                        sequence: 1,
-                        choices: [
-                            {
-                                number: 'A',
-                                content: 'aaa',
-                            },
-                            {
-                                number: 'B',
-                                content: 'bbb',
-                            },
-                        ]
-                    }
-                ],
-                score: 100,
-                bankId: 2
-            },
-        msg: ''
-    }
+    return axios.get(`${baseUrls.paper}/paper/selectPaperById`, {
+        params: {
+            paperId: id
+        }
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 }
 
 //新建试卷库
-export function createPaperBank(title, id, time) {
-    // let data = {
-    //     title: title,
-    //     userId: id,
-    //     createTime: time
-    // }
-    // return axios.post(`${baseUrls.paper}/papers/add`, data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-
-    return {
-        res: true
+export function createPaperBank(title, id, isPublic) {
+    let data = {
+        papersName: title,
+        createId: id,
+        isPublic:isPublic
     }
+
+    return axios.post(`${baseUrls.paper}/papers/insertPapers`, data, {
+        headers: {
+            'Content-Type': "application/json;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 }
 
 //删除试卷库
 export function deletePaperBank(uid, bid) {
-    // let data = {
-    //     userId: uid,
-    //     paperId: bid
-    // }
-    // return axios.post(`${baseUrls.paper}/papers/delete/`, data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-
-    return {
-        res: true
-    }
+    return axios.get(`${baseUrls.paper}/papers/delPapersById`, {
+        params:{
+            id:bid
+        }
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 }
 
 //发布试卷
-export function uploadPaper(id, name, intro, time) {
-    // let data = {
-    //     paperId: id,
-    //     name: name,
-    //     introduction: intro,
-    //     time: time
-    // }
-    // return axios.post(`${baseUrls.paper}/paper/upload/`,data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-
-    return {
-        res: true
+export function uploadPaper(paperId, examTime,remark) {
+    let data={
+        paperId:paperId,
+        examTime:examTime,
+        remark:remark
     }
+
+    return axios.post(`${baseUrls.paper}/paper/publishPaper`, data, {
+        headers: {
+            'Content-Type': "application/json;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 }
 
 //删除试卷
 export function deletePaper(uid, pid) {
-    // let data={
-    //     userId:uid,
-    //     paperId:pid
-    // }
-    // return axios.post(`${baseUrls.paper}/paper/delete/`,data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        res: true
-    }
+
+    return axios.get(`${baseUrls.paper}/paper/delPaper`, {
+        params:{
+            paperId:pid
+        }
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 }
 
 //新建试卷
-export function addPaper(tests, scores, bankId) {
+export function addPaper(tests, scores, bankId,uid,isPublic,paperName,score) {
     let questions = []
     for (let i = 0; i < tests.length; i++) {
         let item = {
@@ -248,23 +184,28 @@ export function addPaper(tests, scores, bankId) {
     // console.log(questions)
     let data = {
         questions: questions,
-        bankId: bankId
+        bankId: bankId,
+        createId:uid,
+        isPublic:isPublic,
+        paperName:paperName,
+        score:score
     }
-    // return axios.post(`${baseUrls.paper}/paper/addByPaperId`, data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        res: true
-    }
+    return axios.post(`${baseUrls.paper}/paper/insertPaper`, data, {
+        headers: {
+            'Content-Type': "application/json;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 }
 
 
 //获取已发布试卷列表
-export function getReleasedPaper(uid,pageNum){
+export function getReleasedPaper(uid, pageNum) {
     // return axios.get(`${baseUrls.paper}/paper/ getPaper/`,{
     //     params:{
     //         userId:uid
@@ -277,65 +218,35 @@ export function getReleasedPaper(uid,pageNum){
     //     .catch(function (error) {
     //         console.log(error);
     //     })
-    return{
-        res:[
-            {
-                title:"试卷1",
-                name:"考试1",
-                id:1,
-                averageScore:65,
-                maxScore:98,
-                minScore:20
-            },
-            {
-                title:"试卷2",
-                name:"考试2",
-                id:2,
-                averageScore:75,
-                maxScore:88,
-                minScore:29
-            }
-        ],
-        totalPage:19
-    }
 }
 
 //批量删除试卷库
-export function deletePaperBankGroup(uid,bidList){
-    // let data={
-    //     userId:uid,
-    //     idList:bidList
-    // }
-    //
-    // return axios.post(`${baseUrls.paper}/papers/delete/`,data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
+export function deletePaperBankGroup(uid, bidList) {
+    return axios.post(`${baseUrls.paper}/papers/delPapers`,bidList, {
+        headers: {
+            'Content-Type': "application/json;charset=utf-8"
+        }
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 
-    return{
-        res:true
-    }
 }
 
 //批量删除试卷
-export function deletePaperGroup(uid,pidList){
-    // let data={
-    //     userId:uid,
-    //     idList:pidList
-    // }
-    //
-    // return axios.post(`${baseUrls.paper}/papers/delete/`,data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-
-    return{
-        res:true
-    }
+export function deletePaperGroup(uid, pidList) {
+    return axios.post(`${baseUrls.paper}/paper/delBatchPaper`,pidList, {
+        headers: {
+            'Content-Type': "application/json;charset=utf-8"
+        }
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 }

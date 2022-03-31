@@ -3,9 +3,9 @@ import {baseUrls} from "./baseUrl";
 
 //获取所有课程
 export function getAllCourses(uid, pageNum) {
-    // return axios.get(`${baseUrls.course}/course/tcourse_list`,{
+    // return axios.get(`${baseUrls.course}/course/listAll`,{
     //     params:{
-    //         user_id:uid
+    //         userId:uid
     //         pageNum: pageNum
     //     }
     // })
@@ -95,10 +95,10 @@ export function getAllCourses(uid, pageNum) {
 
 //根据分类查看课程
 export function getCoursesByType(uid, typeId, pageNum) {
-    // return axios.get(`${baseUrls.course}/course/list`,{
+    // return axios.get(`${baseUrls.course}/course/listClassify`,{
     //     params:{
-    //         user_id:id,
-    //         classify:typeId,
+    //         userId:id,
+    //         classifyId:typeId,
     //         pageNum: pageNum
     //     }
     // })
@@ -139,10 +139,10 @@ export function getCoursesByType(uid, typeId, pageNum) {
 //添加课程类别
 export function addCoursesType(uid, type) {
     // let data = {
-    //     user_id: uid,
+    //     userId: uid,
     //     name: type
     // }
-    // return axios.post(`${baseUrls.course}/course/classify_add/`, data)
+    // return axios.post(`${baseUrls.course}/classify/add`, data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -160,7 +160,7 @@ export function deleteCoursesType(uid, typeId) {
     //     user_id: uid,
     //     id:typeId
     // }
-    // return axios.post(`${baseUrls.course}/course/classify_delete/`, data)
+    // return axios.post(`${baseUrls.course}/classify/delete`, data)
     //     .then(res => {
     //         return res.data
     //     })
@@ -175,7 +175,7 @@ export function deleteCoursesType(uid, typeId) {
 
 //获取课程分类
 export function getCourseType(uid) {
-    // return axios.get(`${baseUrls.course}/course/classify_list`, {
+    // return axios.get(`${baseUrls.course}/classify/listAll`, {
     //     params: {
     //         user_id: uid
     //     }

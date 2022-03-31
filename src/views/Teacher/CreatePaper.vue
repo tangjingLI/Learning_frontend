@@ -3,7 +3,7 @@
     <div class="left">
       <a-menu v-model="current" mode="horizontal">
         <a-menu-item key="bank">题库</a-menu-item>
-        <a-menu-item key="knowledge">知识点</a-menu-item>
+        <!--        <a-menu-item key="knowledge">知识点</a-menu-item>-->
       </a-menu>
 
       <div v-if="current[0]=='bank'" style="height: 90%;overflow-y: scroll">
@@ -18,9 +18,6 @@
         </a-list>
       </div>
 
-      <div v-else>
-        hhhhhhh
-      </div>
     </div>
 
     <div class="right">
@@ -32,7 +29,7 @@
           </a-button>
           <a-button class="btn" @click="uploadPaper">
             <a-icon type="safety-certificate" theme="twoTone"/>
-            发布试卷
+            生成试卷
           </a-button>
           <p>
             <a-icon type="rocket" theme="twoTone"/>
@@ -42,6 +39,10 @@
         </div>
         <div class="bar2">
           <a-input placeholder="请输入试卷名称" v-model="paperName"/>
+          <span>
+            设为公开？&ensp;
+            <a-switch default-checked @change="changePublic"/>
+          </span>
           <p>分值</p>
         </div>
 
@@ -155,9 +156,13 @@ export default {
       totalScore: 0,
       totalPage: 1,
       bankId: 1,
+      isPublic: 0,
     }
   },
   methods: {
+    changePublic() {
+      this.isPublic = this.isPublic === 0 ? 1 : 0;
+    },
     //选择题库
     async handleClick(id) {
       let response = await getTestBank(id, 1, 1)
@@ -235,8 +240,8 @@ export default {
         this.$message.warning("请选择至少一个题目")
       } else {
         let bankId = this.$route.params.bankId
-        let response = await addPaper(this.choose, this.scores, bankId)
-        if (response.res) {
+        let response = await addPaper(this.choose, this.scores, bankId, this.$store.getters.getTeacher.id, '', this.paperName, this.totalScore)
+        if (response.code == 0) {
           this.$message.success("发布成功")
         } else {
           this.$message.error("发布失败")
@@ -444,6 +449,12 @@ export default {
   width: 60%;
   margin-top: 10px;
   margin-left: 30px;
+  float: left;
+}
+
+.bar2 span {
+  margin-top: 15px;
+  margin-left: 20px;
   float: left;
 }
 

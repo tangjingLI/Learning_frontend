@@ -30,7 +30,13 @@
               <router-link to="/teacher/courseList">课程管理</router-link>
             </span>
           </a-menu-item>
-          <a-menu-item key="5" @click="()=>{this.$router.push('/teacher/knowledge')}">
+          <a-menu-item key="5" @click="()=>{this.$router.push('/teacher/quality')}">
+            <a-icon type="crown" />
+            <span>
+              <router-link to="/teacher/courseList">品行管理</router-link>
+            </span>
+          </a-menu-item>
+          <a-menu-item key="6" @click="()=>{this.$router.push('/teacher/knowledge')}">
             <a-icon type="crown" />
             <span>
               <router-link to="/teacher/courseList">能力管理</router-link>

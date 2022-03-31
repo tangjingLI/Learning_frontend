@@ -38,11 +38,15 @@
 
       <a-input-search placeholder="输入试卷名" enter-button @search="onSearch" id="search"
                       style="width: 30%; float: right;margin-top: 5px;margin-right: 5px"/>
+      <a-button @click="reset"
+                style="padding-left:5px;padding-right:5px;float: right;margin-right: 10px;margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;">
+        重置
+      </a-button>
     </div>
 
     <div class="table">
       <a-table :columns="columns" :data-source="papers" style="background-color: white" :pagination="false"
-               :rowKey="record=>record.paperInfo.id"
+               :rowKey="record=>record.id"
                :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
         <span slot="customTitle"><a-icon type="smile" theme="twoTone"/> 试卷</span>
@@ -53,13 +57,13 @@
         </span>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="detail(record.paperInfo.id)">查看</a>
+          <a @click="detail(record.id)">查看</a>
           <a-divider type="vertical"/>
           <a-popconfirm
               title="确定删除该题库吗?"
               ok-text="Yes"
               cancel-text="No"
-              @confirm="confirm(record.paperInfo.id)"
+              @confirm="confirm(record.id)"
               @cancel="cancel"
           >
             <a href="#">删除</a>
@@ -77,11 +81,11 @@
 </template>
 
 <script>
-import {getPaperBank, deletePaper, deletePaperGroup} from "../../api/paper";
+import {getPaperBank, deletePaper, deletePaperGroup,getPaperByName} from "../../api/paper";
 
 const columns = [
   {
-    dataIndex: 'title',
+    dataIndex: 'paperName',
     key: 'title',
     slots: {title: 'customTitle'},
     scopedSlots: {customRender: 'title'},
@@ -89,14 +93,8 @@ const columns = [
   {
     title: '状态',
     key: 'status',
-    dataIndex: 'paperInfo.status',
+    dataIndex: 'status',
     scopedSlots: {customRender: 'status'},
-  },
-  {
-    title: '创建者',
-    key: 'creator',
-    dataIndex: 'paperInfo.creator',
-    scopedSlots: {customRender: 'creator'},
   },
   {
     title: '操作',
@@ -117,23 +115,30 @@ export default {
       papers: [],
       choose: [],
       selectedRowKeys: [],
-      current:1,
+      current: 1,
     }
   },
   mounted() {
     this.reset()
   },
   methods: {
-    async reset(){
+    async reset() {
       let params = this.$route.params;
-      let response =await getPaperBank(params.bankId, 1);
-      this.papers = response.res;
+      let response = await getPaperBank(params.bankId, 1)
+      console.log("bankList", response)
+      this.papers = response.data.list;
       this.bankTitle = response.bankTitle;
-      this.totalPage = response.totalPage
-      this.current=1
+      this.totalPage = response.data.pages
+      this.current = 1
     },
-    onSearch(value) {
-      console.log(value);
+    async onSearch(value) {
+      let params = this.$route.params;
+      let response = await getPaperByName(params.bankId, 1,value)
+      console.log("search",response)
+      this.papers = response.data.list;
+      this.bankTitle = response.bankTitle;
+      this.totalPage = response.data.pages
+      this.current = 1
     },
     back() {
       this.$router.push({name: 'paperBank'})
@@ -143,8 +148,8 @@ export default {
     },
     //删除
     async confirm(id) {
-      let response =await deletePaper(this.$store.getters.getTeacher.id, id)
-      if (response.res) {
+      let response = await deletePaper(this.$store.getters.getTeacher.id, id)
+      if (response.code == 0) {
         console.log("删除试卷：" + id)
         this.$message.success('删除成功！')
         await this.reset()
@@ -166,8 +171,8 @@ export default {
       this.selectedRowKeys = selectedRowKeys;
     },
     async deleteGroup() {
-      let response =await deletePaperGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
-      if (response.res) {
+      let response = await deletePaperGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
+      if (response.code==0) {
         this.$message.success('删除成功！')
         await this.reset()
       } else {
@@ -179,7 +184,7 @@ export default {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.totalPage) {
         let params = this.$route.params;
-        let response =await getPaperBank(params.bankId, 1);
+        let response = await getPaperBank(params.bankId, 1);
         this.papers = response.res;
         this.totalPage = response.totalPage
       }

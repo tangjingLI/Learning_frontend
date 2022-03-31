@@ -26,11 +26,15 @@
 
       <a-input-search placeholder="输入试卷库名" enter-button @search="onSearch" id="search"
                       style="width: 30%; float: right;margin-top: 5px;margin-right: 5px"/>
+      <a-button @click="reset"
+                style="padding-left:5px;padding-right:5px;float: right;margin-right: 10px;margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;">
+        重置
+      </a-button>
     </div>
 
     <div class="table">
       <a-table :columns="columns" :data-source="banks" style="background-color: white" :pagination="false"
-               :rowKey="record=>record.papersInfo.id"
+               :rowKey="record=>record.id"
                :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
         <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  试卷库</span>
@@ -41,13 +45,13 @@
         </span>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="chooseBank(record.papersInfo.id)">查看</a>
+          <a @click="chooseBank(record.id)">查看</a>
           <a-divider type="vertical"/>
           <a-popconfirm
               title="确定删除该试卷库吗?"
               ok-text="Yes"
               cancel-text="No"
-              @confirm="confirm(record.papersInfo.id)"
+              @confirm="confirm(record.id)"
               @cancel="cancel"
           >
             <a href="#">删除</a>
@@ -93,11 +97,12 @@ import {
   createPaperBank,
   deletePaperBank,
   deletePaperBankGroup,
+  getPaperBankByName
 } from "../../api/paper";
 
 const columns = [
   {
-    dataIndex: 'title',
+    dataIndex: 'papersName',
     key: 'title',
     slots: {title: 'customTitle'},
     scopedSlots: {customRender: 'title'},
@@ -105,20 +110,14 @@ const columns = [
   {
     title: '类型',
     key: 'isPublic',
-    dataIndex: 'papersInfo.isPublic',
+    dataIndex: 'isPublic',
     scopedSlots: {customRender: 'isPublic'},
   },
   {
     title: '试卷数',
     key: 'num',
-    dataIndex: 'papersInfo.num',
+    dataIndex: 'paperNum',
     scopedSlots: {customRender: 'num'},
-  },
-  {
-    title: '创建者',
-    key: 'creator',
-    dataIndex: 'papersInfo.creator',
-    scopedSlots: {customRender: 'creator'},
   },
   {
     title: '操作',
@@ -139,7 +138,7 @@ export default {
       visible: false,
       selectedRowKeys: [],
       formLayout: 'horizontal',
-      current:1,
+      current: 1,
       form: this.$form.createForm(this, {name: 'newPaperBank'}),
     }
   },
@@ -147,27 +146,33 @@ export default {
     this.reset()
   },
   methods: {
-    async reset(){
+    async reset() {
       let userId = this.$store.getters.getTeacher.id;
-      let response =await getAllPaperBank(userId, 1);
+      let response = await getAllPaperBank(userId, 1);
+      console.log("reset", response)
       this.msg = response.msg;
-      this.banks = response.res;
-      this.totalPage = response.totalPage
-      this.current=1
+      this.banks = response.data.list;
+      // console.log("banks",this.banks)
+      this.totalPage = response.data.pages
+      this.current = 1
     },
     //查看
     chooseBank(id) {
       this.$router.push({name: 'paperList', params: {bankId: id}});
     },
     //搜索框
-    onSearch(value) {
-      console.log(value)
+    async onSearch(value) {
+      let userId = this.$store.getters.getTeacher.id;
+      let response = await getPaperBankByName(userId, 1,value);
+      this.banks = response.data.list;
+      this.totalPage = response.data.pages
+      this.current = 1
     },
     //删除
     async confirm(id) {
       console.log("delete:" + id);
-      let response =await deletePaperBank(this.$store.getters.getTeacher.id, id)
-      if (response.res) {
+      let response = await deletePaperBank(this.$store.getters.getTeacher.id, id)
+      if (response.code == 0) {
         this.$message.success('删除成功！')
         await this.reset()
       } else {
@@ -190,13 +195,11 @@ export default {
           this.form.resetFields();
           this.visible = false;
 
-          let aData = new Date();
-          // console.log(aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate())
-          let response =await createPaperBank(values.title, this.$store.getters.getTeacher.id, aData)
-          if (response.res) {
+          let response = await createPaperBank(values.title, this.$store.getters.getTeacher.id, values.isPublic)
+          console.log(response)
+          if (response.code == 0) {
             this.$message.success("创建成功")
             await this.reset()
-
           } else {
             this.$message.error("创建失败")
           }
@@ -209,8 +212,8 @@ export default {
       this.selectedRowKeys = selectedRowKeys;
     },
     async deleteGroup() {
-      let response =await deletePaperBankGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
-      if (response.res) {
+      let response = await deletePaperBankGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
+      if (response.code == 0) {
         this.$message.success('删除成功！')
         await this.reset()
 
@@ -223,7 +226,7 @@ export default {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.totalPage) {
         let userId = this.$store.getters.getTeacher.id;
-        let response =await getAllPaperBank(userId, pageNumber);
+        let response = await getAllPaperBank(userId, pageNumber);
         this.msg = response.msg;
         this.banks = response.res;
         this.totalPage = response.totalPage
