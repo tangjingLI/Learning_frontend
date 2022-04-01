@@ -10,7 +10,7 @@
         <a-icon type="left-circle"/>
         返回试卷列表
       </a-button>
-      <a-button class="button">
+      <a-button class="button" @click="showEdit">
         <a-icon type="setting"/>
         编辑试卷
       </a-button>
@@ -69,11 +69,35 @@
         </a-form-item>
       </a-form>
     </a-modal>
+
+    <a-modal v-model="editFlag" title="编辑试卷" @ok="editPaperItem">
+      <a-form :form="form2" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="试卷名">
+          <a-input
+              v-decorator="['title', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{2,8}$/,message: '试卷名长度为2-8位'}
+                  ] }]"
+          />
+        </a-form-item>
+        <a-form-item label="状态">
+          <a-radio-group name="radioGroup"
+                         v-decorator="['isPublic',{rules:[{required: true,message:'不能为空'}]}]">
+            <a-radio :value="0">
+              public
+            </a-radio>
+            <a-radio :value="1">
+              private
+            </a-radio>
+          </a-radio-group>
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </div>
 </template>
 
 <script>
-import {getPaperDetail, uploadPaper} from "../../api/paper";
+import {getPaperDetail, uploadPaper,editPaper} from "../../api/paper";
 
 export default {
   name: "PaperInfo",
@@ -85,21 +109,56 @@ export default {
       bankId: 0,
       status: 0,
       uploadFlag: false,
+      editFlag: false,
       form1: this.$form.createForm(this, {name: 'uploadPaper'}),
+      form2: this.$form.createForm(this, {name: 'editPaper'}),
+
     }
   },
   mounted() {
     this.reset()
   },
   methods: {
+    //编辑试卷
+    setForm() {
+      this.$nextTick(() => {
+        this.form2.setFieldsValue({
+          title: this.paperTitle,
+          isPublic: this.isPublic
+        })
+      })
+    },
+    showEdit() {
+      this.editFlag=true
+      this.setForm()
+    },
+    editPaperItem(e) {
+      e.preventDefault();
+      this.form2.validateFields(async (err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values);
+          let response = await editPaper(this.$route.params.paperId, values.title, values.isPublic);
+          this.editFlag = false
+          console.log("edit",response)
+          if (response.code == 0) {
+            this.$message.success('编辑成功！')
+            await this.reset()
+          } else {
+            this.$message.error("编辑失败")
+          }
+        }
+      })
+    },
+
     async reset() {
-      let params = this.$route.params;
-      let response = await getPaperDetail(params.paperId);
-      this.paperTitle = response.res.title;
-      this.score = response.res.score;
-      this.questions = response.res.questions;
-      this.bankId = response.res.bankId;
-      this.status = response.res.status;
+      let params = this.$route.params
+      let response = await getPaperDetail(params.paperId)
+      this.paperTitle = response.data.paperName
+      this.score = response.data.score
+      this.questions = response.data.list
+      this.bankId = response.data.bankId
+      this.status = response.data.status
+      this.isPublic=response.data.isPublic
     },
     back(id) {
       this.$router.push({name: 'paperList', params: {bankId: id}});

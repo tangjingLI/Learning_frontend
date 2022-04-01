@@ -313,6 +313,14 @@ export default {
       console.log(e);
     },
     //编辑题库
+    setForm() {
+      this.$nextTick(() => {
+        this.form1.setFieldsValue({
+          title: this.bankTitle,
+          isPublic: this.isPublic
+        })
+      })
+    },
     edit(e) {
       e.preventDefault();
       this.form1.validateFields(async (err, values) => {
@@ -323,26 +331,27 @@ export default {
           this.editBank = false;
           console.log(response)
           if (response.code == 0) {
-            this.$message.success('编辑成功！');
+            this.$message.success('编辑成功！')
             await this.reset()
           } else {
-            this.$message.error("编辑失败");
+            this.$message.error("编辑失败")
           }
         }
       });
     },
     showEdit() {
-      this.editBank = true;
+      this.editBank = true
+      this.setForm()
     },
     cancel1() {
-      this.form1.resetFields();
+      this.form1.resetFields()
     },
     //添加题目
     showAddTest() {
-      this.showAdd = true;
+      this.showAdd = true
     },
     addTest(e) {
-      e.preventDefault();
+      e.preventDefault()
       this.form2.validateFields(async (err, values) => {
         if (!err) {
           console.log('Received values of form: ', values)
@@ -353,24 +362,24 @@ export default {
             let key = list[this.num]
             arr.push({
               number: key,
-              content:values[key]
+              content: values[key]
             })
             console.log(arr)
           }
-            let response = await addTest(values, this.$store.getters.getTeacher.id, this.$route.params.bankId, arr);
-            this.form2.resetFields();
-            this.testType = 0;
-            this.num = 2;
-            this.choices = [];
-            this.choices.push({ch: 'A'});
-            this.choices.push({ch: 'B'});
-            this.showAdd = false;
-            if (response.code == 0) {
-              this.$message.success("添加题目成功！");
-              await this.reset()
-            } else {
-              this.$message.error("添加题目失败");
-            }
+          let response = await addTest(values, this.$store.getters.getTeacher.id, this.$route.params.bankId, arr);
+          this.form2.resetFields();
+          this.testType = 0;
+          this.num = 2;
+          this.choices = [];
+          this.choices.push({ch: 'A'});
+          this.choices.push({ch: 'B'});
+          this.showAdd = false;
+          if (response.code == 0) {
+            this.$message.success("添加题目成功！");
+            await this.reset()
+          } else {
+            this.$message.error("添加题目失败");
+          }
         }
       });
     },

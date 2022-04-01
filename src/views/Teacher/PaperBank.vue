@@ -97,7 +97,8 @@ import {
   createPaperBank,
   deletePaperBank,
   deletePaperBankGroup,
-  getPaperBankByName
+  getPaperBankByName,
+  editPaperBank
 } from "../../api/paper";
 
 const columns = [
@@ -163,7 +164,7 @@ export default {
     //搜索框
     async onSearch(value) {
       let userId = this.$store.getters.getTeacher.id;
-      let response = await getPaperBankByName(userId, 1,value);
+      let response = await getPaperBankByName(userId, 1, value);
       this.banks = response.data.list;
       this.totalPage = response.data.pages
       this.current = 1

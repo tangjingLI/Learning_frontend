@@ -10,6 +10,15 @@
                :rowKey="record=>record.id">
         <span slot="customTitle"><a-icon type="smile" theme="twoTone"/> 试卷名</span>
 
+        <span slot="type" slot-scope="type">
+          <a-tag v-if="type==0" color="green">public</a-tag>
+          <a-tag v-else color="orange">private</a-tag>
+        </span>
+
+        <span slot="time" slot-scope="time">
+          {{ time }} 分钟
+        </span>
+
         <span slot="action" slot-scope="text, record">
           <a @click="getExamDetail(record.id)">查看试卷</a>
         </span>
@@ -28,34 +37,22 @@ import {getReleasedPaper} from "../../api/paper";
 
 const columns = [
   {
-    dataIndex: 'title',
+    dataIndex: 'paperName',
     key: 'title',
     slots: {title: 'customTitle'},
     scopedSlots: {customRender: 'title'},
   },
   {
-    title: '考试名',
-    key: 'name',
-    dataIndex: 'name',
-    scopedSlots: {customRender: 'name'},
+    title: '类型',
+    key: 'type',
+    dataIndex: 'isPublic',
+    scopedSlots: {customRender: 'type'},
   },
   {
-    title: '平均分',
-    key: 'averageScore',
-    dataIndex: 'averageScore',
-    scopedSlots: {customRender: 'averageScore'},
-  },
-  {
-    title: '最高分',
-    key: 'maxScore',
-    dataIndex: 'maxScore',
-    scopedSlots: {customRender: 'maxScore'},
-  },
-  {
-    title: '最低分',
-    key: 'minScore',
-    dataIndex: 'minScore',
-    scopedSlots: {customRender: 'minScore'},
+    title: '考试时长',
+    key: 'time',
+    dataIndex: 'examTime',
+    scopedSlots: {customRender: 'time'},
   },
   {
     title: '操作',
@@ -87,17 +84,18 @@ export default {
       console.log('Page: ', pageNumber);
       if (pageNumber <= this.totalPage) {
         let response =await getReleasedPaper(this.$store.getters.getTeacher.id, pageNumber)
-        this.papers = response.res
-        this.totalPage = response.totalPage
+        this.papers = response.data.list
+        this.totalPage = response.data.pages
       }
     }
 
   },
   async mounted() {
     let response =await getReleasedPaper(this.$store.getters.getTeacher.id, 1)
-    this.papers = response.res
-    console.log(this.papers)
-    this.totalPage = response.totalPage
+    console.log("released",response)
+    this.papers = response.data.list
+    // console.log(this.papers)
+    this.totalPage = response.data.pages
     this.current = 1
   }
 }

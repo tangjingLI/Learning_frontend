@@ -23,7 +23,7 @@
         </a-button>
       </a-popconfirm>
 
-      <a-button id="edit"
+      <a-button id="edit" @click="showEdit"
                 style=" margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;margin-right: 10px;float: right">
         <a-icon type="setting"/>
         编辑试卷库
@@ -56,6 +56,12 @@
           <a-tag v-else color="pink">未发布</a-tag>
         </span>
 
+        <span slot="type" slot-scope="type">
+          <a-tag v-if="type==1" color="blue">单选</a-tag>
+          <a-tag v-else-if="type==2" color="purple">多选</a-tag>
+          <a-tag v-else color="pink">简答</a-tag>
+        </span>
+
         <span slot="action" slot-scope="text, record">
           <a @click="detail(record.id)">查看</a>
           <a-divider type="vertical"/>
@@ -76,12 +82,37 @@
     <div class="footer">
       <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page" v-model="current"/>
     </div>
+
+
+    <a-modal v-model="visible" title="编辑试卷库" @ok="handleOk">
+      <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="试卷库名">
+          <a-input
+              v-decorator="['title', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{2,8}$/,message: '试卷库名长度为2-8位'}
+                  ] }]"
+          />
+        </a-form-item>
+        <a-form-item label="状态">
+          <a-radio-group name="radioGroup"
+                         v-decorator="['isPublic',{rules:[{required: true,message:'不能为空'}]}]">
+            <a-radio :value="0">
+              public
+            </a-radio>
+            <a-radio :value="1">
+              private
+            </a-radio>
+          </a-radio-group>
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </div>
 
 </template>
 
 <script>
-import {getPaperBank, deletePaper, deletePaperGroup,getPaperByName} from "../../api/paper";
+import {getPaperBank, deletePaper, deletePaperGroup, getPaperByName, editPaperBank} from "../../api/paper";
 
 const columns = [
   {
@@ -95,6 +126,12 @@ const columns = [
     key: 'status',
     dataIndex: 'status',
     scopedSlots: {customRender: 'status'},
+  },
+  {
+    title: '类型',
+    key: 'type',
+    dataIndex: 'isPublic',
+    scopedSlots: {customRender: 'type'},
   },
   {
     title: '操作',
@@ -116,19 +153,54 @@ export default {
       choose: [],
       selectedRowKeys: [],
       current: 1,
+      isPublic:0,
+      form: this.$form.createForm(this, {name: 'editPaperBank'}),
+      visible:false,
     }
   },
   mounted() {
     this.reset()
   },
   methods: {
+    //编辑试卷库
+    handleOk(e){
+      e.preventDefault();
+      this.form.validateFields(async (err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values);
+          let response = await editPaperBank(this.$route.params.bankId, values.title, values.isPublic)
+          this.visible = false;
+          console.log(response)
+          if (response.code == 0) {
+            this.$message.success('编辑成功！')
+            await this.reset()
+          } else {
+            this.$message.error("编辑失败")
+          }
+        }
+      });
+
+    },
+    setForm(){
+      this.$nextTick(() => {
+        this.form.setFieldsValue({
+          title: this.bankTitle,
+          isPublic: this.isPublic
+        })
+      })
+    },
+    showEdit(){
+      this.visible=true
+      this.setForm()
+    },
     async reset() {
       let params = this.$route.params;
       let response = await getPaperBank(params.bankId, 1)
       console.log("bankList", response)
       this.papers = response.data.list;
-      this.bankTitle = response.bankTitle;
+      this.bankTitle = response.data.papersName;
       this.totalPage = response.data.pages
+      this.isPublic=response.data.isPublic
       this.current = 1
     },
     async onSearch(value) {
