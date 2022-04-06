@@ -35,12 +35,13 @@
       >
         <span slot="customTitle" style="margin-left: 50px"><a-icon type="smile" theme="twoTone"/>  品行</span>
         <span slot="action" slot-scope="text, record">
+          <a @click="">修改</a>
           <a-divider type="vertical"/>
           <a-popconfirm
-              title="确定删除该试卷库吗?"
+              title="确定删除该品行吗?"
               ok-text="Yes"
               cancel-text="No"
-              @confirm="confirm(record.id)"
+              @confirm="deleteQualityItem(record.id)"
           >
             <a href="#">删除</a>
           </a-popconfirm>
@@ -54,9 +55,11 @@
 </template>
 
 <script>
+import {getAllQuality, deleteQuality} from "../../api/course";
+
 const columns = [
   {
-    dataIndex: 'title',
+    dataIndex: 'name',
     key: 'title',
     slots: {title: 'customTitle'},
     scopedSlots: {customRender: 'title'},
@@ -73,18 +76,33 @@ export default {
   data() {
     return {
       columns,
-      qualityList:[],
+      qualityList: [],
     }
   },
   methods: {
-    async reset(){
+    async reset() {
+      let response = await getAllQuality()
+      this.qualityList = response.content
 
     },
-    async onSearch(value){
+    async onSearch(value) {
 
     },
+    async deleteQualityItem(id) {
+      let response = await deleteQuality(id)
+      if (response.code == 0) {
+        this.$message.success('删除成功！')
+        await this.reset()
+      } else {
+        this.$message.error("删除失败")
+      }
+    },
+    async editQualityItem(e){
+
+    }
   },
   mounted() {
+    this.reset()
   },
   computed: {
     hasSelected() {

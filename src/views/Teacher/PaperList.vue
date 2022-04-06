@@ -57,9 +57,8 @@
         </span>
 
         <span slot="type" slot-scope="type">
-          <a-tag v-if="type==1" color="blue">单选</a-tag>
-          <a-tag v-else-if="type==2" color="purple">多选</a-tag>
-          <a-tag v-else color="pink">简答</a-tag>
+          <a-tag v-if="type==0" color="green">public</a-tag>
+          <a-tag v-else color="orange">private</a-tag>
         </span>
 
         <span slot="action" slot-scope="text, record">

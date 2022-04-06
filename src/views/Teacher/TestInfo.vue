@@ -15,41 +15,36 @@
       </a-button>
     </div>
 
-    <div class="box">
-      <div class="content">
+    <div class="content">
 
-        <div class="block" style="margin-top: 35px;">
-          <h1>
-            {{ question.title }}
-            <a-tag v-if="question.type==1" color="blue">单选</a-tag>
-            <a-tag v-else-if="question.type==2" color="purple">多选</a-tag>
-            <a-tag v-else color="pink">简答</a-tag>
-          </h1>
-          <a-divider/>
-        </div>
+      <div class="block" style="margin-top: 35px;">
+        <h1>
+          {{ question.title }}
+          <a-tag v-if="question.type==1" color="blue">单选</a-tag>
+          <a-tag v-else-if="question.type==2" color="purple">多选</a-tag>
+          <a-tag v-else color="pink">简答</a-tag>
+        </h1>
+      </div>
 
-        <div class="block">
-          <p>
-            <a-tag color="orange" class="tag">题目描述</a-tag>
-            &emsp;{{ question.content }}
-          </p>
-          <a-divider/>
-        </div>
+      <div class="block">
+        <p>
+          <a-tag color="orange" class="tag">题目描述</a-tag>
+          &emsp;{{ question.content }}
+        </p>
+      </div>
 
-        <div class="block">
-          <p v-for="ch in choices">{{ ch.number }} {{ ch.content }}</p>
-          <p style="color: mediumseagreen">正确答案： {{ question.answer }}</p>
-          <p> 解析： {{ question.analysis }}</p>
-          <a-divider/>
-        </div>
+      <div class="block">
+        <p v-for="ch in choices">{{ ch.number }} {{ ch.content }}</p>
+        <p style="color: mediumseagreen">正确答案： {{ question.answer }}</p>
+        <p> 解析： {{ question.analysis }}</p>
+      </div>
 
-        <div class="block">
-          <p>
-            正确率： {{ question.rate }}
-            <a-divider type="vertical"/>
-            预计耗时： {{ question.consume }} 分钟
-          </p>
-        </div>
+      <div class="block" >
+        <p style="font-size: 12px;margin-bottom: 15px">
+          正确率： {{ question.rate * 100 }}%
+          <a-divider type="vertical"/>
+          预计耗时： {{ question.consume }} 分钟
+        </p>
 
       </div>
     </div>
@@ -281,39 +276,27 @@ body {
   margin-top: 5px;
 }
 
-.box {
-  text-align: center;
-}
-
 .content {
-  border-radius: 10px;
-  box-shadow: 2px 2px 10px #939393;
-  width: 95%;
-  height: 520px;
-  margin: 0 auto;
-  overflow: auto;
+  width: 98%;
+  height: 530px;
+  overflow-y: scroll;
+  margin-left: 10px;
+  margin-right: 5px;
   background-color: white;
-  /*display: flex;*/
-  /*justify-content: center;*/
-  /*align-items: center;*/
-  text-align: center;
-}
-
-.block {
-  width: 80%;
-  /*border: 1px solid black;*/
-  margin: 0 auto;
 }
 
 .block h1 {
   letter-spacing: 2px;
   font-weight: bold;
-  size: 25px;
+  font-size: 18px;
   color: #6a6868;
+  margin-left: 50px;
+  margin-bottom: 30px;
 }
 
 .block p {
   font-size: 15px;
+  margin-left: 50px;
 }
 
 .tag {

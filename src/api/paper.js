@@ -171,11 +171,11 @@ export function deletePaper(uid, pid) {
 }
 
 //新建试卷
-export function addPaper(tests, scores, bankId, uid, isPublic, paperName, score) {
+export function addPaper(tests, scores, bankId, uid, isPublic, paperName) {
     let questions = []
     for (let i = 0; i < tests.length; i++) {
         let item = {
-            id: tests[i],
+            questionId: tests[i],
             score: scores[i],
             sequence: i
         }
@@ -183,12 +183,12 @@ export function addPaper(tests, scores, bankId, uid, isPublic, paperName, score)
     }
     // console.log(questions)
     let data = {
+        courseId: 1,
         questions: questions,
-        bankId: bankId,
+        papersId: bankId,
         createId: uid,
         isPublic: isPublic,
         paperName: paperName,
-        score: score
     }
     return axios.post(`${baseUrls.paper}/paper/insertPaper`, data, {
         headers: {

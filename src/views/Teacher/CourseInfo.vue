@@ -24,7 +24,7 @@
           <span style="font-weight: bold">
             课程简介：
           </span>
-            {{brief}}
+            {{ brief }}
           </p>
         </div>
 
@@ -40,15 +40,15 @@
             <a-icon type="bug" theme="twoTone"/>
             试卷
           </a-menu-item>
-          <a-menu-item key="ability">
+          <a-menu-item key="ability" @click="getAbilityList">
             <a-icon type="compass" theme="twoTone"/>
             能力
           </a-menu-item>
-          <a-menu-item key="knowledge">
+          <a-menu-item key="knowledge" @click="getKnowledgeList">
             <a-icon type="environment" theme="twoTone"/>
             知识点
           </a-menu-item>
-          <a-menu-item key="quality">
+          <a-menu-item key="quality" @click="getQualityList">
             <a-icon type="crown" theme="twoTone"/>
             品行
           </a-menu-item>
@@ -62,7 +62,7 @@
             <a-table :columns="columns2" :data-source="paperList" style="background-color: white" :pagination="false"
                      :rowKey="record=>record.id"
             >
-              <span slot="customTitle" style="margin-left: 50px"><a-icon type="smile" theme="twoTone"/>  试卷</span>
+              <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  试卷</span>
 
             </a-table>
           </div>
@@ -73,29 +73,20 @@
             <a-table :columns="columns3" :data-source="abilityList" style="background-color: white" :pagination="false"
                      :rowKey="record=>record.id"
             >
-              <span slot="customTitle" style="margin-left: 50px"><a-icon type="smile" theme="twoTone"/>  能力</span>
-              <sapn slot="action">
-
-                <a-button class="add" @click=""
-                          style="background-color: #1C90F5;color: white;border: none;margin-right: 15px;margin-bottom: 0">
-                  <a-icon type="plus-circle"/>
-                  添加能力
-                </a-button>
-
+              <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  能力</span>
+              <span slot="action" slot-scope="text, record">
+                <a @click="">修改</a>
+                <a-divider type="vertical"/>
                 <a-popconfirm
-                    :disabled="!hasSelected"
-                    title="确定删除所选能力吗?"
+                    title="确定删除该能力吗?"
                     ok-text="Yes"
                     cancel-text="No"
-                    @confirm=""
+                    @confirm="deleteAbilityItem(record.id)"
                 >
-                  <a-button class="deleteAll" :disabled="!hasSelected" type="danger"
-                            style="margin-right: 15px;margin-bottom: 0">
-                    删除能力
-                  </a-button>
-                </a-popconfirm>
+                 <a href="#">删除</a>
+              </a-popconfirm>
+              </span>
 
-              </sapn>
 
             </a-table>
           </div>
@@ -104,32 +95,25 @@
 
         <div v-else-if="current[0]==='knowledge'">
           <div class="table">
-            <a-table :columns="columns4" :data-source="knowledgeList" style="background-color: white" :pagination="false"
+            <a-table :columns="columns4" :data-source="knowledgeList" style="background-color: white"
+                     :pagination="false"
                      :rowKey="record=>record.id"
             >
-              <span slot="customTitle" style="margin-left: 50px"><a-icon type="smile" theme="twoTone"/>  知识点</span>
-              <sapn slot="action">
+              <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  知识点</span>
 
-                <a-button class="add" @click=""
-                          style="background-color: #1C90F5;color: white;border: none;margin-right: 15px;margin-bottom: 0">
-                  <a-icon type="plus-circle"/>
-                  添加知识点
-                </a-button>
-
+              <span slot="action" slot-scope="text, record">
+                <a @click="">修改</a>
+                <a-divider type="vertical"/>
                 <a-popconfirm
-                    :disabled="!hasSelected"
-                    title="确定删除所选知识点吗?"
+                    title="确定删除该知识点吗?"
                     ok-text="Yes"
                     cancel-text="No"
-                    @confirm=""
+                    @confirm="deleteKnowledgeItem(record.id)"
                 >
-                  <a-button class="deleteAll" :disabled="!hasSelected" type="danger"
-                            style="margin-right: 15px;margin-bottom: 0">
-                    删除知识点
-                  </a-button>
-                </a-popconfirm>
+                 <a href="#">删除</a>
+              </a-popconfirm>
+              </span>
 
-              </sapn>
 
             </a-table>
           </div>
@@ -141,29 +125,19 @@
             <a-table :columns="columns5" :data-source="qualityList" style="background-color: white" :pagination="false"
                      :rowKey="record=>record.id"
             >
-              <span slot="customTitle" style="margin-left: 50px"><a-icon type="smile" theme="twoTone"/>  品行</span>
-              <sapn slot="action">
-
-                <a-button class="add" @click=""
-                          style="background-color: #1C90F5;color: white;border: none;margin-right: 15px;margin-bottom: 0">
-                  <a-icon type="plus-circle"/>
-                  添加品行
-                </a-button>
-
+              <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  品行</span>
+              <span slot="action" slot-scope="text, record">
+                <a @click="">修改</a>
+                <a-divider type="vertical"/>
                 <a-popconfirm
-                    :disabled="!hasSelected"
-                    title="确定删除所选品行吗?"
+                    title="确定删除该品行吗?"
                     ok-text="Yes"
                     cancel-text="No"
-                    @confirm=""
+                    @confirm="deleteQualityItem(record.id)"
                 >
-                  <a-button class="deleteAll" :disabled="!hasSelected" type="danger"
-                            style="margin-right: 15px;margin-bottom: 0">
-                    删除品行
-                  </a-button>
-                </a-popconfirm>
-
-              </sapn>
+                 <a href="#">删除</a>
+              </a-popconfirm>
+              </span>
             </a-table>
           </div>
 
@@ -176,7 +150,7 @@
 </template>
 
 <script>
-import {getCourseDetail} from "../../api/course";
+import {getCourseDetail, getAbility, getKnowledge, getQuality} from "../../api/course";
 
 const columns1 = [
   {
@@ -217,11 +191,6 @@ const columns3 = [
     title: '操作',
     key: 'action',
     scopedSlots: {customRender: 'action'},
-  },
-  {
-    key:'action',
-    slots: {title: 'action'},
-    scopedSlots: {customRender: 'action'},
   }
 ];
 
@@ -233,23 +202,26 @@ const columns4 = [
     scopedSlots: {customRender: 'title'},
   },
   {
-    key:'action',
-    slots: {title: 'action'},
+    title: '操作',
+    key: 'action',
     scopedSlots: {customRender: 'action'},
   }
 ];
 
 const columns5 = [
   {
-    dataIndex: 'title',
+    dataIndex: 'name',
     key: 'title',
     slots: {title: 'customTitle'},
     scopedSlots: {customRender: 'title'},
+    width: 150,
   },
   {
-    key:'action',
-    slots: {title: 'action'},
+    title: '操作',
+    key: 'action',
     scopedSlots: {customRender: 'action'},
+    width: 150,
+
   }
 ];
 
@@ -260,11 +232,11 @@ export default {
       current: ['chapter'],
       title: "c++",
       brief: "这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介",
-      chapterList:[],
-      paperList:[],
-      abilityList:[],
-      knowledgeList:[],
-      qualityList:[],
+      chapterList: [],
+      paperList: [],
+      abilityList: [],
+      knowledgeList: [],
+      qualityList: [],
       columns1,
       columns2,
       columns3,
@@ -275,10 +247,35 @@ export default {
   },
   methods: {
     async reset() {
-      let response = await getCourseDetail(this.$store.getters.getTeacher.id, this.$route.params.courseId)
+      // let response = await getCourseDetail(this.$store.getters.getTeacher.id, this.$route.params.courseId)
     },
     back() {
       this.$router.push('/teacher/courseList')
+    },
+    //查看能力
+    async getAbilityList() {
+      let response = await getAbility(this.$route.params.courseId, 1)
+    },
+    //删除能力
+    async deleteAbilityItem(id) {
+
+    },
+    //查看知识点
+    async getKnowledgeList() {
+      let response = await getKnowledge(this.$route.params.courseId, 1)
+    },
+    //删除知识点
+    async deleteKnowledgeItem(id) {
+
+    },
+    //查看品行
+    async getQualityList() {
+      let response = await getQuality(this.$route.params.courseId, 1)
+      this.qualityList = response
+    },
+    //删除品行
+    async deleteQualityItem(id) {
+
     }
   },
   mounted() {
@@ -320,13 +317,13 @@ export default {
   height: 25%;
 }
 
-.brief{
+.brief {
   float: left;
   width: 65%;
 }
 
 
-.info p{
+.info p {
   float: left;
   margin-top: 30px;
   margin-left: 30px;
@@ -345,11 +342,11 @@ export default {
   height: 75%;
 }
 
-.action{
+.action {
   height: 40px;
 }
 
-.table{
+.table {
   height: 300px;
   overflow-y: scroll;
 }

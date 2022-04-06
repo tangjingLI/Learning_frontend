@@ -17,6 +17,7 @@
       </a-popconfirm>
 
       <a-button id="add" @click="()=>{this.addCourseFlag=true}"
+                :disabled="this.bankId==-1"
                 style="  margin-top: 5px;background-color: #1C90F5;color: white;border: none;float: right;margin-right: 10px">
         <a-icon type="plus-circle"/>
         新建课程
@@ -156,7 +157,8 @@ import {
   addCoursesType,
   addCourse,
   deleteCoursesType,
-  deleteCourse, deleteCoursesGroup
+  deleteCourse,
+  deleteCoursesGroup,
 } from "../../api/course";
 
 const columns = [
@@ -172,18 +174,6 @@ const columns = [
     dataIndex: 'brief',
     ellipsis: true,
     scopedSlots: {customRender: 'brief'},
-  },
-  {
-    title: '创建者',
-    key: 'create_user',
-    dataIndex: 'create_user',
-    scopedSlots: {customRender: 'create_user'},
-  },
-  {
-    title: '创建时间',
-    key: 'create_time',
-    dataIndex: 'create_time',
-    scopedSlots: {customRender: 'create_time'},
   },
   {
     title: '操作',
@@ -238,11 +228,11 @@ export default {
     async handleClick(id) {
       let response;
       if (id != -1) {
-        response = await getCoursesByType(this.$store.getters.getTeacher.id, this.bankId, 1)
+        response = await getCoursesByType(this.$store.getters.getTeacher.id, id, 1)
       } else {
         response = await getAllCourses(this.$store.getters.getTeacher.id, 1)
       }
-      this.courses = response.courses
+      this.courses = response.content
       this.bankId = id
       this.totalPage = response.totalPage
     },
@@ -256,9 +246,10 @@ export default {
       this.form1.validateFields(async (err, values) => {
         if (!err) {
           this.addTypeFlag = false
-          console.log(values)
+          console.log("addType", values)
           let response = await addCoursesType(this.$store.getters.getTeacher.id, values.type)
           this.form1.resetFields();
+          console.log("addRes", response)
           if (response.code == 0) {
             this.$message.success("添加成功！")
             await this.reset()
@@ -288,12 +279,10 @@ export default {
           let aData = new Date();
           let course = {
             name: values.name,
-            classify_name: "所有课程",
-            sub_classify_name: values.type,
+            classifyId: this.bankId,
             brief: values.brief,
-            user_id: this.$store.getters.getTeacher.id,
-            create_user: this.$store.getters.getTeacher.phone,
-            create_time: aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate()
+            userId: this.$store.getters.getTeacher.id,
+            createTime: aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate()
           }
           console.log(course)
           let response = await addCourse(course)
@@ -310,6 +299,7 @@ export default {
     //删除课程
     async deleteCourseItem(id) {
       let response = await deleteCourse(this.$store.getters.getTeacher.id, id)
+      // console.log("delete",response)
       if (response.code == 0) {
         this.$message.success("删除成功！")
         await this.reset()
@@ -319,7 +309,7 @@ export default {
     },
     async deleteGroup() {
       let response = await deleteCoursesGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
-      console.log(this.selectedRowKeys)
+      // console.log(this.selectedRowKeys)
       if (response.code == 0) {
         this.$message.success("删除成功！")
         await this.reset()
@@ -329,12 +319,15 @@ export default {
     },
     async reset() {
       let response = await getCourseType(this.$store.getters.getTeacher.id)
-      this.types = response.classifies
+      // console.log("types",response)
+      this.types = response
       this.types.unshift({id: -1, name: "所有课程"})
       let res = await getAllCourses(this.$store.getters.getTeacher.id, 1)
-      this.courses = res.courses
+      console.log("all", res)
+      this.courses = res.content
       this.totalPage = res.totalPage
       this.current = 1
+
 
     },
 

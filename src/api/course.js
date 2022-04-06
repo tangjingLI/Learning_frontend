@@ -3,137 +3,40 @@ import {baseUrls} from "./baseUrl";
 
 //获取所有课程
 export function getAllCourses(uid, pageNum) {
-    // return axios.get(`${baseUrls.course}/course/listAll`,{
-    //     params:{
-    //         userId:uid
-    //         pageNum: pageNum
-    //     }
-    // })
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        courses: [
-            {
-                id: 1,
-                name: "软件工程",
-                create_user: "西瓜",
-                create_time: "2022-03-12",
-                brief: "这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介"
-            },
-            {
-                id: 2,
-                name: "云计算",
-                create_user: "西瓜",
-                create_time: "2022-03-12",
-                brief: "这是简介"
-            },
-            {
-                id: 3,
-                name: "设计模式",
-                create_user: "葡萄",
-                create_time: "2022-03-12",
-                brief: "这是简介"
-            },
-            {
-                id: 4,
-                name: "c++",
-                create_user: "西瓜",
-                create_time: "2022-03-12",
-                brief: "这是简介"
-            },
-            {
-                id: 5,
-                name: "编译原理",
-                create_user: "西瓜",
-                create_time: "2022-03-12",
-                brief: "这是简介"
-            },
-            {
-                id: 6,
-                name: "数据集成",
-                create_user: "葡萄",
-                create_time: "2022-03-12",
-                brief: "这是简介"
-            },
-            {
-                id: 7,
-                name: "编译原理",
-                create_user: "西瓜",
-                create_time: "2022-03-12",
-                brief: "这是简介"
-            },
-            {
-                id: 8,
-                name: "数据集成",
-                create_user: "葡萄",
-                create_time: "2022-03-12",
-                brief: "这是简介"
-            },
-            {
-                id: 9,
-                name: "编译原理",
-                create_user: "西瓜",
-                create_time: "2022-03-12",
-                brief: "这是简介"
-            },
-            {
-                id: 10,
-                name: "数据集成",
-                create_user: "葡萄",
-                create_time: "2022-03-12",
-                brief: "这是简介"
-            },
-        ],
-        totalPage: 12
-    }
+    let Form = new FormData()
+    Form.append("page", pageNum)
+    Form.append("userId", uid)
+    return axios.post(`${baseUrls.course}/course/listUser`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 
 }
 
 //根据分类查看课程
 export function getCoursesByType(uid, typeId, pageNum) {
-    // return axios.get(`${baseUrls.course}/course/listClassify`,{
-    //     params:{
-    //         userId:id,
-    //         classifyId:typeId,
-    //         pageNum: pageNum
-    //     }
-    // })
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        courses: [
-            {
-                id: 1,
-                name: "软件工程",
-                create_user: "西瓜",
-                create_time: "2022-03-12",
-                brief: "这是简介"
-            },
-            {
-                id: 2,
-                name: "云计算",
-                create_user: "西瓜",
-                create_time: "2022-03-12",
-                brief: "这是简介"
-            },
-            {
-                id: 3,
-                name: "设计模式",
-                create_user: "葡萄",
-                create_time: "2022-03-12",
-                brief: "这是简介"
-            },
-        ],
-        totalPage: 7
-    }
+    let Form = new FormData()
+    Form.append("page", pageNum)
+    Form.append("userId", uid)
+    Form.append("classifyId", typeId)
+    return axios.post(`${baseUrls.course}/course/listClassify`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 }
 
 //添加课程类别
@@ -142,84 +45,68 @@ export function addCoursesType(uid, type) {
     //     userId: uid,
     //     name: type
     // }
-    // return axios.post(`${baseUrls.course}/classify/add`, data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 0
-    }
+    let Form = new FormData()
+    Form.append("name", type)
+    Form.append("userId", uid)
+    return axios.post(`${baseUrls.course}/classify/add`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 }
 
 //删除课程分类
 export function deleteCoursesType(uid, typeId) {
-    // let data = {
-    //     user_id: uid,
-    //     id:typeId
-    // }
-    // return axios.post(`${baseUrls.course}/classify/delete`, data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 0
-    }
+    let Form = new FormData()
+    Form.append("classifyId", typeId)
+    Form.append("userId", uid)
+    return axios.post(`${baseUrls.course}/classify/delete`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 
 }
 
 //获取课程分类
 export function getCourseType(uid) {
-    // return axios.get(`${baseUrls.course}/classify/listAll`, {
-    //     params: {
-    //         user_id: uid
-    //     }
-    // })
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        classifies: [
-            {
-                id: 1,
-                name: "软件工程"
-            },
-            {
-                id: 2,
-                name: "云计算"
-            },
-            {
-                id: 3,
-                name: "设计模式"
-            },
-        ]
-    }
+    return axios.get(`${baseUrls.course}/classify/listAll`)
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 }
 
 //删除课程
 export function deleteCourse(uid, cid) {
-    // let data = {
-    //     user_id: uid,
-    //     id: cid
-    // }
-    // return axios.post(`${baseUrls.course}/course/delete/`, data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 0
-    }
+    let Form = new FormData()
+    Form.append("courseId", cid)
+    Form.append("userId", uid)
+    return axios.post(`${baseUrls.course}/course/delete`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 }
 
 //批量删除课程
@@ -240,500 +127,47 @@ export function deleteCoursesGroup(uid, list) {
     }
 }
 
-//获取能力列表
-export function getAbilityList(uid, pageNum) {
-    // return axios.get(`${baseUrls.course}/ability/list`,{
-    //     params:{
-    //         user_id:uid,
-    //         pageNum:pageNum
-    //     }
-    // })
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        abilities: [
-            {
-                id: 1,
-                name: "能力1",
-                brief: "这是简介"
-            },
-            {
-                id: 2,
-                name: "能力1",
-                brief: "这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介"
-            },
-            {
-                id: 3,
-                name: "能力1",
-                brief: "这是简介"
-            },
-            {
-                id: 4,
-                name: "能力1",
-                brief: "这是简介"
-            },
-            {
-                id: 5,
-                name: "能力1",
-                brief: "这是简介"
-            },
-            {
-                id: 6,
-                name: "能力1",
-                brief: "这是简介"
-            },
-
-        ],
-        totalPage: 6
-    }
-}
-
-//获取知识点列表
-export function getKnowledgeList(uid, pageNum) {
-    // return axios.get(`${baseUrls.course}/ability/knowledge_list`, {
-    //     params: {
-    //         user_id: uid,
-    //         pageNum: pageNum
-    //     }
-    // })
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        knowledge: [
-            {
-                id: 1,
-                name: "知识点1",
-                skill_level: "理解"
-            },
-            {
-                id: 2,
-                name: "知识点1",
-                skill_level: "理解"
-            },
-            {
-                id: 3,
-                name: "知识点1",
-                skill_level: "记忆"
-            },
-            {
-                id: 4,
-                name: "知识点1",
-                skill_level: "记忆"
-            },
-            {
-                id: 5,
-                name: "知识点1",
-                skill_level: "记忆"
-            },
-
-        ],
-        totalPage: 8
-    }
-
-}
-
-//获取品行列表
-export function getQualityList(uid, pageNum) {
-    // return axios.get(`${baseUrls.course}/ability/quality_list`, {
-    //     params: {
-    //         user_id: uid,
-    //         pageNum: pageNum
-    //     }
-    // })
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        qualities: [
-            {
-                id: 1,
-                name: "品行1",
-            },
-            {
-                id: 2,
-                name: "品行1",
-            },
-            {
-                id: 3,
-                name: "品行1",
-            },
-            {
-                id: 4,
-                name: "品行1",
-            },
-            {
-                id: 5,
-                name: "品行1",
-            },
-            {
-                id: 6,
-                name: "品行1",
-            },
-            {
-                id: 7,
-                name: "品行1",
-            },
-        ],
-        totalPage: 39
-    }
-}
-
-
-//添加知识点
-export function addKnowledge(uid, name, skill_level) {
-    // let data = {
-    //     user_id: uid,
-    //     knowledge:{
-    //         name: name,
-    //         skill_level:skill_level
-    //     },
-    // }
-    // return axios.post(`${baseUrls.course}/ability/knowledge_add/`, data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 0
-    }
-}
-
-//添加品行
-export function addQuality(uid, name) {
-    // let data = {
-    //     user_id: uid,
-    //     quality:{
-    //         name: name
-    //     }
-    // }
-    // return axios.post(`${baseUrls.course}/ability/quality_add/`, data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 0
-    }
-
-}
-
-//添加能力
-export function addAbility(uid, name, brief) {
-    // let data = {
-    //     user_id: uid,
-    //     ability: {
-    //         name: name,
-    //         brief: brief
-    //     }
-    // }
-    // return axios.post(`${baseUrls.course}/ability/add/`, data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 0
-    }
-}
-
-//删除知识点
-export function deleteKnowledge(uid, kid) {
-    // let data={
-    //     user_id:uid,
-    //     id:kid
-    // }
-    // return axios.post(`${baseUrls.course}/course/knowledge_delete/`,data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 0
-    }
-}
-
-//删除品行
-export function deleteQuality(uid, qid) {
-    // let data={
-    //     user_id:uid,
-    //     id:qid
-    // }
-    // return axios.post(`${baseUrls.course}/course/quality_delete/`,data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 0
-    }
-}
-
-//删除能力
-export function deleteAbility(uid, aid) {
-    // let data={
-    //     user_id:uid,
-    //     id:aid
-    // }
-    // return axios.post(`${baseUrls.course}/course/ability_delete/`,data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 0
-    }
-}
-
-//按能力查看知识点
-export function getKnowledgeListByAbility(uid, aid, pageNum) {
-    // return axios.get(`${baseUrls.course}/ability/knowledge_select_list`, {
-    //     params: {
-    //         user_id: uid,
-    //         ability_id: aid,
-    //         pageNum:pageNum
-    //     }
-    // })
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        knowledge: [
-            {
-                id: 1,
-                name: "知识点1",
-                skill_level: "理解"
-            },
-            {
-                id: 2,
-                name: "知识点1",
-                skill_level: "理解"
-            },
-
-
-        ],
-        totalPage: 17
-    }
-
-}
-
-//按能力查看品行
-export function getQualityListByAbility(uid, aid, pageNum) {
-    // return axios.get(`${baseUrls.course}/ability/quality_select_list`, {
-    //     params: {
-    //         user_id: uid,
-    //         ability_id: aid,
-    //         pageNum:pageNum
-    //     }
-    // })
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        qualities: [
-            {
-                id: 1,
-                name: "品行1",
-            },
-            {
-                id: 2,
-                name: "品行1",
-            },
-            {
-                id: 3,
-                name: "品行1",
-            },
-
-        ],
-        totalPage: 24
-    }
-
-}
-
-//能力解绑知识点
-export function unbindKnowledge(uid, aid, list) {
-    // let data={
-    //     user_id:uid,
-    //     ability_id:aid,
-    //     id_list:list
-    // }
-    // return axios.post(`${baseUrls.course}/ability/knowledge_unbind/`,data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 0
-    }
-}
-
-//能力解绑品行
-export function unbindQuality(uid, aid, list) {
-    // let data={
-    //     user_id:uid,
-    //     ability_id:aid,
-    //     id_list:list
-    // }
-    // return axios.post(`${baseUrls.course}/ability/quality_unbind/`,data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 0
-    }
-}
-
-//能力绑定知识点
-export function bindKnowledge(uid, aid, list) {
-    // let data={
-    //     user_id:uid,
-    //     ability_id:aid,
-    //     id_list:list
-    // }
-    // return axios.post(`${baseUrls.course}/ability/knowledge_bind/`,data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 0
-    }
-}
-
-//能力绑定品行
-export function bindQuality(uid, aid, list) {
-    // let data={
-    //     user_id:uid,
-    //     ability_id:aid,
-    //     id_list:list
-    // }
-    // return axios.post(`${baseUrls.course}/ability/quality_bind/`,data)
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
-    return {
-        code: 0
-    }
-}
-
 
 //添加课程
 export function addCourse(course) {
-    return {
-        code: 0
-    }
+    let Form = new FormData()
+    Form.append("course",course)
+    // Form.append("name", course.name)
+    // Form.append("brief", course.brief)
+    // Form.append("userId", course.userId)
+    // Form.append("createTime", course.createTime)
+    // Form.append("classifyId", course.classifyId)
+
+    return axios.post(`${baseUrls.course}/course/add`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+
 }
 
 
 //查看课程
 export function getCourseDetail(uid, cid) {
-    // return axios.get(`${baseUrls.course}/course/detail/`, {
-    //     params: {
-    //         user_id: uid,
-    //         course_id: cid
-    //     }
-    // })
-    //     .then(res => {
-    //         return res.data
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     })
+    return axios.get(`${baseUrls.course}/course/detail`, {
+        params: {
+            courseId: cid
+        }
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 
 
-    return {
-        course: {
-            name: "c++",
-            picture: '',
-            brief: '这是简介'
-        },
-        chapters: [
-            {
-                id: 1,
-                name: "章节1",
-                children: [
-                    {
-                        id: 1,
-                        name: "小节1",
-                        video_url: '',
-                        create_time: "2022-3-7",
-                        create_user: "西瓜"
-                        //其他选项
-                    },
-                    {
-                        id: 2,
-                        name: "小节1",
-                        video_url: '',
-                        create_time: "2022-3-7",
-                        create_user: "西瓜"
-                        //其他选项
-                    }
-                ]
-            },
-            {
-                id: 2,
-                name: "章节2",
-                children: [
-                    {
-                        id: 1,
-                        name: "小节1",
-                        video_url: '',
-                        create_time: "2022-3-7",
-                        create_user: "西瓜"
-                        //其他选项
-                    }
-                ]
-            }
-        ],
-        abilities: [
-            {
-                id: 1,
-                name: "团队协作"
-            },
-            {
-                id: 2,
-                name: "超能力"
-            }
-        ]
-    }
 }
 
 //修改课程
@@ -743,3 +177,90 @@ export function getCourseDetail(uid, cid) {
 //修改章节
 
 //删除章节
+
+//获取课程能力列表
+export function getAbility(courseId,page){
+    let Form = new FormData()
+    Form.append("courseId",courseId)
+    Form.append("page",page)
+
+    return axios.post(`${baseUrls.course}/ability/list`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+//获取课程知识点列表
+export function getKnowledge(courseId,page){
+    let Form = new FormData()
+    Form.append("courseId",courseId)
+    Form.append("page",page)
+
+    return axios.post(`${baseUrls.course}/knowledge/listAll`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+//获取课程品行列表
+export function getQuality(courseId,page){
+    let Form = new FormData()
+    Form.append("courseId",courseId)
+    Form.append("page",page)
+
+    return axios.post(`${baseUrls.course}/quality/listCourse`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+//获取品行列表
+export function getAllQuality() {
+    return axios.get(`${baseUrls.course}/quality/listAll`)
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+
+}
+
+//删除品行
+export function deleteQuality(qid){
+    let Form = new FormData()
+    Form.append("qualityId",qid)
+
+    return axios.post(`${baseUrls.course}/quality/delete/`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}

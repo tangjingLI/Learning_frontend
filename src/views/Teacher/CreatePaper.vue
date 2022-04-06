@@ -240,11 +240,11 @@ export default {
         this.$message.warning("请选择至少一个题目")
       } else {
         let bankId = this.$route.params.bankId
-        let response = await addPaper(this.choose, this.scores, bankId, this.$store.getters.getTeacher.id, '', this.paperName, this.totalScore)
+        let response = await addPaper(this.choose, this.scores, bankId, this.$store.getters.getTeacher.id, this.isPublic, this.paperName)
         if (response.code == 0) {
-          this.$message.success("发布成功")
+          this.$message.success("生成试卷成功")
         } else {
-          this.$message.error("发布失败")
+          this.$message.error("生成试卷失败")
         }
         this.back()
       }

@@ -2,6 +2,8 @@
   <div>
     <div class="top">
       <h1>{{ paperTitle }}</h1>
+      <a-tag v-if="this.isPublic==0" color="green" style="margin-left: 5px;margin-top: 8px">public</a-tag>
+      <a-tag v-else color="orange" style="margin-left: 5px;margin-top: 8px">private</a-tag>
       <p>
         <a-icon type="file-text" theme="twoTone"/>
         试卷总分： {{ score }}
@@ -29,17 +31,26 @@
           <a-tag v-else-if="question.type==2" color="purple">多选</a-tag>
           <a-tag v-else color="pink">简答</a-tag>
         </h1>
-        <a-divider/>
 
         <p>
           <a-tag color="orange" class="tag">题目描述</a-tag>
           &emsp;{{ question.content }}
         </p>
-        <a-divider/>
 
         <p v-for="ch in question.choices">{{ ch.number }} {{ ch.content }}</p>
         <p style="color: mediumseagreen">正确答案： {{ question.answer }}</p>
         <p> 解析： {{ question.analysis }}</p>
+
+        <p style="font-size: 12px">
+          正确率： {{ question.rate*100 }}%
+          <a-divider type="vertical"/>
+          预计耗时： {{ question.consume }} 分钟
+          <a-divider type="vertical"/>
+          分值：{{question.score}}
+          <a-divider type="vertical"/>
+          使用次数：{{question.frequency}} 次
+
+        </p>
         <a-divider/>
 
       </div>
@@ -97,7 +108,7 @@
 </template>
 
 <script>
-import {getPaperDetail, uploadPaper,editPaper} from "../../api/paper";
+import {getPaperDetail, uploadPaper, editPaper} from "../../api/paper";
 
 export default {
   name: "PaperInfo",
@@ -108,6 +119,7 @@ export default {
       score: 0,
       bankId: 0,
       status: 0,
+      isPublic: 0,
       uploadFlag: false,
       editFlag: false,
       form1: this.$form.createForm(this, {name: 'uploadPaper'}),
@@ -129,7 +141,7 @@ export default {
       })
     },
     showEdit() {
-      this.editFlag=true
+      this.editFlag = true
       this.setForm()
     },
     editPaperItem(e) {
@@ -139,7 +151,7 @@ export default {
           console.log('Received values of form: ', values);
           let response = await editPaper(this.$route.params.paperId, values.title, values.isPublic);
           this.editFlag = false
-          console.log("edit",response)
+          console.log("edit", response)
           if (response.code == 0) {
             this.$message.success('编辑成功！')
             await this.reset()
@@ -153,12 +165,13 @@ export default {
     async reset() {
       let params = this.$route.params
       let response = await getPaperDetail(params.paperId)
+      console.log("info", response)
       this.paperTitle = response.data.paperName
-      this.score = response.data.score
-      this.questions = response.data.list
-      this.bankId = response.data.bankId
+      this.score = response.data.totalScore
+      this.questions = response.data.questions
+      this.bankId = response.data.papersId
       this.status = response.data.status
-      this.isPublic=response.data.isPublic
+      this.isPublic = response.data.isPublic
     },
     back(id) {
       this.$router.push({name: 'paperList', params: {bankId: id}});
@@ -229,29 +242,37 @@ body {
 }
 
 .content {
-  text-align: center;
+  /*text-align: center;*/
   height: 500px;
+  margin-left: 10px;
+  margin-right: 5px;
+  background-color: white;
   overflow-y: scroll;
 }
 
 .block {
   background-color: white;
-  width: 95%;
-  text-align: center;
-  margin: 0 auto;
-  border-radius: 20px;
-  /*box-shadow: 0 2px 2px #939393;*/
+  width: 100%;
+  padding-top: 10px;
+  /*text-align: center;*/
+  /*margin: 0 auto;*/
+  /*border-radius: 20px;*/
+  /*box-shadow: 2px 2px 4px #939393;*/
 }
 
 .block h1 {
   letter-spacing: 2px;
   font-weight: bold;
+  margin-bottom: 20px;
   size: 25px;
   color: #6a6868;
+  margin-left: 50px;
 }
 
 .block p {
   font-size: 15px;
+  margin-left: 50px;
+  margin-right: 50px;
 }
 
 </style>
