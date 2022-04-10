@@ -329,7 +329,7 @@ export default {
           let response = await editTestBank(this.$route.params.bankId, this.$store.getters.getTeacher.id, values.title, values.isPublic);
           this.form1.resetFields();
           this.editBank = false;
-          console.log(response)
+          // console.log(response)
           if (response.code == 0) {
             this.$message.success('编辑成功！')
             await this.reset()

@@ -27,7 +27,7 @@
             <a-icon type="left-circle"/>
             返回
           </a-button>
-          <a-button class="btn" @click="uploadPaper">
+          <a-button class="btn" @click="showModel">
             <a-icon type="safety-certificate" theme="twoTone"/>
             生成试卷
           </a-button>
@@ -124,12 +124,29 @@
         </div>
 
         <div class="footer">
-          <a-pagination show-quick-jumper :pageSize="1" :total="totalPage" @change="onChange" id="page"/>
+          <a-pagination show-quick-jumper :pageSize="1" :total="totalPage1" @change="onChange1" id="page"
+                        v-model="page1"/>
+        </div>
+      </div>
+    </div>
+
+    <a-modal v-model="flag1" title="选择课程" @ok="addPaperItem">
+      <div class="block">
+        <div class="table">
+          <a-table :columns="columns" :data-source="courseList" style="background-color: white"
+                   rowKey="id" :pagination="false" class="bindTable"
+                   :customRow="customRow"   :row-class-name="rowClassName"
+          >
+            <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  课程</span>
+          </a-table>
+        </div>
+        <div class="footer">
+          <a-pagination :pageSize="1" :total="totalPage2" @change="onChange2" class="page"
+                        v-model="page2"/>
         </div>
       </div>
 
-
-    </div>
+    </a-modal>
   </div>
 
 </template>
@@ -137,11 +154,22 @@
 <script>
 import {getTestBankList, getTestBank, getQuestionList} from "../../api/test";
 import {addPaper} from "../../api/paper";
+import {getAllCourses} from "../../api/course";
+
+const columns = [
+  {
+    dataIndex: 'name',
+    key: 'title',
+    slots: {title: 'customTitle'},
+    scopedSlots: {customRender: 'title'},
+  }
+]
 
 export default {
   name: "CreatePaper",
   data() {
     return {
+      columns,
       current: ['bank'],
       banks: [],
       active: '',
@@ -154,12 +182,32 @@ export default {
       paperName: '',
       scores: [],
       totalScore: 0,
-      totalPage: 1,
+      totalPage1: 1,
+      totalPage2: 1,
       bankId: 1,
       isPublic: 0,
+      flag1: false,
+      courseId: -1,
+      courseList: [],
+      page1: 1,
+      page2: 1,
     }
   },
   methods: {
+    customRow(record, index) {
+      return {
+        on: {
+          click: () => {
+            this.courseId = record.id
+            // console.log(this.courseId)
+          }
+        }
+      }
+    },
+    rowClassName(record,index){
+      // console.log(index,record.id === this.courseId)
+      return record.id === this.courseId ? 'clickRowStyl' : ''
+    },
     changePublic() {
       this.isPublic = this.isPublic === 0 ? 1 : 0;
     },
@@ -170,7 +218,8 @@ export default {
       console.log(response)
       this.tests = response.content
       this.bankId = id
-      this.totalPage = response.totalPage
+      this.totalPage1 = response.totalPage
+      this.page1 = 1
     },
     selected(value) {
       this.active = value;
@@ -232,20 +281,31 @@ export default {
         this.totalScore++
       }
     },
-    async uploadPaper() {
-      console.log(this.paperName)
+    async showModel() {
       if (this.paperName == '') {
         this.$message.warning("请输入试卷名")
       } else if (this.testNum == 0) {
         this.$message.warning("请选择至少一个题目")
       } else {
-        let bankId = this.$route.params.bankId
-        let response = await addPaper(this.choose, this.scores, bankId, this.$store.getters.getTeacher.id, this.isPublic, this.paperName)
+        let response = await getAllCourses(this.$store.getters.getTeacher.id, 1)
+        this.courseList = response.content
+        this.totalPage2 = response.totalPage
+        this.page2 = 1
+        this.flag1 = true
+      }
+    },
+    async addPaperItem() {
+      let bankId = this.$route.params.bankId
+      if (this.courseId == -1) {
+        this.$message.warning("请选择课程")
+      } else {
+        let response = await addPaper(this.choose, this.scores, bankId, this.$store.getters.getTeacher.id, this.isPublic, this.paperName, this.courseId)
         if (response.code == 0) {
           this.$message.success("生成试卷成功")
         } else {
           this.$message.error("生成试卷失败")
         }
+        this.courseId = -1
         this.back()
       }
     },
@@ -256,27 +316,37 @@ export default {
       // console.log(this.scores)
     },
     //分页
-    async onChange(pageNumber) {
-      console.log('Page: ', pageNumber);
-      if (pageNumber <= this.totalPage) {
+    async onChange1(pageNumber) {
+      if (pageNumber <= this.totalPage1) {
         let response = await getTestBank(this.bankId, pageNumber)
         this.tests = response.res.questions
-        this.totalPage = response.totalPage
+        this.totalPage1 = response.totalPage
+        this.page1 = pageNumber
+      }
+    },
+    async onChange2(pageNumber) {
+      if (pageNumber <= this.totalPage2) {
+        let response = await getAllCourses(this.$store.getters.getTeacher.id, pageNumber)
+        this.courseList = response.content
+        this.totalPage2 = response.totalPage
+        this.page2 = pageNumber
       }
     },
     async reset() {
       let response = await getTestBankList(this.$store.getters.getTeacher.id);
-      console.log(response)
-      this.banks = response;
+      // console.log(response)
+      this.banks = response
       if (this.banks.length != 0) {
         this.selected(this.banks[0].title)
         await this.handleClick(this.banks[0].id)
       }
-    }
+    },
+
   },
+
   mounted() {
     this.reset()
-  }
+  },
 }
 </script>
 
@@ -374,6 +444,7 @@ export default {
   overflow-y: scroll;
 }
 
+*
 .questions {
   /*border-bottom: 1px solid #a8c1ef;*/
 }
@@ -446,7 +517,7 @@ export default {
 }
 
 .bar2 input {
-  width: 60%;
+  width: 35%;
   margin-top: 10px;
   margin-left: 30px;
   float: left;
@@ -480,5 +551,34 @@ export default {
   margin-right: 10px;
   margin-top: 10px;
 }
+
+.block {
+  height: 350px;
+}
+
+.table {
+  height: 90%;
+  overflow-y: scroll;
+}
+
+.page {
+  margin-right: 10px;
+  margin-top: 10px;
+  float: right;
+}
+
+.footer {
+  height: 50px;
+  background-color: white;
+  margin: 0 5px;
+}
+
+/deep/.clickRowStyl {
+  background-color: rgba(0,180,237,0.2)
+}
+
+/*.ant-table-tbody > .clickRowStyl:hover > td {*/
+/*  background-color: #00b4ed*/
+/*}*/
 
 </style>

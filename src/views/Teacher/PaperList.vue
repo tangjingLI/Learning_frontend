@@ -152,9 +152,9 @@ export default {
       choose: [],
       selectedRowKeys: [],
       current: 1,
-      isPublic:0,
+      isPublic: 0,
       form: this.$form.createForm(this, {name: 'editPaperBank'}),
-      visible:false,
+      visible: false,
     }
   },
   mounted() {
@@ -162,7 +162,7 @@ export default {
   },
   methods: {
     //编辑试卷库
-    handleOk(e){
+    handleOk(e) {
       e.preventDefault();
       this.form.validateFields(async (err, values) => {
         if (!err) {
@@ -180,7 +180,7 @@ export default {
       });
 
     },
-    setForm(){
+    setForm() {
       this.$nextTick(() => {
         this.form.setFieldsValue({
           title: this.bankTitle,
@@ -188,8 +188,8 @@ export default {
         })
       })
     },
-    showEdit(){
-      this.visible=true
+    showEdit() {
+      this.visible = true
       this.setForm()
     },
     async reset() {
@@ -197,15 +197,17 @@ export default {
       let response = await getPaperBank(params.bankId, 1)
       console.log("bankList", response)
       this.papers = response.data.list;
-      this.bankTitle = response.data.papersName;
       this.totalPage = response.data.pages
-      this.isPublic=response.data.isPublic
+      this.isPublic = response.data.isPublic
       this.current = 1
+      if (this.papers.length > 0) {
+        this.bankTitle = this.papers[0].papersName
+      }
     },
     async onSearch(value) {
       let params = this.$route.params;
-      let response = await getPaperByName(params.bankId, 1,value)
-      console.log("search",response)
+      let response = await getPaperByName(params.bankId, 1, value)
+      console.log("search", response)
       this.papers = response.data.list;
       this.bankTitle = response.bankTitle;
       this.totalPage = response.data.pages
@@ -243,7 +245,7 @@ export default {
     },
     async deleteGroup() {
       let response = await deletePaperGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
-      if (response.code==0) {
+      if (response.code == 0) {
         this.$message.success('删除成功！')
         await this.reset()
       } else {

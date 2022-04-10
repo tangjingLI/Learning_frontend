@@ -17,7 +17,6 @@
       </a-popconfirm>
 
       <a-button id="add" @click="()=>{this.addCourseFlag=true}"
-                :disabled="this.bankId==-1"
                 style="  margin-top: 5px;background-color: #1C90F5;color: white;border: none;float: right;margin-right: 10px">
         <a-icon type="plus-circle"/>
         新建课程
@@ -124,7 +123,7 @@
           <a-select style="width: 120px"
                     v-decorator="['type',{rules:[{required: true,message:'不能为空'}]}]">
 
-            <a-select-option v-for="item in types" v-if="item.id!=-1" :value="item.name" :key="item.id">
+            <a-select-option v-for="item in types" v-if="item.id!=-1" :value="item.id" :key="item.id">
               {{ item.name }}
             </a-select-option>
 
@@ -207,12 +206,10 @@ export default {
     },
     //选择
     onSelectChange(selectedRowKeys) {
-      console.log('selectedRowKeys changed: ', selectedRowKeys);
       this.selectedRowKeys = selectedRowKeys;
     },
     //分页
     async onChange(pageNumber) {
-      console.log('Page: ', pageNumber);
       if (pageNumber <= this.totalPage) {
         let response;
         if (this.bankId != -1) {
@@ -279,7 +276,7 @@ export default {
           let aData = new Date();
           let course = {
             name: values.name,
-            classifyId: this.bankId,
+            classifyId: values.type,
             brief: values.brief,
             userId: this.$store.getters.getTeacher.id,
             createTime: aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate()
@@ -310,7 +307,7 @@ export default {
     async deleteGroup() {
       let response = await deleteCoursesGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)
       // console.log(this.selectedRowKeys)
-      if (response.code == 0) {
+      if (response.code == 200) {
         this.$message.success("删除成功！")
         await this.reset()
       } else {
@@ -323,12 +320,11 @@ export default {
       this.types = response
       this.types.unshift({id: -1, name: "所有课程"})
       let res = await getAllCourses(this.$store.getters.getTeacher.id, 1)
-      console.log("all", res)
+      // console.log("all", res)
       this.courses = res.content
       this.totalPage = res.totalPage
       this.current = 1
-
-
+      this.selectedRowKeys = []
     },
 
   },

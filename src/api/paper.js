@@ -138,7 +138,7 @@ export function uploadPaper(paperId, examTime, remark) {
     let data = {
         paperId: paperId,
         examTime: examTime,
-        remark: remark
+        remark: remark,
     }
 
     return axios.post(`${baseUrls.paper}/paper/publishPaper`, data, {
@@ -171,7 +171,7 @@ export function deletePaper(uid, pid) {
 }
 
 //新建试卷
-export function addPaper(tests, scores, bankId, uid, isPublic, paperName) {
+export function addPaper(tests, scores, bankId, uid, isPublic, paperName, courseId) {
     let questions = []
     for (let i = 0; i < tests.length; i++) {
         let item = {
@@ -183,12 +183,12 @@ export function addPaper(tests, scores, bankId, uid, isPublic, paperName) {
     }
     // console.log(questions)
     let data = {
-        courseId: 1,
         questions: questions,
         papersId: bankId,
         createId: uid,
         isPublic: isPublic,
         paperName: paperName,
+        courseId: courseId
     }
     return axios.post(`${baseUrls.paper}/paper/insertPaper`, data, {
         headers: {
@@ -206,7 +206,7 @@ export function addPaper(tests, scores, bankId, uid, isPublic, paperName) {
 
 //获取已发布试卷列表
 export function getReleasedPaper(uid, pageNum) {
-    let data={
+    let data = {
         userId: uid,
         pageNum: pageNum,
         status: 1
@@ -280,6 +280,26 @@ export function editPaper(paperId, paperName, isPublic) {
             paperId: paperId,
             paperName: paperName,
             isPublic: isPublic
+        }
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+//根据课程查看试卷
+export function getPaperByCourse(cid, pageNum) {
+    let data = {
+        courseId: cid,
+        currentPage: pageNum
+    }
+
+    return axios.post(`${baseUrls.paper}/paper/selectPaperByCourseId`, data, {
+        headers: {
+            'Content-Type': "application/json;charset=utf-8"
         }
     })
         .then(res => {

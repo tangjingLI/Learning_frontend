@@ -175,7 +175,7 @@ export default {
             this.$message.success("新建题库成功！")
             await this.reset()
           } else {
-            this.$message.error("题库已存在");
+            this.$message.error("添加失败");
           }
         }
       });
@@ -185,8 +185,7 @@ export default {
     },
     //选择
     onSelectChange(selectedRowKeys) {
-      console.log('selectedRowKeys changed: ', selectedRowKeys);
-      this.selectedRowKeys = selectedRowKeys;
+      this.selectedRowKeys = selectedRowKeys
     },
     async deleteGroup() {
       let response = await deleteTestBankGroup(this.$store.getters.getTeacher.id, this.selectedRowKeys)

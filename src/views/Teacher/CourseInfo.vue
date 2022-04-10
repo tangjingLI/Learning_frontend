@@ -9,16 +9,43 @@
       </a-button>
       <!--      <h1> {{ course.name }} </h1>-->
       <h1>{{ title }}</h1>
-      <a-button id="edit"
+
+      <a-button id="edit" @click="showEditInfo"
                 style=" margin-top: 5px;background-color: white;color: #1C90F5;border: 1px solid #1C90F5;margin-right: 10px;float: right;">
         <a-icon type="setting"/>
         编辑
       </a-button>
+      <a-dropdown>
+        <!--        <a-button id="add" @click=""-->
+        <!--                  style="  margin-top: 5px;background-color: #1C90F5;color: white;border: none;float: right;margin-right: 10px">-->
+        <!--          <a-icon type="plus-circle"/>-->
+        <!--          添加-->
+        <!--        </a-button>-->
+        <a @click="e => e.preventDefault()" style="color: #1C90F5;margin-top: 10px;float: right;margin-right: 20px">
+          添加
+          <a-icon type="down"/>
+        </a>
+
+        <a-menu slot="overlay">
+          <a-menu-item>
+            <a>章节</a>
+          </a-menu-item>
+
+          <a-menu-item>
+            <a @click="()=>{this.flag1=true}">能力</a>
+          </a-menu-item>
+
+          <a-menu-item>
+            <a @click="()=>{this.flag2=true}">知识点</a>
+          </a-menu-item>
+        </a-menu>
+      </a-dropdown>
+
     </div>
 
     <div class="box">
       <div class="info">
-        <img src="../../assets/course.jpg" id="image">
+        <img src="picture" id="image" :onerror="defaultImg">
         <div class="brief">
           <p>
           <span style="font-weight: bold">
@@ -36,19 +63,19 @@
             <a-icon type="carry-out" theme="twoTone"/>
             目录
           </a-menu-item>
-          <a-menu-item key="exam">
+          <a-menu-item key="exam" @click="getPaperList(1)">
             <a-icon type="bug" theme="twoTone"/>
             试卷
           </a-menu-item>
-          <a-menu-item key="ability" @click="getAbilityList">
+          <a-menu-item key="ability" @click="getAbilityList(1)">
             <a-icon type="compass" theme="twoTone"/>
             能力
           </a-menu-item>
-          <a-menu-item key="knowledge" @click="getKnowledgeList">
+          <a-menu-item key="knowledge" @click="getKnowledgeList(1)">
             <a-icon type="environment" theme="twoTone"/>
             知识点
           </a-menu-item>
-          <a-menu-item key="quality" @click="getQualityList">
+          <a-menu-item key="quality" @click="getQualityList(1)">
             <a-icon type="crown" theme="twoTone"/>
             品行
           </a-menu-item>
@@ -57,26 +84,37 @@
         <div v-if="current[0]==='chapter'">
         </div>
 
-        <div v-else-if="current[0]==='exam'">
+        <div v-if="current[0]==='exam'">
           <div class="table">
             <a-table :columns="columns2" :data-source="paperList" style="background-color: white" :pagination="false"
                      :rowKey="record=>record.id"
             >
               <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  试卷</span>
+              <span slot="action" slot-scope="text, record">
+                <a @click="getExamDetail(record.id)">查看</a>
+              </span>
 
             </a-table>
           </div>
+          <div class="footer">
+            <a-pagination show-quick-jumper :pageSize="1" :total="totalPage1" @change="onChange1" class="page"
+                          v-model="page1"/>
+          </div>
         </div>
 
-        <div v-else-if="current[0]==='ability'">
+        <div v-if="current[0]==='ability'">
           <div class="table">
             <a-table :columns="columns3" :data-source="abilityList" style="background-color: white" :pagination="false"
                      :rowKey="record=>record.id"
             >
               <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  能力</span>
               <span slot="action" slot-scope="text, record">
-                <a @click="">修改</a>
+                <a @click="getAbilityDetail(record.id)">查看</a>
                 <a-divider type="vertical"/>
+
+                <a @click="showEdit1(record.id,record.name)">修改</a>
+                <a-divider type="vertical"/>
+
                 <a-popconfirm
                     title="确定删除该能力吗?"
                     ok-text="Yes"
@@ -84,16 +122,19 @@
                     @confirm="deleteAbilityItem(record.id)"
                 >
                  <a href="#">删除</a>
-              </a-popconfirm>
+                </a-popconfirm>
+
               </span>
-
-
             </a-table>
+          </div>
+          <div class="footer">
+            <a-pagination show-quick-jumper :pageSize="1" :total="totalPage2" @change="onChange2" class="page"
+                          v-model="page2"/>
           </div>
 
         </div>
 
-        <div v-else-if="current[0]==='knowledge'">
+        <div v-if="current[0]==='knowledge'">
           <div class="table">
             <a-table :columns="columns4" :data-source="knowledgeList" style="background-color: white"
                      :pagination="false"
@@ -102,7 +143,7 @@
               <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  知识点</span>
 
               <span slot="action" slot-scope="text, record">
-                <a @click="">修改</a>
+                <a @click="showEdit2(record.id,record.name)">修改</a>
                 <a-divider type="vertical"/>
                 <a-popconfirm
                     title="确定删除该知识点吗?"
@@ -113,22 +154,25 @@
                  <a href="#">删除</a>
               </a-popconfirm>
               </span>
-
-
             </a-table>
+          </div>
+
+          <div class="footer">
+            <a-pagination show-quick-jumper :pageSize="1" :total="totalPage3" @change="onChange3" class="page"
+                          v-model="page3"/>
           </div>
 
         </div>
 
-        <div v-else>
+        <div v-if="current[0]==='quality'">
           <div class="table">
             <a-table :columns="columns5" :data-source="qualityList" style="background-color: white" :pagination="false"
                      :rowKey="record=>record.id"
             >
               <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  品行</span>
               <span slot="action" slot-scope="text, record">
-                <a @click="">修改</a>
-                <a-divider type="vertical"/>
+<!--                <a @click="">修改</a>-->
+                <!--                <a-divider type="vertical"/>-->
                 <a-popconfirm
                     title="确定删除该品行吗?"
                     ok-text="Yes"
@@ -140,17 +184,111 @@
               </span>
             </a-table>
           </div>
-
+          <div class="footer">
+            <a-pagination show-quick-jumper :pageSize="1" :total="totalPage4" @change="onChange4" class="page"
+                          v-model="page4"/>
+          </div>
         </div>
 
       </div>
-
     </div>
+
+    <a-modal v-model="flag1" title="添加能力" @ok="addAbilityItem">
+      <a-form :form="form1" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="能力名称">
+          <a-input
+              v-decorator="['title', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{2,8}$/,message: '能力名称长度为2-8位'}
+                  ] }]"
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
+    <a-modal v-model="flag2" title="添加知识点" @ok="addKnowledgeItem">
+      <a-form :form="form2" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="知识点名称">
+          <a-input
+              v-decorator="['title', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{2,8}$/,message: '能力名称长度为2-8位'}
+                  ] }]"
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
+    <a-modal v-model="flag3" title="修改能力" @ok="editAbilityItem">
+      <a-form :form="form3" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="能力名称">
+          <a-input
+              v-decorator="['title', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{2,8}$/,message: '能力名称长度为2-8位'}
+                  ] }]"
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
+    <a-modal v-model="flag4" title="修改知识点" @ok="editKnowledgeItem">
+      <a-form :form="form3" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="知识点名称">
+          <a-input
+              v-decorator="['title', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{2,8}$/,message: '能力名称长度为2-8位'}
+                  ] }]"
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
+    <a-modal v-model="flag5" title="编辑课程" @ok="editCourseInfo">
+      <a-form :form="form5" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="课程名">
+          <a-input
+              v-decorator="['title', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{2,8}$/,message: '长度为2-8位'}
+                  ] }]"
+          />
+
+        </a-form-item>
+
+        <a-form-item label="简介">
+          <a-textarea
+              :auto-size="{ minRows: 1, maxRows: 3 }"
+              v-decorator="['brief', { rules: [
+                  {required: true,message:'不能为空'},
+                  {pattern:/^.{1,30}$/,message: '长度为1-30位'}
+                  ] }]"
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
+
   </div>
 </template>
 
 <script>
-import {getCourseDetail, getAbility, getKnowledge, getQuality} from "../../api/course";
+import {
+  getCourseDetail,
+  getAbility,
+  getKnowledge,
+  getQuality,
+  deleteAbility,
+  deleteKnowledge,
+  deleteQuality,
+  addAbility,
+  addKnowledge,
+  editAbility,
+  editKnowledge,
+  editCourse
+} from "../../api/course";
+import {getPaperByCourse} from "../../api/paper";
 
 const columns1 = [
   {
@@ -168,10 +306,17 @@ const columns1 = [
 
 const columns2 = [
   {
-    dataIndex: 'title',
+    dataIndex: 'paperName',
     key: 'title',
     slots: {title: 'customTitle'},
     scopedSlots: {customRender: 'title'},
+  },
+  {
+    title: '简介',
+    key: 'brief',
+    dataIndex: 'remark',
+    ellipsis: true,
+    scopedSlots: {customRender: 'brief'},
   },
   {
     title: '操作',
@@ -182,7 +327,7 @@ const columns2 = [
 
 const columns3 = [
   {
-    dataIndex: 'title',
+    dataIndex: 'name',
     key: 'title',
     slots: {title: 'customTitle'},
     scopedSlots: {customRender: 'title'},
@@ -196,7 +341,7 @@ const columns3 = [
 
 const columns4 = [
   {
-    dataIndex: 'title',
+    dataIndex: 'name',
     key: 'title',
     slots: {title: 'customTitle'},
     scopedSlots: {customRender: 'title'},
@@ -214,13 +359,11 @@ const columns5 = [
     key: 'title',
     slots: {title: 'customTitle'},
     scopedSlots: {customRender: 'title'},
-    width: 150,
   },
   {
     title: '操作',
     key: 'action',
     scopedSlots: {customRender: 'action'},
-    width: 150,
 
   }
 ];
@@ -229,62 +372,263 @@ export default {
   name: "CourseInfo",
   data() {
     return {
+      kid: -1,
+      aid: -1,
       current: ['chapter'],
-      title: "c++",
-      brief: "这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介",
+      title: '',
+      brief: '',
       chapterList: [],
       paperList: [],
       abilityList: [],
       knowledgeList: [],
       qualityList: [],
+      picture: '',
       columns1,
       columns2,
       columns3,
       columns4,
       columns5,
-
+      form1: this.$form.createForm(this, {name: 'newAbility'}),
+      form2: this.$form.createForm(this, {name: 'newKnowledge'}),
+      form3: this.$form.createForm(this, {name: 'edit'}),
+      form5: this.$form.createForm(this, {name: 'info'}),
+      flag1: false,
+      flag2: false,
+      flag3: false,
+      flag4: false,
+      flag5: false,
+      page1: 1,
+      page2: 1,
+      page3: 1,
+      page4: 1,
+      totalPage1: 1,
+      totalPage2: 1,
+      totalPage3: 1,
+      totalPage4: 1,
     }
   },
   methods: {
+    showEditInfo() {
+      this.flag5 = true
+      this.$nextTick(() => {
+        this.form5.setFieldsValue({
+          title: this.title,
+          brief: this.brief
+        })
+      })
+    },
+    async editCourseInfo(e) {
+      e.preventDefault()
+      this.form5.validateFields(async (err, values) => {
+        if (!err) {
+          let response = await editCourse(this.$route.params.courseId, this.$store.getters.getTeacher.id, values.title, values.brief)
+          this.flag5=false
+          if (response.code == 0) {
+            this.$message.success('编辑成功！')
+            await this.reset()
+
+          } else {
+            this.$message.error("编辑失败")
+          }
+        }
+      })
+    },
+    //分页
+    async onChange1(pageNumber) {
+      if (pageNumber <= this.totalPage1) {
+        await this.getPaperList(pageNumber)
+      }
+    },
+    async onChange2(pageNumber) {
+      if (pageNumber <= this.totalPage2) {
+        await this.getAbilityList(pageNumber)
+      }
+    },
+    async onChange3(pageNumber) {
+      if (pageNumber <= this.totalPage3) {
+        await this.getKnowledgeList(pageNumber)
+      }
+    },
+    async onChange4(pageNumber) {
+      if (pageNumber <= this.totalPage4) {
+        await this.getQualityList(pageNumber)
+      }
+    },
+    getAbilityDetail(id) {
+      this.$router.push({name: 'ability', params: {abilityId: id}})
+    },
     async reset() {
-      // let response = await getCourseDetail(this.$store.getters.getTeacher.id, this.$route.params.courseId)
+      let response = await getCourseDetail(this.$store.getters.getTeacher.id, this.$route.params.courseId)
+      this.title = response.name
+      this.brief = response.brief
+      this.picture = response.picture
     },
     back() {
       this.$router.push('/teacher/courseList')
     },
-    //查看能力
-    async getAbilityList() {
-      let response = await getAbility(this.$route.params.courseId, 1)
+//查看章节
+//查看试卷
+    async getPaperList(pageNum) {
+      let response = await getPaperByCourse(this.$route.params.courseId, pageNum)
+      this.paperList = response.data.list
+      this.totalPage1 = response.data.pages
+      this.page1 = pageNum
     },
-    //删除能力
+    getExamDetail(id) {
+      this.$router.push({name: 'paperInfo', params: {paperId: id}})
+    },
+//查看能力
+    async getAbilityList(page) {
+      let response = await getAbility(this.$route.params.courseId, page)
+      this.abilityList = response.content
+      this.totalPage2 = response.totalPage
+      this.page2 = page
+    },
+//删除能力
     async deleteAbilityItem(id) {
-
+      let response = await deleteAbility(id)
+      if (response.code == 0) {
+        this.$message.success('删除成功！')
+        await this.getAbilityList(this.page2)
+      } else {
+        this.$message.error("删除失败")
+      }
     },
-    //查看知识点
-    async getKnowledgeList() {
-      let response = await getKnowledge(this.$route.params.courseId, 1)
+//添加能力
+    async addAbilityItem(e) {
+      e.preventDefault()
+      this.form1.validateFields(async (err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values)
+          let response = await addAbility(this.$route.params.courseId, values.title)
+          this.flag1 = false
+          this.form1.resetFields()
+          if (response.code == 0) {
+            this.$message.success("添加成功！")
+            await this.getAbilityList(this.page2)
+          } else {
+            this.$message.error("添加失败");
+          }
+        }
+      })
     },
-    //删除知识点
+//查看知识点
+    async getKnowledgeList(page) {
+      let response = await getKnowledge(this.$route.params.courseId, page)
+      this.knowledgeList = response.content
+      this.totalPage3 = response.totalPage
+      this.page3 = page
+    },
+//删除知识点
     async deleteKnowledgeItem(id) {
+      let response = await deleteKnowledge(id)
+      if (response.code == 0) {
+        this.$message.success('删除成功！')
+        await this.getKnowledgeList(this.page3)
+      } else {
+        this.$message.error("删除失败")
+      }
+    },
+//添加知识点
+    async addKnowledgeItem(e) {
+      e.preventDefault()
+      this.form2.validateFields(async (err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values)
+          this.flag2 = false
+          this.form2.resetFields()
+          let response = await addKnowledge(this.$route.params.courseId, values.title)
+          this.flag2 = false
+          this.form2.resetFields()
+          if (response.code == 0) {
+            this.$message.success("添加成功！")
+            await this.getKnowledgeList(this.page3)
+          } else {
+            this.$message.error("添加失败");
+          }
+        }
+      })
 
     },
-    //查看品行
-    async getQualityList() {
-      let response = await getQuality(this.$route.params.courseId, 1)
-      this.qualityList = response
+//查看品行
+    async getQualityList(page) {
+      let response = await getQuality(this.$route.params.courseId, page)
+      this.qualityList = response.content
+      this.totalPage4 = response.totalPage
+      this.page4 = page
     },
-    //删除品行
+//删除品行
     async deleteQualityItem(id) {
-
-    }
+      let response = await deleteQuality(id)
+      if (response.code == 0) {
+        this.$message.success('删除成功！')
+        await this.getQualityList(this.page4)
+      } else {
+        this.$message.error("删除失败")
+      }
+    },
+    //修改能力
+    showEdit1(id, name) {
+      this.flag3 = true
+      this.aid = id
+      this.$nextTick(() => {
+        this.form3.setFieldsValue({
+          title: name
+        })
+      })
+    },
+    showEdit2(id, name) {
+      this.flag4 = true
+      this.kid = id
+      this.$nextTick(() => {
+        this.form3.setFieldsValue({
+          title: name
+        })
+      })
+    },
+    editAbilityItem(e) {
+      e.preventDefault();
+      this.form3.validateFields(async (err, values) => {
+        if (!err) {
+          let response = await editAbility(this.aid, this.$route.params.courseId, values.title)
+          this.flag3 = false
+          if (response.code == 0) {
+            this.$message.success('编辑成功！')
+            await this.getAbilityList(this.page2)
+          } else {
+            this.$message.error("编辑失败")
+          }
+        }
+      })
+    },
+    //修改知识点
+    editKnowledgeItem(e) {
+      e.preventDefault();
+      this.form3.validateFields(async (err, values) => {
+        if (!err) {
+          let response = await editKnowledge(this.kid, this.$route.params.courseId, values.title)
+          this.flag4 = false
+          if (response.code == 0) {
+            this.$message.success('编辑成功！')
+            await this.getKnowledgeList(this.page3)
+          } else {
+            this.$message.error("编辑失败")
+          }
+        }
+      })
+    },
   },
   mounted() {
     this.reset()
-  },
+  }
+  ,
   computed: {
     hasSelected() {
-      return true;
+      return this.selectedRowKeys.length > 0;
     },
+    defaultImg() {
+      return 'this.src="' + require('../../assets/course.jpg') + '"'
+    }
   },
 
 }
@@ -350,5 +694,18 @@ export default {
   height: 300px;
   overflow-y: scroll;
 }
+
+.page {
+  margin-right: 10px;
+  margin-top: 5px;
+  float: right;
+}
+
+.footer {
+  height: 10%;
+  background-color: white;
+  margin: 0 5px;
+}
+
 
 </style>

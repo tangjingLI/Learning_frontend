@@ -17,6 +17,7 @@ import ReleasedPaper from "../views/Teacher/ReleasedPaper";
 import TestBin from "../views/Teacher/TestBin";
 import TestBankBin from "../views/Teacher/TestBankBin";
 import Quality from "../views/Teacher/Quality";
+import Ability from "../views/Teacher/Ability";
 
 Vue.use(VueRouter)
 
@@ -45,6 +46,12 @@ const routes = [
                 path: 'quality',
                 name: 'quality',
                 component: Quality
+            },
+
+            {
+                path: 'ability/:abilityId',
+                name: 'ability',
+                component: Ability
             },
             {
                 path: 'courseList',
