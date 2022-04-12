@@ -559,3 +559,8 @@ export function editCourse(cid, uid, name, brief) {
             console.log(error);
         })
 }
+
+//上传图片
+export function uploadPicture(){
+
+}

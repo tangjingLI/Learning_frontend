@@ -45,7 +45,12 @@
 
     <div class="box">
       <div class="info">
-        <img src="picture" id="image" :onerror="defaultImg">
+        <!--        <img src="picture" id="image" :onerror="defaultImg">-->
+        <div class="bigImg-div" @click="toGetImg" @mouseenter="updateStyle" @mouseleave="hover=false">
+          <img class="bigImg" :src=valueUrl :onerror="defaultImg" id="img">
+          <span style="position:absolute;font-size: 18px;font-weight: bold;" :style="myStyle"
+                v-if="hover">编辑</span>
+        </div>
         <div class="brief">
           <p>
           <span style="font-weight: bold">
@@ -269,6 +274,15 @@
       </a-form>
     </a-modal>
 
+    <a-modal v-model="flag6" title="上传文件" @ok="uploadFile">
+      <div class="uploadBox">
+        <input type="file" @change="changeFile" id="chooseFile">
+        <a-button @click="showFile"><a-icon type="upload" />上传文件</a-button>
+        <p>{{ fileName }}</p>
+      </div>
+
+    </a-modal>
+
 
   </div>
 </template>
@@ -286,7 +300,8 @@ import {
   addKnowledge,
   editAbility,
   editKnowledge,
-  editCourse
+  editCourse,
+  uploadPicture
 } from "../../api/course";
 import {getPaperByCourse} from "../../api/paper";
 
@@ -368,10 +383,14 @@ const columns5 = [
   }
 ];
 
+let inputElement = null
+
 export default {
   name: "CourseInfo",
   data() {
     return {
+      hover: false,
+      valueUrl: '',
       kid: -1,
       aid: -1,
       current: ['chapter'],
@@ -397,6 +416,7 @@ export default {
       flag3: false,
       flag4: false,
       flag5: false,
+      flag6: false,
       page1: 1,
       page2: 1,
       page3: 1,
@@ -405,9 +425,26 @@ export default {
       totalPage2: 1,
       totalPage3: 1,
       totalPage4: 1,
+      myStyle: {},
+      myFile: {},
+      fileName: '未选择文件'
     }
   },
   methods: {
+    showFile() {
+      document.getElementById('chooseFile').click()
+    },
+    //文件
+    changeFile() {
+      this.myFile = document.querySelector('input[type=file]').files[0]
+      this.fileName = this.myFile.name
+      // console.log(this.myFile)
+    },
+    uploadFile() {
+      this.flag6 = false
+      this.fileName = '未选择文件'
+      // let response=
+    },
     showEditInfo() {
       this.flag5 = true
       this.$nextTick(() => {
@@ -422,7 +459,7 @@ export default {
       this.form5.validateFields(async (err, values) => {
         if (!err) {
           let response = await editCourse(this.$route.params.courseId, this.$store.getters.getTeacher.id, values.title, values.brief)
-          this.flag5=false
+          this.flag5 = false
           if (response.code == 0) {
             this.$message.success('编辑成功！')
             await this.reset()
@@ -617,6 +654,71 @@ export default {
         }
       })
     },
+    //图片
+    toGetImg() {
+      if (inputElement === null) {
+        // 生成文件上传的控件
+        inputElement = document.createElement('input')
+        inputElement.setAttribute('type', 'file')
+        inputElement.style.display = 'none'
+
+        if (window.addEventListener) {
+          inputElement.addEventListener('change', this.uploadImage, false)
+        } else {
+          inputElement.attachEvent('onchange', this.uploadImage)
+        }
+
+        document.body.appendChild(inputElement)
+      }
+      inputElement.click()
+    },
+    uploadImage(el) {
+      if (el && el.target && el.target.files && el.target.files.length > 0) {
+        // console.log(el)
+        const imgFile = el.target.files[0]
+        const isLt2M = imgFile.size / 1024 / 1024 < 2
+        const size = imgFile.size / 1024 / 1024
+        // console.log(size)
+        // 判断上传文件的大小
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!')
+        } else if (imgFile.type.indexOf('image') === -1) { //如果不是图片格式
+          // this.$dialog.toast({ mes: '请选择图片文件' });
+          this.$message.error('请选择图片文件');
+        } else {
+          const that = this;
+          const reader = new FileReader(); // 创建读取文件对象
+          reader.readAsDataURL(el.target.files[0]); // 发起异步请求，读取文件
+          reader.onload = function () { // 文件读取完成后
+            // 读取完成后，将结果赋值给img的src
+            that.valueUrl = this.result;
+            // console.log(this.result);
+            // 数据传到后台
+            //const formData = new FormData()
+            //formData.append('file', files); // 可以传到后台的数据
+            // console.log(imgFile)
+          }
+        }
+      }
+    },
+    updateStyle() {
+      this.hover = true
+      let po = document.getElementById('img').getBoundingClientRect()
+      // console.log("hi", po)
+      this.myStyle = {top: po.y + 50 + 'px', left: po.x + 90 + 'px'}
+    }
+  },
+  beforeDestroy() {
+    if (inputElement) {
+      if (window.addEventListener) {
+        inputElement.removeEventListener('change', this.onGetLocalFile, false)
+      } else {
+        inputElement.detachEvent('onchange', this.onGetLocalFile)
+      }
+      document.body.removeChild(inputElement)
+      inputElement = null
+      // console.log('inputElement destroy')
+    }
   },
   mounted() {
     this.reset()
@@ -674,13 +776,6 @@ export default {
   font-size: 15px;
 }
 
-#image {
-  height: 120px;
-  width: 230px;
-  float: left;
-  margin-left: 30px;
-  margin-top: 10px;
-}
 
 .content {
   height: 75%;
@@ -705,6 +800,60 @@ export default {
   height: 10%;
   background-color: white;
   margin: 0 5px;
+}
+
+#image {
+  height: 120px;
+  width: 230px;
+  float: left;
+  margin-left: 30px;
+  margin-top: 10px;
+}
+
+.alert-box-item {
+  overflow: hidden;
+}
+
+.bigImg-div {
+  height: 120px;
+  width: 220px;
+  /*border-radius: 100%;*/
+  overflow: hidden;
+  border: 1px solid #ddd;
+  float: left;
+  margin-left: 30px;
+  margin-top: 10px;
+}
+
+.bigImg {
+  display: block;
+  height: 120px;
+  width: 220px;
+  overflow: hidden;
+  /*border-radius: 100%;*/
+}
+
+.bigImg:hover {
+  opacity: 0.4;
+}
+
+.uploadBox {
+  height: 100px;
+  text-align: center;
+}
+
+#chooseFile {
+  display: none;
+}
+
+.uploadBox button {
+  color: #1C90F5;
+  border: 1px solid #1C90F5;
+}
+
+.uploadBox p {
+  font-size: 15px;
+  margin-top: 20px;
 }
 
 
