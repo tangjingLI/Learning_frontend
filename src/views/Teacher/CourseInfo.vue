@@ -28,7 +28,7 @@
 
         <a-menu slot="overlay">
           <a-menu-item>
-            <a>章节</a>
+            <a @click="()=>{this.flag6=true}">章节</a>
           </a-menu-item>
 
           <a-menu-item>
@@ -64,7 +64,7 @@
       </div>
       <div class="content">
         <a-menu v-model="current" mode="horizontal">
-          <a-menu-item key="chapter">
+          <a-menu-item key="chapter" @click="getChapterList">
             <a-icon type="carry-out" theme="twoTone"/>
             目录
           </a-menu-item>
@@ -86,7 +86,50 @@
           </a-menu-item>
         </a-menu>
 
-        <div v-if="current[0]==='chapter'">
+        <div v-if="current[0]==='chapter'" class="wrap">
+          <a-empty v-if="chapterList.length==0" style="margin-top: 50px"/>
+          <div v-for="chapter in chapterList">
+            <div class="chapter" :class="{selected:chapter.id==chooseChapter}"
+                 @click="selectChapter(chapter.id)">
+              <p>
+                <a-icon type="down"/>
+                <down-outlined/>
+                {{ chapter.name }}
+              </p>
+
+              <a-popconfirm
+                  title="确定删除该章节吗?"
+                  ok-text="Yes"
+                  cancel-text="No"
+                  @confirm="myDeleteChapter(chapter.id)"
+              >
+                <a-icon type="delete" class="delete"/>
+              </a-popconfirm>
+
+              <a-icon type="plus-circle" theme="twoTone" class="delete"
+                      @click="showAddItem(chapter.id)"
+                      style="margin-right: 25px"
+              />
+
+            </div>
+
+            <div v-if="chapter.id==chooseChapter" v-for="item in itemList">
+              <div class="itemBox">
+                <p>
+                  <a-icon type="file" theme="twoTone"/>&ensp;{{ item.name }}
+                </p>
+                <a-popconfirm
+                    title="确定删除该资源吗?"
+                    ok-text="Yes"
+                    cancel-text="No"
+                    @confirm="myDeleteItem(item.id,chapter.id)"
+                >
+                  <a-icon type="delete" class="delete"/>
+                </a-popconfirm>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <div v-if="current[0]==='exam'">
@@ -274,13 +317,38 @@
       </a-form>
     </a-modal>
 
-    <a-modal v-model="flag6" title="上传文件" @ok="uploadFile">
-      <div class="uploadBox">
-        <input type="file" @change="changeFile" id="chooseFile">
-        <a-button @click="showFile"><a-icon type="upload" />上传文件</a-button>
-        <p>{{ fileName }}</p>
-      </div>
+    <a-modal v-model="flag6" title="添加章节" @ok="myAddChapter">
+      <a-form :form="form1" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="章节名称">
+          <a-input
+              v-decorator="['title', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{2,8}$/,message: '章节名称长度为2-8位'}
+                  ] }]"
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
 
+    <a-modal v-model="flag7" title="添加资源" @ok="myAddItem">
+      <a-form :form="form1" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="资源名称">
+          <a-input
+              v-decorator="['title', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{2,8}$/,message: '名称长度为2-8位'}
+                  ] }]"
+          />
+        </a-form-item>
+
+        <a-form-item label="资源链接">
+          <a-input
+              v-decorator="['url', { rules: [
+                  { required: true, message: '不能为空' },
+                  ] }]"
+          />
+        </a-form-item>
+      </a-form>
     </a-modal>
 
 
@@ -301,7 +369,14 @@ import {
   editAbility,
   editKnowledge,
   editCourse,
-  uploadPicture
+  uploadPicture,
+  editPicture,
+  getChapter,
+  getItem,
+  deleteChapter,
+  deleteItem,
+  addChapter,
+  addItem
 } from "../../api/course";
 import {getPaperByCourse} from "../../api/paper";
 
@@ -401,6 +476,8 @@ export default {
       abilityList: [],
       knowledgeList: [],
       qualityList: [],
+      itemList: [],
+      chooseChapter: -1,
       picture: '',
       columns1,
       columns2,
@@ -417,6 +494,7 @@ export default {
       flag4: false,
       flag5: false,
       flag6: false,
+      flag7: false,
       page1: 1,
       page2: 1,
       page3: 1,
@@ -427,10 +505,38 @@ export default {
       totalPage4: 1,
       myStyle: {},
       myFile: {},
-      fileName: '未选择文件'
+      fileName: '未选择文件',
+      selectedChapter: -1,
     }
   },
   methods: {
+    //删除章节 &小节
+    async myDeleteChapter(id) {
+      let response = await deleteChapter(this.$store.getters.getTeacher.id, id)
+      if (response.code == 0) {
+        this.$message.success("删除成功！")
+        await this.getChapterList()
+      } else {
+        this.$message.error("删除失败");
+      }
+    },
+    async myDeleteItem(id, pid) {
+      let response = await deleteItem(this.$store.getters.getTeacher.id, id)
+      if (response.code == 0) {
+        this.$message.success("删除成功！")
+        await this.getItemList(pid)
+      } else {
+        this.$message.error("删除失败");
+      }
+    },
+    async selectChapter(id) {
+      if (this.chooseChapter == id) {
+        this.chooseChapter = -1
+      } else {
+        this.chooseChapter = id
+        await this.getItemList(id)
+      }
+    },
     showFile() {
       document.getElementById('chooseFile').click()
     },
@@ -499,11 +605,22 @@ export default {
       this.title = response.name
       this.brief = response.brief
       this.picture = response.picture
+      await this.getChapterList()
     },
     back() {
       this.$router.push('/teacher/courseList')
     },
 //查看章节
+    async getChapterList() {
+      let response = await getChapter(this.$route.params.courseId)
+      this.chapterList = response
+    },
+    //查看小节
+    async getItemList(cid) {
+      let response = await getItem(cid)
+      this.itemList = response
+    },
+    //
 //查看试卷
     async getPaperList(pageNum) {
       let response = await getPaperByCourse(this.$route.params.courseId, pageNum)
@@ -543,6 +660,44 @@ export default {
           if (response.code == 0) {
             this.$message.success("添加成功！")
             await this.getAbilityList(this.page2)
+          } else {
+            this.$message.error("添加失败");
+          }
+        }
+      })
+    },
+    //添加章节
+    async myAddChapter(e) {
+      e.preventDefault()
+      this.form1.validateFields(async (err, values) => {
+        if (!err) {
+          let response = await addChapter(this.$store.getters.getTeacher.id, this.$route.params.courseId, values.title)
+          this.flag6 = false
+          this.form1.resetFields()
+          if (response.code == 0) {
+            this.$message.success("添加成功！")
+            await this.getChapterList()
+          } else {
+            this.$message.error("添加失败");
+          }
+        }
+      })
+    },
+    //添加小节
+    showAddItem(id) {
+      this.flag7 = true
+      this.selectedChapter = id
+    },
+    async myAddItem(e) {
+      e.preventDefault()
+      this.form1.validateFields(async (err, values) => {
+        if (!err) {
+          let response = await addItem(this.$store.getters.getTeacher.id, this.$route.params.courseId, values.title, this.selectedChapter, values.url)
+          this.flag7 = false
+          this.form1.resetFields()
+          if (response.code == 0) {
+            this.$message.success("添加成功！")
+            await this.getItemList(this.selectedChapter)
           } else {
             this.$message.error("添加失败");
           }
@@ -694,9 +849,13 @@ export default {
             that.valueUrl = this.result;
             // console.log(this.result);
             // 数据传到后台
-            //const formData = new FormData()
-            //formData.append('file', files); // 可以传到后台的数据
             // console.log(imgFile)
+            let res1 = uploadPicture(imgFile)
+            if (res1.code == 0) {
+              // let res2=
+            } else {
+              this.$message.error("上传失败")
+            }
           }
         }
       }
@@ -856,5 +1015,46 @@ export default {
   margin-top: 20px;
 }
 
+.wrap {
+  height: 340px;
+  overflow-y: scroll;
+  margin-bottom: 0;
+}
+
+.chapter {
+  height: 50px;
+  margin: 0 15px;
+  border-bottom: #f1f1f1 1px solid;
+  padding-top: 15px;
+  padding-left: 30px;
+  padding-right: 25px;
+}
+
+.chapter p {
+  font-size: 13px;
+  float: left;
+}
+
+.selected {
+  background-color: rgba(101, 195, 224, 0.2);
+}
+
+.itemBox {
+  height: 45px;
+  margin: 0 10px;
+  border-bottom: #f1f1f1 1px solid;
+  padding-top: 15px;
+  padding-left: 50px;
+  padding-right: 45px;
+}
+
+.itemBox p {
+  font-size: 13px;
+  float: left;
+}
+
+.delete {
+  float: right;
+}
 
 </style>

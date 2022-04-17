@@ -561,6 +561,160 @@ export function editCourse(cid, uid, name, brief) {
 }
 
 //上传图片
-export function uploadPicture(){
+export function uploadPicture(file){
+    let Form = new FormData()
+    Form.append("file", file)
+    return axios.post(`${baseUrls.course}/upload`, Form, {
+        headers: {
+            'Content-Type': "multipart/form-data;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
 
+//上传图片2
+export function editPicture(cid, uid, name, brief,url) {
+    let Form = new FormData()
+    Form.append("id", cid)
+    Form.append("name", name)
+    Form.append("brief", brief)
+    Form.append("userId", uid)
+    Form.append("picture", url)
+
+
+    return axios.post(`${baseUrls.course}/course/edit`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+//章节列表
+export function getChapter(cid) {
+    let Form = new FormData()
+    Form.append("courseId", cid)
+
+    return axios.post(`${baseUrls.course}/parent/list`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+//增加章节
+export function addChapter(uid,cid,name) {
+    let Form = new FormData()
+    Form.append("userId", uid)
+    Form.append("courseId", cid)
+    Form.append("name", name)
+
+    return axios.post(`${baseUrls.course}/parent/add`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+//删除章节
+export function deleteChapter(uid,pid) {
+    let Form = new FormData()
+    Form.append("userId", uid)
+    Form.append("parentId", pid)
+
+
+    return axios.post(`${baseUrls.course}/parent/delete`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+
+//小节列表
+export function getItem(cid) {
+    let Form = new FormData()
+    Form.append("parentId", cid)
+
+    return axios.post(`${baseUrls.course}/courseSection/list`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+//新增小节
+export function addItem(uid,cid,name,pid,url) {
+    let Form = new FormData()
+    Form.append("userId", uid)
+    Form.append("courseId", cid)
+    Form.append("parentId", pid)
+    Form.append("name", name)
+    Form.append("videoUrl", url)
+
+    return axios.post(`${baseUrls.course}//courseSection/add`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+
+//删除小节
+export function deleteItem(uid,cid) {
+    let Form = new FormData()
+    Form.append("userId", uid)
+    Form.append("courseSectionId", cid)
+
+    return axios.post(`${baseUrls.course}/courseSection/delete`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
 }

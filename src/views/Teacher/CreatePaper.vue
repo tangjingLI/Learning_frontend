@@ -574,7 +574,7 @@ export default {
 }
 
 /deep/.clickRowStyl {
-  background-color: rgba(0,180,237,0.2)
+  background-color: rgba(0, 180, 237, 0.2)
 }
 
 /*.ant-table-tbody > .clickRowStyl:hover > td {*/
