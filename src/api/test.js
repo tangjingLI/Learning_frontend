@@ -133,7 +133,7 @@ export function editTestBank(bid, uid, title, isPublic) {
 }
 
 //修改题目
-export function editTest(values, qid,uid,bid, arr) {
+export function editTest(values, qid, uid, bid, arr) {
     let question = {
         title: values.title,
         content: values.content,
@@ -141,9 +141,9 @@ export function editTest(values, qid,uid,bid, arr) {
         type: values.type,
         analysis: values.analysis,
         consume: values.consume,
-        userId:uid,
-        bankId:bid,
-        id:qid
+        userId: uid,
+        bankId: bid,
+        id: qid
     }
 
     let data = {
@@ -403,3 +403,18 @@ export function deleteTestGroup(uid, qidList) {
 }
 
 
+//绑定知识点
+export function bindKnowledge(uid, qid, kList) {
+    return axios.post(`${baseUrls.test}/question/editKnowledge`, kList, {
+        params: {
+            userId: uid,
+            questionId: qid
+        }
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}

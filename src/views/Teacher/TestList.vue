@@ -79,6 +79,9 @@
           >
             <a href="#">删除</a>
           </a-popconfirm>
+          <a-divider type="vertical"/>
+          <a @click="showBind(record.id)">绑定知识点</a>
+
         </span>
 
       </a-table>
@@ -203,11 +206,66 @@
       </a-form>
     </a-modal>
 
+    <a-modal v-model="flag1" title="绑定知识点" @ok="()=>{this.flag1=false}">
+      <div class="box">
+        <a-table :columns="columns2" :data-source="knowledgeList" style="background-color: white"
+                 rowKey="id" :pagination="false" class="bindTable"
+        >
+          <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  知识点</span>
+          <span slot="action" slot-scope="text, record">
+          <a @click="showLevel(record.id,record.name)">绑定</a>
+          </span>
+        </a-table>
+        <div class="footer1">
+          <a-pagination :pageSize="1" :total="totalPage1" @change="changeBindPage" class="page1"
+                        v-model="page1"/>
+        </div>
+      </div>
+    </a-modal>
+
+    <a-modal v-model="flag2" :title="kName" @ok="myBindKnowledge">
+      <a-form :form="form3" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="技能">
+          <a-select style="width: 120px"
+                    v-decorator="['skill',{rules:[{required: true,message:'不能为空'}]}]">
+            <a-select-option value="记忆">
+              记忆
+            </a-select-option>
+            <a-select-option value="理解">
+              理解
+            </a-select-option>
+            <a-select-option value="运用">
+              运用
+            </a-select-option>
+            <a-select-option value="分析">
+              分析
+            </a-select-option>
+            <a-select-option value="评价">
+              评价
+            </a-select-option>
+            <a-select-option value="创造">
+              创造
+            </a-select-option>
+
+          </a-select>
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
   </div>
 </template>
 
 <script>
-import {editTestBank, getTestBank, addTest, deleteTest, searchTest, deleteTestGroup} from "../../api/test";
+import {
+  editTestBank,
+  getTestBank,
+  addTest,
+  deleteTest,
+  searchTest,
+  deleteTestGroup,
+  bindKnowledge
+} from "../../api/test";
+import {getAllKnowledge} from "../../api/course";
 
 const columns = [
   {
@@ -241,6 +299,21 @@ const columns = [
   },
 ];
 
+const columns2 = [
+  {
+    dataIndex: 'name',
+    key: 'title',
+    slots: {title: 'customTitle'},
+    scopedSlots: {customRender: 'title'},
+  },
+  {
+    title: '操作',
+    key: 'action',
+    scopedSlots: {customRender: 'action'},
+
+  }
+];
+
 
 export default {
   name: "TestList",
@@ -250,18 +323,28 @@ export default {
       questions: [],
       isPublic: 0,
       columns,
+      columns2,
       msg: '',
+      tid: -1,
+      kid: -1,
+      kName: '',
+      flag1: false,
+      flag2: false,
+      knowledgeList: [],
       editBank: false,
       showAdd: false,
       testType: 0,
       num: 2,
       totalPage: 1,
+      page1: 1,
+      totalPage1: 1,
       choices: [],
       selectedRowKeys: [],
       current: 1,
       list: ['A', 'B', 'C', 'D', 'E', 'F'],
       form1: this.$form.createForm(this, {name: 'editTestBank'}),
       form2: this.$form.createForm(this, {name: 'addTest'}),
+      form3: this.$form.createForm(this, {name: 'bind'}),
     }
   },
   mounted() {
@@ -269,10 +352,46 @@ export default {
     this.reset();
   },
   methods: {
-    changeChoice(value, index) {
-      // this.content[index] = value.data
-      // console.log(this.content)
-      console.log(this.form2[title])
+    async changeBindPage(pageNumber) {
+      if (pageNumber <= this.totalPage1) {
+        let response = await getAllKnowledge(pageNumber)
+        this.knowledgeList = response.content
+        this.totalPage1 = response.totalPage
+        this.page1 = pageNumber
+      }
+    },
+    async showBind(id) {
+      await this.changeBindPage(1)
+      this.flag1 = true
+      this.tid = id
+    },
+    showLevel(id, name) {
+      this.kName = name
+      this.flag2 = true
+      this.kid = id
+    },
+    async myBindKnowledge(e) {
+      e.preventDefault()
+      this.form3.validateFields(async (err, values) => {
+        if (!err) {
+          let kList={
+            knowledges:[
+              {
+                knowledgeId:this.kid,
+                skillId:values.skill
+              }
+            ]
+          }
+          let response=await bindKnowledge(this.$store.getters.getTeacher.id,this.tid,kList)
+          this.flag2 = false
+          this.form3.resetFields()
+          if (response.code == 0) {
+            this.$message.success("绑定成功！")
+          } else {
+            this.$message.error("绑定失败")
+          }
+        }
+      })
     },
     async reset() {
       let params = this.$route.params;
@@ -508,5 +627,27 @@ body {
   background-color: white;
   margin: 0 5px;
 }
+
+.page1 {
+  margin-right: 10px;
+  margin-top: 10px;
+  float: right;
+}
+
+.footer1 {
+  height: 50px;
+  background-color: white;
+  margin: 0 5px;
+}
+
+.box {
+  height: 350px;
+}
+
+.bindTable {
+  height: 330px;
+  overflow-y: scroll;
+}
+
 
 </style>

@@ -93,7 +93,6 @@
                  @click="selectChapter(chapter.id)">
               <p>
                 <a-icon type="down"/>
-                <down-outlined/>
                 {{ chapter.name }}
               </p>
 
@@ -849,7 +848,8 @@ export default {
             that.valueUrl = this.result;
             // console.log(this.result);
             // 数据传到后台
-            // console.log(imgFile)
+            console.log(imgFile)
+            this.myFile=imgFile
             let res1 = uploadPicture(imgFile)
             if (res1.code == 0) {
               // let res2=
@@ -864,7 +864,7 @@ export default {
       this.hover = true
       let po = document.getElementById('img').getBoundingClientRect()
       // console.log("hi", po)
-      this.myStyle = {top: po.y + 50 + 'px', left: po.x + 90 + 'px'}
+      this.myStyle = {top: po.y + 80 + 'px', left: po.x + 90 + 'px'}
     }
   },
   beforeDestroy() {
@@ -884,9 +884,7 @@ export default {
   }
   ,
   computed: {
-    hasSelected() {
-      return this.selectedRowKeys.length > 0;
-    },
+
     defaultImg() {
       return 'this.src="' + require('../../assets/course.jpg') + '"'
     }

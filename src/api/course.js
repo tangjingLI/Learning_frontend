@@ -561,7 +561,7 @@ export function editCourse(cid, uid, name, brief) {
 }
 
 //上传图片
-export function uploadPicture(file){
+export function uploadPicture(file) {
     let Form = new FormData()
     Form.append("file", file)
     return axios.post(`${baseUrls.course}/upload`, Form, {
@@ -578,7 +578,7 @@ export function uploadPicture(file){
 }
 
 //上传图片2
-export function editPicture(cid, uid, name, brief,url) {
+export function editPicture(cid, uid, name, brief, url) {
     let Form = new FormData()
     Form.append("id", cid)
     Form.append("name", name)
@@ -619,7 +619,7 @@ export function getChapter(cid) {
 }
 
 //增加章节
-export function addChapter(uid,cid,name) {
+export function addChapter(uid, cid, name) {
     let Form = new FormData()
     Form.append("userId", uid)
     Form.append("courseId", cid)
@@ -639,7 +639,7 @@ export function addChapter(uid,cid,name) {
 }
 
 //删除章节
-export function deleteChapter(uid,pid) {
+export function deleteChapter(uid, pid) {
     let Form = new FormData()
     Form.append("userId", uid)
     Form.append("parentId", pid)
@@ -678,7 +678,7 @@ export function getItem(cid) {
 }
 
 //新增小节
-export function addItem(uid,cid,name,pid,url) {
+export function addItem(uid, cid, name, pid, url) {
     let Form = new FormData()
     Form.append("userId", uid)
     Form.append("courseId", cid)
@@ -701,7 +701,7 @@ export function addItem(uid,cid,name,pid,url) {
 
 
 //删除小节
-export function deleteItem(uid,cid) {
+export function deleteItem(uid, cid) {
     let Form = new FormData()
     Form.append("userId", uid)
     Form.append("courseSectionId", cid)
@@ -710,6 +710,22 @@ export function deleteItem(uid,cid) {
         headers: {
             'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
         },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+
+//知识点列表
+export function getAllKnowledge(page) {
+    return axios.get(`${baseUrls.course}/knowledge/listKnowledge`, {
+        params: {
+            pageNum: page
+        }
     })
         .then(res => {
             return res.data
