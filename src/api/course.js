@@ -539,46 +539,7 @@ export function editQuality(kid, name) {
 }
 
 //编辑课程
-export function editCourse(cid, uid, name, brief) {
-    let Form = new FormData()
-    Form.append("id", cid)
-    Form.append("name", name)
-    Form.append("brief", brief)
-    Form.append("userId", uid)
-
-
-    return axios.post(`${baseUrls.course}/course/edit`, Form, {
-        headers: {
-            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
-        },
-    })
-        .then(res => {
-            return res.data
-        })
-        .catch(function (error) {
-            console.log(error);
-        })
-}
-
-//上传图片
-export function uploadPicture(file) {
-    let Form = new FormData()
-    Form.append("file", file)
-    return axios.post(`${baseUrls.course}/upload`, Form, {
-        headers: {
-            'Content-Type': "multipart/form-data;charset=utf-8"
-        },
-    })
-        .then(res => {
-            return res.data
-        })
-        .catch(function (error) {
-            console.log(error);
-        })
-}
-
-//上传图片2
-export function editPicture(cid, uid, name, brief, url) {
+export function editCourse(cid, uid, name, brief,url) {
     let Form = new FormData()
     Form.append("id", cid)
     Form.append("name", name)
@@ -599,6 +560,46 @@ export function editPicture(cid, uid, name, brief, url) {
             console.log(error);
         })
 }
+
+//上传图片
+export function uploadPicture(file) {
+    let Form = new FormData()
+    Form.append("file", file)
+    return axios.post(`${baseUrls.course}/upload/image`, Form, {
+        headers: {
+            'Content-Type': "multipart/form-data;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+//上传图片2
+// export function editPicture(cid, uid, name, brief, url) {
+//     let Form = new FormData()
+//     Form.append("id", cid)
+//     Form.append("name", name)
+//     Form.append("brief", brief)
+//     Form.append("userId", uid)
+//     Form.append("picture", url)
+//
+//
+//     return axios.post(`${baseUrls.course}/course/edit`, Form, {
+//         headers: {
+//             'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+//         },
+//     })
+//         .then(res => {
+//             return res.data
+//         })
+//         .catch(function (error) {
+//             console.log(error);
+//         })
+// }
 
 //章节列表
 export function getChapter(cid) {

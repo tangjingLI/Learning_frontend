@@ -46,7 +46,8 @@
     <div class="box">
       <div class="info">
         <!--        <img src="picture" id="image" :onerror="defaultImg">-->
-        <div class="bigImg-div" @click="toGetImg" @mouseenter="updateStyle" @mouseleave="hover=false">
+<!--        @click="toGetImg"-->
+        <div class="bigImg-div"  @mouseenter="updateStyle" @mouseleave="hover=false">
           <img class="bigImg" :src=valueUrl :onerror="defaultImg" id="img">
           <span style="position:absolute;font-size: 18px;font-weight: bold;" :style="myStyle"
                 v-if="hover">编辑</span>
@@ -313,6 +314,14 @@
                   ] }]"
           />
         </a-form-item>
+
+        <a-form-item label="封面URL">
+          <a-input
+              v-decorator="['url', { rules: [
+                  ] }]"
+          />
+
+        </a-form-item>
       </a-form>
     </a-modal>
 
@@ -563,7 +572,7 @@ export default {
       e.preventDefault()
       this.form5.validateFields(async (err, values) => {
         if (!err) {
-          let response = await editCourse(this.$route.params.courseId, this.$store.getters.getTeacher.id, values.title, values.brief)
+          let response = await editCourse(this.$route.params.courseId, this.$store.getters.getTeacher.id, values.title, values.brief,values.url)
           this.flag5 = false
           if (response.code == 0) {
             this.$message.success('编辑成功！')
@@ -826,7 +835,7 @@ export default {
       }
       inputElement.click()
     },
-    uploadImage(el) {
+    async uploadImage(el) {
       if (el && el.target && el.target.files && el.target.files.length > 0) {
         // console.log(el)
         const imgFile = el.target.files[0]
@@ -843,28 +852,30 @@ export default {
           const that = this;
           const reader = new FileReader(); // 创建读取文件对象
           reader.readAsDataURL(el.target.files[0]); // 发起异步请求，读取文件
-          reader.onload = function () { // 文件读取完成后
+          reader.onload =async function (){ // 文件读取完成后
             // 读取完成后，将结果赋值给img的src
             that.valueUrl = this.result;
             // console.log(this.result);
             // 数据传到后台
             console.log(imgFile)
-            this.myFile=imgFile
-            let res1 = uploadPicture(imgFile)
+            this.myFile = imgFile
+            let res1 =await uploadPicture(imgFile)
             if (res1.code == 0) {
               // let res2=
+              that.$message.success("上传成功")
             } else {
-              this.$message.error("上传失败")
+              that.$message.error("上传失败")
             }
           }
         }
       }
+      await this.reset()
     },
     updateStyle() {
-      this.hover = true
+      // this.hover = true
       let po = document.getElementById('img').getBoundingClientRect()
       // console.log("hi", po)
-      this.myStyle = {top: po.y + 80 + 'px', left: po.x + 90 + 'px'}
+      this.myStyle = {top: po.y + 50 + 'px', left: po.x + 90 + 'px'}
     }
   },
   beforeDestroy() {
@@ -990,9 +1001,9 @@ export default {
   /*border-radius: 100%;*/
 }
 
-.bigImg:hover {
-  opacity: 0.4;
-}
+/*.bigImg:hover {*/
+/*  opacity: 0.4;*/
+/*}*/
 
 .uploadBox {
   height: 100px;
