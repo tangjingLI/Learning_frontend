@@ -5,13 +5,13 @@ import Vuex from 'vuex'
 import store from './store'
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
-import axios from "axios";
-
+import HighchartsVue from 'highcharts-vue'
 
 Vue.config.productionTip = false;
 
 Vue.use(Antd);
 Vue.use(Vuex);
+Vue.use(HighchartsVue)
 
 router.beforeEach((to, from, next) => {
     let phone = store.getters.getTeacher.phone;

@@ -56,28 +56,113 @@
         <router-link to="/teacher/testBankBin">查看>></router-link>
       </div>
 
-<!--      <div class="func2">-->
-<!--        <a-icon type="rest" theme="twoTone" class="icon"/>-->
-<!--        <p>试卷回收站</p>-->
-<!--        <router-link to="">查看>></router-link>-->
-<!--      </div>-->
+      <!--      <div class="func2">-->
+      <!--        <a-icon type="rest" theme="twoTone" class="icon"/>-->
+      <!--        <p>试卷回收站</p>-->
+      <!--        <router-link to="">查看>></router-link>-->
+      <!--      </div>-->
 
-<!--      <div class="func2">-->
-<!--        <a-icon type="rest" theme="twoTone" class="icon"/>-->
-<!--        <p>试卷库回收站</p>-->
-<!--        <router-link to="">查看>></router-link>-->
-<!--      </div>-->
+      <!--      <div class="func2">-->
+      <!--        <a-icon type="rest" theme="twoTone" class="icon"/>-->
+      <!--        <p>试卷库回收站</p>-->
+      <!--        <router-link to="">查看>></router-link>-->
+      <!--      </div>-->
     </div>
 
     <div class="block3">
+      <div class="top3">
+        <h1>课程参与情况</h1>
+      </div>
 
+      <div class="echart" id="mychart"></div>
     </div>
   </div>
 </template>
 
+
 <script>
+import axios from "axios";
+import {baseUrls} from "../../api/baseUrl";
+import * as echarts from "echarts";
+
 export default {
-  name: "Control"
+  name: "Control",
+  data() {
+    return {
+      items: [],
+      xData: [],
+      yData: [],
+      fData:[],
+    }
+  },
+  methods: {
+    async getData(){
+      axios.get(`${baseUrls.score}/courseData/data/1`, {
+        params: {
+          user_id: this.$store.getters.getTeacher.id
+        }
+      }).then(res => {
+        this.items = res.data.data
+        for(let i=0;i<this.items.length;i++){
+          let temp=this.items[i]
+          this.yData.push(temp.selectNumberOfPeople)
+          this.xData.push(temp.name)
+          this.fData.push(temp.finishedNumberOfPeople)
+        }
+        this.initEcharts()
+      })
+    },
+    async reset() {
+      await this.getData()
+    },
+    initEcharts() {
+      const option = {
+        xAxis: {
+          data: this.xData
+        },
+        legend: {
+          data: ["选课人数", "结课人数"],
+          bottom: "0%"
+        },
+        yAxis: {},
+        series: [
+          {
+            name: "选课人数",
+            data: this.yData,
+            type: "line",
+            label: {
+              show: false,
+              position: "top",
+              textStyle: {
+                fontSize: 12
+              }
+            }
+          },
+          {
+            name: "结课人数",
+            data: this.fData,
+            type: "line",
+            label: {
+              show: false,
+              position: "bottom",
+              textStyle: {
+                fontSize: 12
+              }
+            }
+          }
+        ]
+      };
+      this.myChart = echarts.init(document.getElementById("mychart"));
+      this.myChart.setOption(option);
+
+      // window.addEventListener("resize", () => {
+      //   this.myChart.resize();
+      // });
+    },
+  },
+  mounted() {
+    this.reset()
+  }
 }
 </script>
 
@@ -137,7 +222,7 @@ body {
   box-shadow: 0 2px 2px #939393;
   background-color: white;
   width: 97%;
-  height: 600px;
+  height: 500px;
   float: left;
   margin: 10px 10px;
 }
@@ -156,7 +241,7 @@ body {
   float: left;
 }
 
-.func1 p{
+.func1 p {
   float: left;
   margin-top: 15px;
   margin-left: 15px;
@@ -166,13 +251,13 @@ body {
   font-weight: bold;
 }
 
-.func1 a{
+.func1 a {
   float: right;
   margin-top: 15px;
   margin-right: 30px;
 }
 
-.block2 p{
+.block2 p,.top3 h1 {
   margin-top: 15px;
   margin-left: 15px;
   font-size: 15px;
@@ -181,12 +266,12 @@ body {
   font-weight: bold;
 }
 
-.func2{
+.func2 {
   width: 100%;
   height: 20%;
 }
 
-.func2 p{
+.func2 p {
   float: left;
   margin-top: 15px;
   margin-left: 15px;
@@ -196,9 +281,15 @@ body {
   font-weight: bold;
 }
 
-.func2 a{
+.func2 a {
   float: right;
   margin-top: 15px;
   margin-right: 100px;
 }
+
+#mychart{
+  width: 100%;
+  height:400px
+}
+
 </style>
