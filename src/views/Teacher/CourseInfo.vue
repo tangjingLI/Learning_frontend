@@ -36,7 +36,7 @@
           </a-menu-item>
 
           <a-menu-item>
-            <a @click="()=>{this.flag2=true}">知识点</a>
+            <a @click="showAddKnowledge">知识点</a>
           </a-menu-item>
         </a-menu>
       </a-dropdown>
@@ -255,7 +255,7 @@
     </a-modal>
 
     <a-modal v-model="flag2" title="添加知识点" @ok="addKnowledgeItem">
-      <a-form :form="form2" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+      <a-form :form="form2" :label-col="{ span: 5 }" :wrapper-col="{ span: 18 }">
         <a-form-item label="知识点名称">
           <a-input
               v-decorator="['title', { rules: [
@@ -263,6 +263,17 @@
                   {pattern:/^.{2,8}$/,message: '能力名称长度为2-8位'}
                   ] }]"
           />
+        </a-form-item>
+
+        <a-form-item label="绑定资源">
+          <a-select style="width: 180px"
+                    v-decorator="['item',{rules:[{required: true,message:'不能为空'}]}]">
+
+            <a-select-option v-for="item in allItems" :value="item.id" :key="item.id">
+              {{ item.name }}
+            </a-select-option>
+
+          </a-select>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -315,7 +326,7 @@
           />
         </a-form-item>
 
-        <a-form-item label="封面URL">
+        <a-form-item label="封面链接">
           <a-input
               v-decorator="['url', { rules: [
                   ] }]"
@@ -384,7 +395,7 @@ import {
   deleteChapter,
   deleteItem,
   addChapter,
-  addItem
+  addItem, getAllItems
 } from "../../api/course";
 import {getPaperByCourse} from "../../api/paper";
 
@@ -484,6 +495,7 @@ export default {
       abilityList: [],
       knowledgeList: [],
       qualityList: [],
+      allItems:[],
       itemList: [],
       chooseChapter: -1,
       picture: '',
@@ -518,6 +530,11 @@ export default {
     }
   },
   methods: {
+    async showAddKnowledge(){
+      this.flag2=true
+      let response=await getAllItems(this.$route.params.courseId)
+      this.allItems=response
+    },
     //删除章节 &小节
     async myDeleteChapter(id) {
       let response = await deleteChapter(this.$store.getters.getTeacher.id, id)
@@ -737,7 +754,7 @@ export default {
           console.log('Received values of form: ', values)
           this.flag2 = false
           this.form2.resetFields()
-          let response = await addKnowledge(this.$route.params.courseId, values.title)
+          let response = await addKnowledge(this.$route.params.courseId, values.title,values.item)
           this.flag2 = false
           this.form2.resetFields()
           if (response.code == 0) {

@@ -56,17 +56,17 @@
         <router-link to="/teacher/testBankBin">查看>></router-link>
       </div>
 
-      <div class="func2">
-        <a-icon type="rest" theme="twoTone" class="icon"/>
-        <p>试卷回收站</p>
-        <router-link to="">查看>></router-link>
-      </div>
+<!--      <div class="func2">-->
+<!--        <a-icon type="rest" theme="twoTone" class="icon"/>-->
+<!--        <p>试卷回收站</p>-->
+<!--        <router-link to="">查看>></router-link>-->
+<!--      </div>-->
 
-      <div class="func2">
-        <a-icon type="rest" theme="twoTone" class="icon"/>
-        <p>试卷库回收站</p>
-        <router-link to="">查看>></router-link>
-      </div>
+<!--      <div class="func2">-->
+<!--        <a-icon type="rest" theme="twoTone" class="icon"/>-->
+<!--        <p>试卷库回收站</p>-->
+<!--        <router-link to="">查看>></router-link>-->
+<!--      </div>-->
     </div>
 
     <div class="block3">
