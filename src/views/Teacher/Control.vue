@@ -102,13 +102,10 @@ export default {
           user_id: this.$store.getters.getTeacher.id
         }
       }).then(res => {
-        this.items = res.data.data
-        for(let i=0;i<this.items.length;i++){
-          let temp=this.items[i]
-          this.yData.push(temp.selectNumberOfPeople)
-          this.xData.push(temp.name)
-          this.fData.push(temp.finishedNumberOfPeople)
-        }
+        this.items = res.data.data.courseData
+        this.xData=res.data.data.name
+        this.fData=res.data.data.finishedNumberOfPeople
+        this.yData=res.data.data.selectNumberOfPeople
         this.initEcharts()
       })
     },
@@ -225,6 +222,7 @@ body {
   height: 500px;
   float: left;
   margin: 10px 10px;
+  overflow-x: scroll;
 }
 
 .icon {
@@ -289,7 +287,8 @@ body {
 
 #mychart{
   width: 100%;
-  height:400px
+  height:400px;
+  margin: 0 auto;
 }
 
 </style>
