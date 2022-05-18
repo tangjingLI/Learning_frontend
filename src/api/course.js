@@ -318,10 +318,12 @@ export function deleteKnowledge(kid) {
 }
 
 //添加能力
-export function addAbility(cid, name) {
+export function addAbility(cid, name,brief) {
     let Form = new FormData()
     Form.append("courseId", cid)
     Form.append("name", name)
+    Form.append("brief", brief)
+
 
     return axios.post(`${baseUrls.course}/ability/add`, Form, {
         headers: {
@@ -337,11 +339,12 @@ export function addAbility(cid, name) {
 }
 
 //添加知识点
-export function addKnowledge(cid, name,item) {
+export function addKnowledge(cid, name,item,brief) {
     let Form = new FormData()
     Form.append("courseId", cid)
     Form.append("name", name)
     Form.append("courseSectionId", item)
+    Form.append("brief", brief)
 
     return axios.post(`${baseUrls.course}/knowledge/add/`, Form, {
         headers: {
@@ -476,13 +479,31 @@ export function getAbilityInfo(aid) {
         })
 }
 
+//查看知识点详情
+export function getKnowledgeInfo(kid) {
+    let Form = new FormData()
+    Form.append("knowledgeId", kid)
+
+    return axios.post(`${baseUrls.course}/knowledge/info`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
 //修改能力
-export function editAbility(aid, cid, name) {
+export function editAbility(aid, cid, name,brief) {
     let Form = new FormData()
     Form.append("id", aid)
     Form.append("courseId", cid)
     Form.append("name", name)
-    Form.append("brief", 'brief')
+    Form.append("brief", brief)
 
     return axios.post(`${baseUrls.course}/ability/edit/`, Form, {
         headers: {
@@ -498,11 +519,12 @@ export function editAbility(aid, cid, name) {
 }
 
 //修改知识点
-export function editKnowledge(kid, cid, name) {
+export function editKnowledge(kid, cid, name,brief) {
     let Form = new FormData()
     Form.append("id", kid)
     Form.append("courseId", cid)
     Form.append("name", name)
+    Form.append("brief", brief)
 
 
     return axios.post(`${baseUrls.course}/knowledge/edit/`, Form, {

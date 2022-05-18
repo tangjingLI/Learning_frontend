@@ -7,7 +7,7 @@ export function login(phone, password) {
         password: password
     }
 
-    return axios.post(`${baseUrls.login}/user/userlogin`, data)
+    return axios.post(`${baseUrls.login}/user/login`, data)
         .then(res => {
             return res.data
         })

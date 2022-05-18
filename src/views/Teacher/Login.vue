@@ -41,7 +41,7 @@
                   'password',
                   { rules: [
                       { required: true, message: '不能为空' },
-                      {pattern:/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,10}$/,message: '请输入6-16位密码，必须包含英文字母和数字'}
+                      {pattern:/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/,message: '请输入6-16位密码，必须包含英文字母和数字'}
                       ] },
                 ]"
                 type="password"

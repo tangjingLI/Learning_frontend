@@ -157,10 +157,13 @@
             >
               <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  能力</span>
               <span slot="action" slot-scope="text, record">
-                <a @click="getAbilityDetail(record.id)">查看</a>
+                <a @click="getAbilityDetail(record.id)">绑定管理</a>
                 <a-divider type="vertical"/>
 
-                <a @click="showEdit1(record.id,record.name)">修改</a>
+                <a @click="getaInfo(record.id)">查看</a>
+                <a-divider type="vertical"/>
+
+                <a @click="showEdit1(record.id,record.name,record.brief)">修改</a>
                 <a-divider type="vertical"/>
 
                 <a-popconfirm
@@ -191,7 +194,9 @@
               <span slot="customTitle"><a-icon type="smile" theme="twoTone"/>  知识点</span>
 
               <span slot="action" slot-scope="text, record">
-                <a @click="showEdit2(record.id,record.name)">修改</a>
+                <a @click="getkInfo(record.id)">查看</a>
+                <a-divider type="vertical"/>
+                <a @click="showEdit2(record.id,record.name,record.brief)">修改</a>
                 <a-divider type="vertical"/>
                 <a-popconfirm
                     title="确定删除该知识点吗?"
@@ -251,6 +256,16 @@
                   ] }]"
           />
         </a-form-item>
+
+        <a-form-item label="简介">
+          <a-textarea
+              :auto-size="{ minRows: 1, maxRows: 3 }"
+              v-decorator="['brief', { rules: [
+                  {required: true,message:'不能为空'},
+                  {pattern:/^.{1,30}$/,message: '长度为1-30位'}
+                  ] }]"
+          />
+        </a-form-item>
       </a-form>
     </a-modal>
 
@@ -261,6 +276,16 @@
               v-decorator="['title', { rules: [
                   { required: true, message: '不能为空' },
                   {pattern:/^.{2,8}$/,message: '能力名称长度为2-8位'}
+                  ] }]"
+          />
+        </a-form-item>
+
+        <a-form-item label="简介">
+          <a-textarea
+              :auto-size="{ minRows: 1, maxRows: 3 }"
+              v-decorator="['brief', { rules: [
+                  {required: true,message:'不能为空'},
+                  {pattern:/^.{1,30}$/,message: '长度为1-30位'}
                   ] }]"
           />
         </a-form-item>
@@ -288,6 +313,16 @@
                   ] }]"
           />
         </a-form-item>
+
+        <a-form-item label="简介">
+          <a-textarea
+              :auto-size="{ minRows: 1, maxRows: 3 }"
+              v-decorator="['brief', { rules: [
+                  {required: true,message:'不能为空'},
+                  {pattern:/^.{1,30}$/,message: '长度为1-30位'}
+                  ] }]"
+          />
+        </a-form-item>
       </a-form>
     </a-modal>
 
@@ -298,6 +333,16 @@
               v-decorator="['title', { rules: [
                   { required: true, message: '不能为空' },
                   {pattern:/^.{2,8}$/,message: '能力名称长度为2-8位'}
+                  ] }]"
+          />
+        </a-form-item>
+
+        <a-form-item label="简介">
+          <a-textarea
+              :auto-size="{ minRows: 1, maxRows: 3 }"
+              v-decorator="['brief', { rules: [
+                  {required: true,message:'不能为空'},
+                  {pattern:/^.{1,30}$/,message: '长度为1-30位'}
                   ] }]"
           />
         </a-form-item>
@@ -370,6 +415,15 @@
       </a-form>
     </a-modal>
 
+    <a-modal v-model="f1" :title="aInfo.name" @ok="()=>{this.f1=false}">
+      <p><b>简介：</b>{{aInfo.brief}}</p>
+
+    </a-modal>
+
+    <a-modal v-model="f2" :title="kInfo.name" @ok="()=>{this.f2=false}">
+      <p><b>简介：</b>{{kInfo.brief}}</p>
+    </a-modal>
+
 
   </div>
 </template>
@@ -395,7 +449,7 @@ import {
   deleteChapter,
   deleteItem,
   addChapter,
-  addItem, getAllItems
+  addItem, getAllItems, getAbilityInfo, getKnowledgeInfo
 } from "../../api/course";
 import {getPaperByCourse} from "../../api/paper";
 
@@ -515,6 +569,10 @@ export default {
       flag5: false,
       flag6: false,
       flag7: false,
+      f1:false,
+      f2:false,
+      aInfo:{},
+      kInfo:{},
       page1: 1,
       page2: 1,
       page3: 1,
@@ -530,6 +588,16 @@ export default {
     }
   },
   methods: {
+    async getaInfo(id){
+      this.f1=true
+      let response=await getAbilityInfo(id)
+      this.aInfo=response
+    },
+    async getkInfo(id){
+      this.f2=true
+      let response=await getKnowledgeInfo(id)
+      this.kInfo=response
+    },
     async showAddKnowledge(){
       this.flag2=true
       let response=await getAllItems(this.$route.params.courseId)
@@ -679,7 +747,7 @@ export default {
       this.form1.validateFields(async (err, values) => {
         if (!err) {
           console.log('Received values of form: ', values)
-          let response = await addAbility(this.$route.params.courseId, values.title)
+          let response = await addAbility(this.$route.params.courseId, values.title,values.brief)
           this.flag1 = false
           this.form1.resetFields()
           if (response.code == 0) {
@@ -754,7 +822,7 @@ export default {
           console.log('Received values of form: ', values)
           this.flag2 = false
           this.form2.resetFields()
-          let response = await addKnowledge(this.$route.params.courseId, values.title,values.item)
+          let response = await addKnowledge(this.$route.params.courseId, values.title,values.item,values.brief)
           this.flag2 = false
           this.form2.resetFields()
           if (response.code == 0) {
@@ -785,21 +853,23 @@ export default {
       }
     },
     //修改能力
-    showEdit1(id, name) {
+    showEdit1(id, name,brief) {
       this.flag3 = true
       this.aid = id
       this.$nextTick(() => {
         this.form3.setFieldsValue({
-          title: name
+          title: name,
+          brief:brief
         })
       })
     },
-    showEdit2(id, name) {
+    showEdit2(id, name,brief) {
       this.flag4 = true
       this.kid = id
       this.$nextTick(() => {
         this.form3.setFieldsValue({
-          title: name
+          title: name,
+          brief:brief
         })
       })
     },
@@ -807,7 +877,7 @@ export default {
       e.preventDefault();
       this.form3.validateFields(async (err, values) => {
         if (!err) {
-          let response = await editAbility(this.aid, this.$route.params.courseId, values.title)
+          let response = await editAbility(this.aid, this.$route.params.courseId, values.title,values.brief)
           this.flag3 = false
           if (response.code == 0) {
             this.$message.success('编辑成功！')
@@ -823,7 +893,7 @@ export default {
       e.preventDefault();
       this.form3.validateFields(async (err, values) => {
         if (!err) {
-          let response = await editKnowledge(this.kid, this.$route.params.courseId, values.title)
+          let response = await editKnowledge(this.kid, this.$route.params.courseId, values.title,values.brief)
           this.flag4 = false
           if (response.code == 0) {
             this.$message.success('编辑成功！')

@@ -4,7 +4,7 @@ import {baseUrls} from "./baseUrl";
 // 获取考试库列表
 export function getAllPaperBank(id, pageNum) {
     let data = {
-        userId: id,
+        createId: id,
         pageNum: pageNum
     }
 
@@ -24,7 +24,7 @@ export function getAllPaperBank(id, pageNum) {
 // 考试库模糊搜索
 export function getPaperBankByName(id, pageNum, name) {
     let data = {
-        userId: id,
+        createIdId: id,
         pageNum: pageNum,
         name: name
     }

@@ -62,7 +62,7 @@
             </a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <router-link to="/logout">退出登录</router-link>
+                <router-link to="/logout" id="out">退出登录</router-link>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
@@ -176,6 +176,10 @@ a {
   letter-spacing: 2px;
   font-weight: bold;
   size: 30px;
+}
+
+/deep/#out{
+  color: black;
 }
 
 </style>
