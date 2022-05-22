@@ -702,13 +702,13 @@ export function getItem(cid) {
 }
 
 //新增小节
-export function addItem(uid, cid, name, pid, url) {
+export function addItem(uid, cid, name, pid) {
     let Form = new FormData()
     Form.append("userId", uid)
     Form.append("courseId", cid)
     Form.append("parentId", pid)
     Form.append("name", name)
-    Form.append("videoUrl", url)
+    // Form.append("videoUrl", url)
 
     return axios.post(`${baseUrls.course}//courseSection/add`, Form, {
         headers: {
@@ -764,7 +764,7 @@ export function getAllItems(cid) {
     let Form = new FormData()
     Form.append("courseId", cid)
 
-    return axios.post(`${baseUrls.course}/courseSection/listCourse`, Form, {
+    return axios.post(`${baseUrls.course}/courseSection/listUrlCourse`, Form, {
         headers: {
             'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
         },
@@ -776,3 +776,60 @@ export function getAllItems(cid) {
             console.log(error);
         })
 }
+
+export function addURL(url,name,courseId,courseSectionId,userId) {
+    let Form = new FormData()
+    Form.append("courseId", courseId)
+    Form.append("videoUrl", url)
+    Form.append("name", name)
+    Form.append("courseSectionId",courseSectionId)
+    Form.append("userId", userId)
+
+    return axios.post(`${baseUrls.course}/courseSection/addUrl`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+export function geturl(courseSectionId) {
+    let Form = new FormData()
+    Form.append("courseSectionId", courseSectionId)
+
+    return axios.post(`${baseUrls.course}/courseSection/listUrl`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+
+export function deleteurl(urlId,userId) {
+    let Form = new FormData()
+    Form.append("userId", userId)
+    Form.append("urlId", urlId)
+
+    return axios.post(`${baseUrls.course}/courseSection/deleteUrl`, Form, {
+        headers: {
+            'Content-Type': "application/x-www-form-urlencoded;charset=utf-8"
+        },
+    })
+        .then(res => {
+            return res.data
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+}
+

@@ -114,19 +114,41 @@
             </div>
 
             <div v-if="chapter.id==chooseChapter" v-for="item in itemList">
-              <div class="itemBox">
+              <div class="itemBox" @click="whereisdog(item.id)">
                 <p>
-                  <a-icon type="file" theme="twoTone"/>&ensp;{{ item.name }}
+                  <a-icon type="down"/>&ensp;{{ item.name }}
                 </p>
                 <a-popconfirm
-                    title="确定删除该资源吗?"
+                    title="确定删除该小节吗?"
                     ok-text="Yes"
                     cancel-text="No"
                     @confirm="myDeleteItem(item.id,chapter.id)"
                 >
                   <a-icon type="delete" class="delete"/>
                 </a-popconfirm>
+
+                <a-icon type="plus-circle" theme="twoTone" class="delete"
+                        @click="showDog(item.id)"
+                        style="margin-right: 25px"
+                />
               </div>
+
+              <div v-if="item.id==stupidDog" v-for="dog in dogs">
+                <div class="itemBox">
+                  <p>
+                    &emsp;&emsp;<a-icon type="file" theme="twoTone"/>&ensp;{{ dog.name }}
+                  </p>
+                  <a-popconfirm
+                      title="确定删除该资源吗?"
+                      ok-text="Yes"
+                      cancel-text="No"
+                      @confirm="noDog(dog.id)"
+                  >
+                    <a-icon type="delete" class="delete"/>
+                  </a-popconfirm>
+                </div>
+              </div>
+
             </div>
           </div>
 
@@ -252,7 +274,7 @@
           <a-input
               v-decorator="['title', { rules: [
                   { required: true, message: '不能为空' },
-                  {pattern:/^.{2,8}$/,message: '能力名称长度为2-8位'}
+                  {pattern:/^.{2,50}$/,message: '能力名称长度为2-50位'}
                   ] }]"
           />
         </a-form-item>
@@ -262,7 +284,7 @@
               :auto-size="{ minRows: 1, maxRows: 3 }"
               v-decorator="['brief', { rules: [
                   {required: true,message:'不能为空'},
-                  {pattern:/^.{1,30}$/,message: '长度为1-30位'}
+                  {pattern:/^.{1,1000}$/,message: '长度为1-1000位'}
                   ] }]"
           />
         </a-form-item>
@@ -275,7 +297,7 @@
           <a-input
               v-decorator="['title', { rules: [
                   { required: true, message: '不能为空' },
-                  {pattern:/^.{2,8}$/,message: '能力名称长度为2-8位'}
+                  {pattern:/^.{2,50}$/,message: '能力名称长度为2-50位'}
                   ] }]"
           />
         </a-form-item>
@@ -285,7 +307,7 @@
               :auto-size="{ minRows: 1, maxRows: 3 }"
               v-decorator="['brief', { rules: [
                   {required: true,message:'不能为空'},
-                  {pattern:/^.{1,30}$/,message: '长度为1-30位'}
+                  {pattern:/^.{1,1000}$/,message: '长度为1-1000位'}
                   ] }]"
           />
         </a-form-item>
@@ -309,7 +331,7 @@
           <a-input
               v-decorator="['title', { rules: [
                   { required: true, message: '不能为空' },
-                  {pattern:/^.{2,8}$/,message: '能力名称长度为2-8位'}
+                  {pattern:/^.{2,50}$/,message: '能力名称长度为2-50位'}
                   ] }]"
           />
         </a-form-item>
@@ -319,7 +341,7 @@
               :auto-size="{ minRows: 1, maxRows: 3 }"
               v-decorator="['brief', { rules: [
                   {required: true,message:'不能为空'},
-                  {pattern:/^.{1,30}$/,message: '长度为1-30位'}
+                  {pattern:/^.{1,1000}$/,message: '长度为1-1000位'}
                   ] }]"
           />
         </a-form-item>
@@ -332,7 +354,7 @@
           <a-input
               v-decorator="['title', { rules: [
                   { required: true, message: '不能为空' },
-                  {pattern:/^.{2,8}$/,message: '能力名称长度为2-8位'}
+                  {pattern:/^.{2,50}$/,message: '能力名称长度为2-50位'}
                   ] }]"
           />
         </a-form-item>
@@ -342,7 +364,7 @@
               :auto-size="{ minRows: 1, maxRows: 3 }"
               v-decorator="['brief', { rules: [
                   {required: true,message:'不能为空'},
-                  {pattern:/^.{1,30}$/,message: '长度为1-30位'}
+                  {pattern:/^.{1,1000}$/,message: '长度为1-1000位'}
                   ] }]"
           />
         </a-form-item>
@@ -387,20 +409,34 @@
           <a-input
               v-decorator="['title', { rules: [
                   { required: true, message: '不能为空' },
-                  {pattern:/^.{2,8}$/,message: '章节名称长度为2-8位'}
+                  {pattern:/^.{2,50}$/,message: '章节名称长度为2-50位'}
                   ] }]"
           />
         </a-form-item>
       </a-form>
     </a-modal>
 
-    <a-modal v-model="flag7" title="添加资源" @ok="myAddItem">
+    <a-modal v-model="flag7" title="添加小节" @ok="myAddItem">
+      <a-form :form="form1" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="小节名称">
+          <a-input
+              v-decorator="['title', { rules: [
+                  { required: true, message: '不能为空' },
+                  {pattern:/^.{2,50}$/,message: '名称长度为2-50位'}
+                  ] }]"
+          />
+        </a-form-item>
+
+      </a-form>
+    </a-modal>
+
+    <a-modal v-model="dogflag" title="添加资源" @ok="addDog">
       <a-form :form="form1" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
         <a-form-item label="资源名称">
           <a-input
               v-decorator="['title', { rules: [
                   { required: true, message: '不能为空' },
-                  {pattern:/^.{2,8}$/,message: '名称长度为2-8位'}
+                  {pattern:/^.{2,50}$/,message: '名称长度为2-50位'}
                   ] }]"
           />
         </a-form-item>
@@ -412,16 +448,23 @@
                   ] }]"
           />
         </a-form-item>
+
       </a-form>
     </a-modal>
 
     <a-modal v-model="f1" :title="aInfo.name" @ok="()=>{this.f1=false}">
-      <p><b>简介：</b>{{aInfo.brief}}</p>
+      <div class="brief1">
+        <p><b>简介：</b>{{aInfo.brief}}</p>
+      </div>
+
 
     </a-modal>
 
     <a-modal v-model="f2" :title="kInfo.name" @ok="()=>{this.f2=false}">
-      <p><b>简介：</b>{{kInfo.brief}}</p>
+      <div class="brief1">
+        <p><b>简介：</b>{{kInfo.brief}}</p>
+      </div>
+
     </a-modal>
 
 
@@ -449,7 +492,7 @@ import {
   deleteChapter,
   deleteItem,
   addChapter,
-  addItem, getAllItems, getAbilityInfo, getKnowledgeInfo
+  addItem, getAllItems, getAbilityInfo, getKnowledgeInfo, geturl, addURL, deleteurl
 } from "../../api/course";
 import {getPaperByCourse} from "../../api/paper";
 
@@ -551,6 +594,9 @@ export default {
       qualityList: [],
       allItems:[],
       itemList: [],
+      dogs:[],
+      stupidDog:-1,
+      dogflag:false,
       chooseChapter: -1,
       picture: '',
       columns1,
@@ -585,9 +631,47 @@ export default {
       myFile: {},
       fileName: '未选择文件',
       selectedChapter: -1,
+      dogsid:-1
     }
   },
   methods: {
+    async noDog(id){
+      let res=await deleteurl(id,this.$store.getters.getTeacher.userId)
+      if (res.code == 0) {
+        this.$message.success('删除成功')
+        await this.whereisdog(this.dogsid)
+
+      } else {
+        this.$message.error("删除失败")
+      }
+    },
+    async addDog(e){
+      e.preventDefault()
+      this.form1.validateFields(async (err, values) => {
+        if (!err) {
+          let response = await addURL(values.url,values.title,this.$route.params.courseId,this.dogsid,this.$store.getters.getTeacher.userId)
+          this.dogflag = false
+          this.form1.resetFields()
+          if (response.code == 0) {
+            this.$message.success('添加成功')
+            await this.whereisdog(this.dogsid)
+
+          } else {
+            this.$message.error("添加失败")
+          }
+        }
+      })
+    },
+    showDog(sid){
+      this.dogflag=true
+      this.dogsid=sid
+    },
+    async whereisdog(id){
+      this.dogsid=id
+      this.stupidDog=id
+      let res=await geturl(id)
+      this.dogs=res
+    },
     async getaInfo(id){
       this.f1=true
       let response=await getAbilityInfo(id)
@@ -785,7 +869,7 @@ export default {
       e.preventDefault()
       this.form1.validateFields(async (err, values) => {
         if (!err) {
-          let response = await addItem(this.$store.getters.getTeacher.id, this.$route.params.courseId, values.title, this.selectedChapter, values.url)
+          let response = await addItem(this.$store.getters.getTeacher.id, this.$route.params.courseId, values.title, this.selectedChapter)
           this.flag7 = false
           this.form1.resetFields()
           if (response.code == 0) {
@@ -1151,6 +1235,11 @@ export default {
 
 .delete {
   float: right;
+}
+
+.brief1{
+  height: 300px;
+  overflow-y: scroll;
 }
 
 </style>
